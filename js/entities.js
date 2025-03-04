@@ -1,5 +1,5 @@
 // Game entities (player ship, asteroids, stars)
-const Entities = {
+SpaceGame.Entities = {
     container: null,
     ship: null,
     asteroids: null,
@@ -18,8 +18,8 @@ const Entities = {
         this.container.addChild(this.stars);
         
         for (let i = 0; i < 1000; i++) {
-            const x = Math.random() * Physics.WORLD_SIZE - Physics.WORLD_SIZE / 2;
-            const y = Math.random() * Physics.WORLD_SIZE - Physics.WORLD_SIZE / 2;
+            const x = Math.random() * SpaceGame.Physics.WORLD_SIZE - SpaceGame.Physics.WORLD_SIZE / 2;
+            const y = Math.random() * SpaceGame.Physics.WORLD_SIZE - SpaceGame.Physics.WORLD_SIZE / 2;
             const size = Math.random() * 2 + 1;
             const brightness = Math.random() * 0.5 + 0.5;
             
@@ -41,8 +41,8 @@ const Entities = {
             // Ensure asteroids are not too close to the center where the ship spawns
             let x, y;
             do {
-                x = Math.random() * Physics.WORLD_SIZE - Physics.WORLD_SIZE / 2;
-                y = Math.random() * Physics.WORLD_SIZE - Physics.WORLD_SIZE / 2;
+                x = Math.random() * SpaceGame.Physics.WORLD_SIZE - SpaceGame.Physics.WORLD_SIZE / 2;
+                y = Math.random() * SpaceGame.Physics.WORLD_SIZE - SpaceGame.Physics.WORLD_SIZE / 2;
             } while (Math.sqrt(x*x + y*y) < 300);
             
             const size = Math.random() * 50 + 20;
@@ -73,14 +73,14 @@ const Entities = {
             
             // Add physics body for asteroid
             const physicsPoints = points.map(p => ({ x: p.x, y: p.y }));
-            const asteroidBody = Physics.Bodies.fromVertices(x, y, [physicsPoints], {
+            const asteroidBody = SpaceGame.Physics.Bodies.fromVertices(x, y, [physicsPoints], {
                 restitution: 0.6,
                 friction: 0.01,
                 density: 0.001
             });
             
             if (asteroidBody) {
-                Physics.World.add(Physics.world, asteroidBody);
+                SpaceGame.Physics.World.add(SpaceGame.Physics.world, asteroidBody);
                 
                 // Link graphic to physics body (for our own tracking)
                 asteroid.physicsBody = asteroidBody;
@@ -114,14 +114,14 @@ const Entities = {
         engineGlow.visible = false;
         
         // Create physics body for ship
-        const shipBody = Physics.Bodies.polygon(0, 0, 3, 15, {
+        const shipBody = SpaceGame.Physics.Bodies.polygon(0, 0, 3, 15, {
             density: 0.001,
             frictionAir: 0.05,
             restitution: 0.3,
             friction: 0.01
         });
         
-        Physics.World.add(Physics.world, shipBody);
+        SpaceGame.Physics.World.add(SpaceGame.Physics.world, shipBody);
         
         // Link graphic to physics body (for our own tracking)
         this.ship.physicsBody = shipBody;
@@ -131,10 +131,10 @@ const Entities = {
         const boundary = new PIXI.Graphics();
         boundary.lineStyle(2, 0xFF0000);
         boundary.drawRect(
-            Physics.WORLD_BOUNDS.min.x, 
-            Physics.WORLD_BOUNDS.min.y, 
-            Physics.WORLD_SIZE, 
-            Physics.WORLD_SIZE
+            SpaceGame.Physics.WORLD_BOUNDS.min.x, 
+            SpaceGame.Physics.WORLD_BOUNDS.min.y, 
+            SpaceGame.Physics.WORLD_SIZE, 
+            SpaceGame.Physics.WORLD_SIZE
         );
         this.container.addChild(boundary);
     },

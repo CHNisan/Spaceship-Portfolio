@@ -1,5 +1,5 @@
 // Main game class
-const Game = {
+SpaceGame.Game = {
     app: null,
     gameContainer: null,
     
@@ -16,10 +16,10 @@ const Game = {
         this.app.stage.addChild(this.gameContainer);
         
         // Initialize all systems
-        Physics.init();
-        Entities.init(this.gameContainer);
-        Camera.init(this.gameContainer, this.app);
-        Input.init(this.app, this.gameContainer, Entities.ship);
+        SpaceGame.Physics.init();
+        SpaceGame.Entities.init(this.gameContainer);
+        SpaceGame.Camera.init(this.gameContainer, this.app);
+        SpaceGame.Input.init(this.app, this.gameContainer, SpaceGame.Entities.ship);
         
         // Show instructions
         this.createInstructions();
@@ -46,20 +46,20 @@ const Game = {
     setupGameLoop() {
         this.app.ticker.add(() => {
             // Update physics
-            Physics.update(this.app.ticker.deltaMS);
+            SpaceGame.Physics.update(this.app.ticker.deltaMS);
             
             // Apply ship controls
-            Input.applyShipControls();
+            SpaceGame.Input.applyShipControls();
             
             // Update all entity positions
-            Entities.update();
+            SpaceGame.Entities.update();
             
             // Update camera position
-            Camera.follow(Entities.ship);
-            Camera.update();
+            SpaceGame.Camera.follow(SpaceGame.Entities.ship);
+            SpaceGame.Camera.update(this.app.ticker.deltaMS);
             
             // Keep ship in bounds
-            Physics.keepEntityInBounds(Entities.ship);
+            SpaceGame.Physics.keepEntityInBounds(SpaceGame.Entities.ship);
         });
     }
 };

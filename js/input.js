@@ -1,5 +1,5 @@
 // Input handling system
-const Input = {
+SpaceGame.Input = {
     app: null,
     gameContainer: null,
     ship: null,
@@ -24,12 +24,12 @@ const Input = {
         // Mouse button handlers
         this.app.view.addEventListener('mousedown', () => {
             this.isThrusting = true;
-            Entities.setEngineGlow(true);
+            SpaceGame.Entities.setEngineGlow(true);
         });
         
         this.app.view.addEventListener('mouseup', () => {
             this.isThrusting = false;
-            Entities.setEngineGlow(false);
+            SpaceGame.Entities.setEngineGlow(false);
         });
     },
     
@@ -62,15 +62,15 @@ const Input = {
         while (normalizedDiff < -Math.PI) normalizedDiff += Math.PI * 2;
         
         // Apply torque to rotate ship
-        Physics.Body.setAngularVelocity(shipBody, normalizedDiff * 0.1);
+        SpaceGame.Physics.Body.setAngularVelocity(shipBody, normalizedDiff * 0.1);
         
         // Apply thrust if mouse is down
         if (this.isThrusting) {
-            const force = Physics.Vector.create(
+            const force = SpaceGame.Physics.Vector.create(
                 Math.cos(shipBody.angle) * 0.0005,
                 Math.sin(shipBody.angle) * 0.0005
             );
-            Physics.Body.applyForce(shipBody, shipBody.position, force);
+            SpaceGame.Physics.Body.applyForce(shipBody, shipBody.position, force);
         }
     }
 };

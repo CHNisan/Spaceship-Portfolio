@@ -1,8 +1,8 @@
 // Camera control system
-const Camera = {
+SpaceGame.Camera = {
     container: null,
     target: { x: 0, y: 0 },
-    damping: 0.1, // 0-1 (lower = smoother, higher = tighter)
+    damping: 0.1, // Single universal damping value (0-1, lower = smoother, higher = tighter)
     
     init(container, app) {
         this.container = container;
@@ -14,7 +14,7 @@ const Camera = {
         this.target.y = target.position.y;
     },
     
-    update() {
+    update(deltaTime) {
         // Apply smooth camera movement using linear interpolation
         this.container.pivot.x = this.lerp(this.container.pivot.x, this.target.x, this.damping);
         this.container.pivot.y = this.lerp(this.container.pivot.y, this.target.y, this.damping);

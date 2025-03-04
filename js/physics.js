@@ -1,5 +1,5 @@
 // Physics setup and configuration
-const Physics = {
+SpaceGame.Physics = {
     // Matter.js modules
     Engine: Matter.Engine,
     World: Matter.World,
