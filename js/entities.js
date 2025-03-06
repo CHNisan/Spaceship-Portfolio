@@ -116,7 +116,7 @@ SpaceGame.Entities = {
         // Create physics body for ship
         const shipBody = SpaceGame.Physics.Bodies.polygon(0, 0, 3, 15, {
             density: 0.001,
-            frictionAir: 0.05,
+            frictionAir: 0.03,
             restitution: 0.3,
             friction: 0.01
         });

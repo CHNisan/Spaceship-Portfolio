@@ -6,6 +6,8 @@ SpaceGame.Input = {
     mousePosition: { x: 0, y: 0 },
     isThrusting: false,
     targetRotation: 0,
+    forceMult: 0.0007,
+    angularVelocityMult: 0.2,
     
     init(app, gameContainer, ship) {
         this.app = app;
@@ -62,13 +64,13 @@ SpaceGame.Input = {
         while (normalizedDiff < -Math.PI) normalizedDiff += Math.PI * 2;
         
         // Apply torque to rotate ship
-        SpaceGame.Physics.Body.setAngularVelocity(shipBody, normalizedDiff * 0.1);
+        SpaceGame.Physics.Body.setAngularVelocity(shipBody, normalizedDiff * this.angularVelocityMult);
         
         // Apply thrust if mouse is down
         if (this.isThrusting) {
             const force = SpaceGame.Physics.Vector.create(
-                Math.cos(shipBody.angle) * 0.0005,
-                Math.sin(shipBody.angle) * 0.0005
+                Math.cos(shipBody.angle) * this.forceMult,
+                Math.sin(shipBody.angle) * this.forceMult
             );
             SpaceGame.Physics.Body.applyForce(shipBody, shipBody.position, force);
         }
