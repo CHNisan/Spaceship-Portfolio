@@ -14,6 +14,13 @@ SpaceGame.Entities = {
         { x: -800, y: -900, width: 80, height: 160, color: 0xFF00FF }
     ],
     
+    // Points of interest animation parameters
+    poiAnimationParams: {
+        scaleSpeed: 0.04,    // How fast the scaling animation happens
+        maxScale: 1.2,       // Maximum scale when hovered
+        minScale: 1.0        // Minimum scale (normal size)
+    },
+    
     init(container) {
         this.container = container;
         this.createStars();
@@ -220,6 +227,24 @@ SpaceGame.Entities = {
             // Add a data field to identify this as a POI
             poiGraphic.isPOI = true;
             poiGraphic.poiId = index + 1;
+            
+            // Set interactive properties for hover effects
+            poiGraphic.interactive = true;
+            poiGraphic.buttonMode = true;
+            poiGraphic.cursor = 'pointer'; // Explicitly set cursor style
+            
+            // Store original scale for animation
+            poiGraphic.originalScale = { x: 1, y: 1 };
+            poiGraphic.isHovered = false;
+            
+            // Add events for hover animation
+            poiGraphic.on('mouseover', () => {
+                poiGraphic.isHovered = true;
+            });
+            
+            poiGraphic.on('mouseout', () => {
+                poiGraphic.isHovered = false;
+            });
         });
     },
     
@@ -243,7 +268,27 @@ SpaceGame.Entities = {
             }
         }
         
-        // Points of interest don't need position updates since they're static
+        // Update points of interest hover animations
+        for (let i = 0; i < this.pointsOfInterest.children.length; i++) {
+            const poi = this.pointsOfInterest.children[i];
+            this.animatePointOfInterest(poi);
+        }
+    },
+    
+    // Function to handle POI animations
+    animatePointOfInterest(poi, deltaTime) {
+        if (poi.isHovered) {
+            // Scale up to maxScale when hovered (with smooth animation)
+            poi.scale.x = Math.min(poi.scale.x + this.poiAnimationParams.scaleSpeed, this.poiAnimationParams.maxScale);
+            poi.scale.y = Math.min(poi.scale.y + this.poiAnimationParams.scaleSpeed, this.poiAnimationParams.maxScale);
+        } else {
+            // Scale back down to original scale when not hovered
+            poi.scale.x = Math.max(poi.scale.x - this.poiAnimationParams.scaleSpeed, this.poiAnimationParams.minScale);
+            poi.scale.y = Math.max(poi.scale.y - this.poiAnimationParams.scaleSpeed, this.poiAnimationParams.minScale);
+        }
+        
+        // Return true if animation is still in progress (maybe usefull in future animations)
+        // return poi.scale.x !== (poi.isHovered ? this.poiAnimationParams.maxScale : this.poiAnimationParams.minScale);
     },
     
     setEngineGlow(isVisible) {

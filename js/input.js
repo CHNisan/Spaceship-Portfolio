@@ -49,6 +49,19 @@ SpaceGame.Input = {
         const dx = this.mousePosition.x - this.ship.physicsBody.position.x;
         const dy = this.mousePosition.y - this.ship.physicsBody.position.y;
         this.targetRotation = Math.atan2(dy, dx);
+        
+        // Update PIXI interaction manager to handle POI hover states
+        // This is needed because we're using a moving camera
+        if (this.app.renderer.plugins.interaction) {
+            const interaction = this.app.renderer.plugins.interaction;
+            
+            // Map screen position to world position
+            interaction.mapPositionToPoint(
+                interaction.mouse.global,
+                event.clientX,
+                event.clientY
+            );
+        }
     },
     
     applyShipControls() {
