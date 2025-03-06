@@ -1,9 +1,18 @@
-// Game entities (player ship, asteroids, stars)
+// Game entities (player ship, asteroids, stars, points of interest)
 SpaceGame.Entities = {
     container: null,
     ship: null,
     asteroids: null,
     stars: null,
+    pointsOfInterest: null,
+    
+    // Define POI locations in a single place for reuse
+    poiLocations: [
+        { x: 1000, y: 1000, width: 100, height: 100, color: 0x00FFFF },
+        { x: -1200, y: 800, width: 150, height: 80, color: 0xFFAA00 },
+        { x: 500, y: -1500, width: 120, height: 120, color: 0x00FF00 },
+        { x: -800, y: -900, width: 80, height: 160, color: 0xFF00FF }
+    ],
     
     init(container) {
         this.container = container;
@@ -11,6 +20,7 @@ SpaceGame.Entities = {
         this.createAsteroids();
         this.createSpaceship();
         this.createBoundaryVisual();
+        this.createPointsOfInterest();
     },
     
     createStars() {
@@ -39,11 +49,32 @@ SpaceGame.Entities = {
         
         for (let i = 0; i < 30; i++) {
             // Ensure asteroids are not too close to the center where the ship spawns
-            let x, y;
+            // and not inside any point of interest
+            let x, y, isValidPosition;
             do {
                 x = Math.random() * SpaceGame.Physics.WORLD_SIZE - SpaceGame.Physics.WORLD_SIZE / 2;
                 y = Math.random() * SpaceGame.Physics.WORLD_SIZE - SpaceGame.Physics.WORLD_SIZE / 2;
-            } while (Math.sqrt(x*x + y*y) < 300);
+                
+                // Check if too close to ship spawn
+                isValidPosition = Math.sqrt(x*x + y*y) >= 300;
+                
+                // Check if inside any POI (with buffer zone)
+                if (isValidPosition) {
+                    for (const poi of this.poiLocations) {
+                        // Add buffer around POI for asteroid avoidance
+                        const bufferX = poi.width * 0.5;  // 50% buffer on each side
+                        const bufferY = poi.height * 0.5;
+                        
+                        if (x > poi.x - (poi.width/2 + bufferX) && 
+                            x < poi.x + (poi.width/2 + bufferX) && 
+                            y > poi.y - (poi.height/2 + bufferY) && 
+                            y < poi.y + (poi.height/2 + bufferY)) {
+                            isValidPosition = false;
+                            break;
+                        }
+                    }
+                }
+            } while (!isValidPosition);
             
             const size = Math.random() * 50 + 20;
             const segments = Math.floor(Math.random() * 5) + 5;
@@ -139,6 +170,59 @@ SpaceGame.Entities = {
         this.container.addChild(boundary);
     },
     
+    createPointsOfInterest() {
+        // Create a container for points of interest
+        this.pointsOfInterest = new PIXI.Container();
+        this.container.addChild(this.pointsOfInterest);
+        
+        // Create each point of interest
+        this.poiLocations.forEach((poi, index) => {
+            const poiGraphic = new PIXI.Graphics();
+            poiGraphic.beginFill(poi.color, 0.7);
+            poiGraphic.lineStyle(2, 0xFFFFFF, 0.8);
+            poiGraphic.drawRect(-poi.width/2, -poi.height/2, poi.width, poi.height);
+            poiGraphic.endFill();
+            
+            // Add a label
+            const label = new PIXI.Text(`POI ${index + 1}`, {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                fill: 0xFFFFFF,
+                align: 'center'
+            });
+            label.anchor.set(0.5);
+            poiGraphic.addChild(label);
+            
+            // Position the POI
+            poiGraphic.position.set(poi.x, poi.y);
+            
+            // Add to container
+            this.pointsOfInterest.addChild(poiGraphic);
+            
+            // Create a static physics body for the POI
+            const poiBody = SpaceGame.Physics.Bodies.rectangle(
+                poi.x, 
+                poi.y, 
+                poi.width, 
+                poi.height, 
+                { 
+                    isStatic: true,
+                    render: { fillStyle: poi.color }
+                }
+            );
+            
+            // Add to physics world
+            SpaceGame.Physics.World.add(SpaceGame.Physics.world, poiBody);
+            
+            // Link graphic to physics body
+            poiGraphic.physicsBody = poiBody;
+            
+            // Add a data field to identify this as a POI
+            poiGraphic.isPOI = true;
+            poiGraphic.poiId = index + 1;
+        });
+    },
+    
     update() {
         // Update spaceship graphics from physics
         this.ship.position.set(
@@ -158,6 +242,8 @@ SpaceGame.Entities = {
                 asteroid.rotation = asteroid.physicsBody.angle;
             }
         }
+        
+        // Points of interest don't need position updates since they're static
     },
     
     setEngineGlow(isVisible) {
