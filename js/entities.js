@@ -486,8 +486,10 @@ SpaceGame.Entities = {
 
 
     // Function to handle POI animations
-    animatePointOfInterest(poi, deltaTime) {
-        if (poi.isHovered) {
+    animatePointOfInterest(poi) {
+        const isActive = poi.isHovered || SpaceGame.Camera.focusObject === poi;
+
+        if (isActive) {
             // Scale up to maxScale when hovered (with smooth animation)
             poi.scale.x = Math.min(poi.scale.x + this.poiAnimationParams.scaleSpeed, this.poiAnimationParams.maxScale);
             poi.scale.y = Math.min(poi.scale.y + this.poiAnimationParams.scaleSpeed, this.poiAnimationParams.maxScale);
