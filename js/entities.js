@@ -7,7 +7,7 @@ SpaceGame.Entities = {
     pointsOfInterest: null,
     
     // Define POI data in a single place for reuse
-    poiLocations: [
+    poiData: [
         { 
             x: 1000, 
             y: 1000, 
@@ -112,7 +112,7 @@ SpaceGame.Entities = {
                 
                 // Check if inside any POI (with buffer zone)
                 if (isValidPosition) {
-                    for (const poi of this.poiLocations) {
+                    for (const poi of this.poiData) {
                         // Add buffer around POI for asteroid avoidance
                         const bufferX = poi.width * 0.5;  // 50% buffer on each side
                         const bufferY = poi.height * 0.5;
@@ -253,7 +253,7 @@ SpaceGame.Entities = {
         this.container.addChild(this.pointsOfInterest);
         
         // Create each point of interest
-        this.poiLocations.forEach((poi, index) => {
+        this.poiData.forEach((poi, index) => {
             const poiGraphic = new PIXI.Graphics();
             poiGraphic.beginFill(poi.color, 0.7);
             poiGraphic.lineStyle(2, 0xFFFFFF, 0.8);
@@ -323,7 +323,7 @@ SpaceGame.Entities = {
                 
                 // Get the POI data
                 const poiIndex = poiGraphic.poiId - 1;
-                const poiData = this.poiLocations[poiIndex];
+                const poiData = this.poiData[poiIndex];
                 
                 if (isAlreadyFocused) {
                     // If already focused, open the web address in a new tab
@@ -353,7 +353,7 @@ SpaceGame.Entities = {
         this.poiImages = {};
         
         // Create placeholder sprites for each POI
-        this.poiLocations.forEach(poi => {
+        this.poiData.forEach(poi => {
             // Create a sprite using a simple colored rectangle
             const sprite = new PIXI.Graphics();
             sprite.beginFill(poi.color, 0.9);
