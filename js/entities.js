@@ -8,10 +8,46 @@ SpaceGame.Entities = {
     
     // Define POI locations in a single place for reuse
     poiLocations: [
-        { x: 1000, y: 1000, width: 100, height: 100, color: 0x00FFFF },
-        { x: -1200, y: 800, width: 150, height: 80, color: 0xFFAA00 },
-        { x: 500, y: -1500, width: 120, height: 120, color: 0x00FF00 },
-        { x: -800, y: -900, width: 80, height: 160, color: 0xFF00FF }
+        { 
+            x: 1000, 
+            y: 1000, 
+            width: 100, 
+            height: 100, 
+            color: 0x00FFFF,
+            title: "Research Station Alpha",
+            description: "A cutting-edge research facility studying the unusual stellar phenomena in this sector. Scientists here have made significant discoveries about dark matter.",
+            imageKey: "station-alpha"
+        },
+        { 
+            x: -1200, 
+            y: 800, 
+            width: 150, 
+            height: 80, 
+            color: 0xFFAA00,
+            title: "Mining Outpost Beta",
+            description: "An asteroid mining facility that extracts rare minerals from the surrounding asteroid field. The outpost supplies resources to nearby colonies.",
+            imageKey: "mining-outpost"
+        },
+        { 
+            x: 500, 
+            y: -1500, 
+            width: 120, 
+            height: 120, 
+            color: 0x00FF00,
+            title: "Communications Relay",
+            description: "This relay station maintains the subspace communication network in this quadrant. All transmissions between systems pass through here.",
+            imageKey: "comm-relay"
+        },
+        { 
+            x: -800, 
+            y: -900, 
+            width: 80, 
+            height: 160, 
+            color: 0xFF00FF,
+            title: "Trading Hub Gamma",
+            description: "A bustling marketplace where traders from all over the sector come to exchange goods. Known for its exotic wares and reasonable prices.",
+            imageKey: "trading-hub"
+        }
     ],
     
     // Points of interest animation parameters
@@ -29,6 +65,7 @@ SpaceGame.Entities = {
         this.createBoundaryVisual();
         this.createBackgroundClickArea();
         this.createPointsOfInterest();
+        this.createPopupSystem()
     },
 
 
@@ -199,7 +236,7 @@ SpaceGame.Entities = {
             // Reset camera to follow the ship
             SpaceGame.Camera.resetFocus();
             
-            // We'll handle thrusting in Input.js based on camera focus state
+            this.hidePopup();
         });
         
         // Add it to the container (above asteroids)
@@ -279,9 +316,139 @@ SpaceGame.Entities = {
             poiGraphic.on('pointerdown', (event) => {
                 // Set camera focus to this POI
                 SpaceGame.Camera.setFocus(poiGraphic);
+
+                // Check if this POI is already focused
+                const isAlreadyFocused = SpaceGame.Camera.focusObject === poiGraphic;
+                
+                // Only show popup if this isn't already focused with an active popup
+                if (!isAlreadyFocused || !this.activePopup) {
+                    const poiIndex = poiGraphic.poiId - 1;
+                    const poiData = this.poiLocations[poiIndex];
+                    this.showPopupForPOI(poiData);
+                }
             });
         });
     },
+
+
+    
+
+    createPopupSystem() {
+        // Container for all popups
+        this.popupContainer = new PIXI.Container();
+        this.container.addChild(this.popupContainer);
+        
+        // Create placeholder sprites for our POI images
+        this.poiImages = {};
+        
+        // Create placeholder sprites for each POI
+        this.poiLocations.forEach(poi => {
+            // Create a sprite using a simple colored rectangle
+            const sprite = new PIXI.Graphics();
+            sprite.beginFill(poi.color, 0.9);
+            sprite.lineStyle(2, 0xFFFFFF);
+            sprite.drawRect(0, 0, 220, 80);
+            sprite.endFill();
+            
+            // Add a label to identify the sprite
+            const label = new PIXI.Text(poi.title, {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                fontWeight: 'bold',
+                fill: 0xFFFFFF,
+                align: 'center'
+            });
+            label.resolution = 2;
+            label.anchor.set(0.5);
+            label.position.set(110, 40);
+            sprite.addChild(label);
+            
+            this.poiImages[poi.imageKey] = sprite;
+        });
+        
+        // Current active popup (or null)
+        this.activePopup = null;
+        
+        // Animation properties
+        this.popupAnimationSpeed = 0.1; // Speed of fade in/out (0-1)
+        this.fadeInProgress = false;    // Track if we're fading in
+        this.fadeOutProgress = false;   // Track if we're fading out
+    },
+
+    showPopupForPOI(poiData) {
+        // If we're fading out a popup, cancel that animation and remove it
+        if (this.fadeOutProgress && this.activePopup) {
+            this.popupContainer.removeChild(this.activePopup);
+            this.activePopup = null;
+            this.fadeOutProgress = false;
+        }
+        
+        // Create popup container
+        const popup = new PIXI.Container();
+        this.popupContainer.addChild(popup);
+        this.activePopup = popup;
+        
+        // Set initial alpha to 0 for fade-in effect
+        popup.alpha = 0;
+        this.fadeInProgress = true;
+        
+        // Position popup next to the POI
+        const offsetX = poiData.width / 2 + 20;
+        const offsetY = -poiData.height / 2;
+        popup.position.set(poiData.x + offsetX, poiData.y + offsetY);
+        
+        // Create popup background
+        const popupWidth = 240;
+        const popupHeight = 200;
+        const background = new PIXI.Graphics();
+        background.beginFill(0x000000, 0.8);
+        background.lineStyle(2, 0xFFFFFF);
+        background.drawRoundedRect(0, 0, popupWidth, popupHeight, 10);
+        background.endFill();
+        popup.addChild(background);
+        
+        // Add title
+        const title = new PIXI.Text(poiData.title, {
+            fontFamily: 'Arial',
+            fontSize: 16,
+            fontWeight: 'bold',
+            fill: 0xFFFFFF,
+            align: 'center',
+            wordWrap: true,
+            wordWrapWidth: popupWidth - 20
+        });
+        title.resolution = 2;  // For sharp text
+        title.position.set(10, 10);
+        popup.addChild(title);
+        
+        // Add description text
+        const description = new PIXI.Text(poiData.description, {
+            fontFamily: 'Arial',
+            fontSize: 12,
+            fill: 0xFFFFFF,
+            align: 'left',
+            wordWrap: true,
+            wordWrapWidth: popupWidth - 20
+        });
+        description.resolution = 2;  // For sharp text
+        description.position.set(10, 35);
+        popup.addChild(description);
+        
+        // Add image
+        const image = this.poiImages[poiData.imageKey].clone();
+        image.scale.set(0.9, 0.9);
+        image.position.set(10, popupHeight - 90);
+        popup.addChild(image);
+    },
+
+    hidePopup() {
+        if (this.activePopup) {
+            // Start fade-out animation instead of immediately removing
+            this.fadeOutProgress = true;
+            this.fadeInProgress = false;
+        }
+    },
+
     
 
 
@@ -311,6 +478,8 @@ SpaceGame.Entities = {
             const poi = this.pointsOfInterest.children[i];
             this.animatePointOfInterest(poi);
         }
+
+        this.updatePopupAnimations();
     },
     
 
@@ -330,6 +499,34 @@ SpaceGame.Entities = {
         
         // Return true if animation is still in progress (maybe usefull in future animations)
         // return poi.scale.x !== (poi.isHovered ? this.poiAnimationParams.maxScale : this.poiAnimationParams.minScale);
+    },
+
+    // New method to update popup animations
+    updatePopupAnimations() {
+        if (!this.activePopup) return;
+        
+        if (this.fadeInProgress) {
+            // Fade in animation
+            this.activePopup.alpha += this.popupAnimationSpeed;
+            
+            // Check if fade-in is complete
+            if (this.activePopup.alpha >= 1) {
+                this.activePopup.alpha = 1;
+                this.fadeInProgress = false;
+            }
+        } 
+        else if (this.fadeOutProgress) {
+            // Fade out animation
+            this.activePopup.alpha -= this.popupAnimationSpeed;
+            
+            // Check if fade-out is complete
+            if (this.activePopup.alpha <= 0) {
+                // Remove popup when fully transparent
+                this.popupContainer.removeChild(this.activePopup);
+                this.activePopup = null;
+                this.fadeOutProgress = false;
+            }
+        }
     },
     
 
