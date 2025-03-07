@@ -27,6 +27,7 @@ SpaceGame.Entities = {
         this.createAsteroids();
         this.createSpaceship();
         this.createBoundaryVisual();
+        this.createBackgroundClickArea();
         this.createPointsOfInterest();
     },
 
@@ -179,6 +180,31 @@ SpaceGame.Entities = {
         );
         this.container.addChild(boundary);
     },
+
+    createBackgroundClickArea() {
+        // Add a background click detector
+        const bgClickArea = new PIXI.Graphics();
+        bgClickArea.beginFill(0xFFFFFF, 0.01); // Almost invisible
+        bgClickArea.drawRect(
+            SpaceGame.Physics.WORLD_BOUNDS.min.x, 
+            SpaceGame.Physics.WORLD_BOUNDS.min.y, 
+            SpaceGame.Physics.WORLD_SIZE, 
+            SpaceGame.Physics.WORLD_SIZE
+        );
+        bgClickArea.endFill();
+        
+        // Make it interactive
+        bgClickArea.eventMode = 'static';
+        bgClickArea.on('pointerdown', () => {
+            // Reset camera to follow the ship
+            SpaceGame.Camera.resetFocus();
+            
+            // We'll handle thrusting in Input.js based on camera focus state
+        });
+        
+        // Add it to the container (above asteroids)
+        this.container.addChild(bgClickArea);
+    },
     
     createPointsOfInterest() {
         // Create a container for points of interest
@@ -201,6 +227,8 @@ SpaceGame.Entities = {
                 align: 'center'
             });
             label.anchor.set(0.5);
+            // Add resolution setting for sharp text
+            label.resolution = 2;
             poiGraphic.addChild(label);
             
             // Position the POI
@@ -231,22 +259,26 @@ SpaceGame.Entities = {
             poiGraphic.isPOI = true;
             poiGraphic.poiId = index + 1;
             
-            // Set interactive properties for hover effects
-            poiGraphic.interactive = true;
-            poiGraphic.buttonMode = true;
-            poiGraphic.cursor = 'pointer'; // Explicitly set cursor style
+            // Set interactive properties for hover and click
+            poiGraphic.eventMode = 'static';
+            poiGraphic.cursor = 'pointer';
             
             // Store original scale for animation
             poiGraphic.originalScale = { x: 1, y: 1 };
             poiGraphic.isHovered = false;
             
             // Add events for hover animation
-            poiGraphic.on('mouseover', () => {
+            poiGraphic.on('pointerover', () => {
                 poiGraphic.isHovered = true;
             });
-            
-            poiGraphic.on('mouseout', () => {
+            poiGraphic.on('pointerout', () => {
                 poiGraphic.isHovered = false;
+            });
+            
+            // Add click handler for camera focus
+            poiGraphic.on('pointerdown', (event) => {
+                // Set camera focus to this POI
+                SpaceGame.Camera.setFocus(poiGraphic);
             });
         });
     },

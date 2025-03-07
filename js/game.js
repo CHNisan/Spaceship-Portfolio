@@ -30,7 +30,7 @@ SpaceGame.Game = {
     
     createInstructions() {
         const instructions = new PIXI.Text(
-            "Control the spaceship with your mouse\nClick and hold to thrust",
+            "Control the spaceship with your mouse\nClick and hold to thrust\nClick on colored areas to focus camera",
             {
                 fontFamily: 'Arial',
                 fontSize: 16,
@@ -39,7 +39,7 @@ SpaceGame.Game = {
             }
         );
         instructions.position.set(20, 20);
-        instructions.resolution = 2;
+        instructions.resolution = 2;  // For sharp text rendering
         this.app.stage.addChild(instructions);
     },
     
