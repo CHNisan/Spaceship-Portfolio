@@ -6,7 +6,7 @@ SpaceGame.Entities = {
     stars: null,
     pointsOfInterest: null,
     
-    // Define POI locations in a single place for reuse
+    // Define POI data in a single place for reuse
     poiLocations: [
         { 
             x: 1000, 
@@ -16,7 +16,8 @@ SpaceGame.Entities = {
             color: 0x00FFFF,
             title: "Research Station Alpha",
             description: "A cutting-edge research facility studying the unusual stellar phenomena in this sector. Scientists here have made significant discoveries about dark matter.",
-            imageKey: "station-alpha"
+            imageKey: "station-alpha",
+            webAddress: "https://www.nasa.gov/missions/"
         },
         { 
             x: -1200, 
@@ -26,7 +27,8 @@ SpaceGame.Entities = {
             color: 0xFFAA00,
             title: "Mining Outpost Beta",
             description: "An asteroid mining facility that extracts rare minerals from the surrounding asteroid field. The outpost supplies resources to nearby colonies.",
-            imageKey: "mining-outpost"
+            imageKey: "mining-outpost",
+            webAddress: "https://www.space.com/topics/asteroids"
         },
         { 
             x: 500, 
@@ -36,7 +38,8 @@ SpaceGame.Entities = {
             color: 0x00FF00,
             title: "Communications Relay",
             description: "This relay station maintains the subspace communication network in this quadrant. All transmissions between systems pass through here.",
-            imageKey: "comm-relay"
+            imageKey: "comm-relay",
+            webAddress: "https://www.esa.int/Enabling_Support/Operations/Estrack_tracking_stations"
         },
         { 
             x: -800, 
@@ -46,7 +49,8 @@ SpaceGame.Entities = {
             color: 0xFF00FF,
             title: "Trading Hub Gamma",
             description: "A bustling marketplace where traders from all over the sector come to exchange goods. Known for its exotic wares and reasonable prices.",
-            imageKey: "trading-hub"
+            imageKey: "trading-hub",
+            webAddress: "https://www.spacetraders.io/"
         }
     ],
     
@@ -313,19 +317,26 @@ SpaceGame.Entities = {
             });
             
             // Add click handler for camera focus
-            poiGraphic.on('pointerdown', (event) => {
-                // Set camera focus to this POI
-                SpaceGame.Camera.setFocus(poiGraphic);
-
+            poiGraphic.on('pointerdown', () => {
                 // Check if this POI is already focused
                 const isAlreadyFocused = SpaceGame.Camera.focusObject === poiGraphic;
                 
-                // Only show popup if this isn't already focused with an active popup
-                if (!isAlreadyFocused || !this.activePopup) {
-                    const poiIndex = poiGraphic.poiId - 1;
-                    const poiData = this.poiLocations[poiIndex];
+                // Get the POI data
+                const poiIndex = poiGraphic.poiId - 1;
+                const poiData = this.poiLocations[poiIndex];
+                
+                if (isAlreadyFocused) {
+                    // If already focused, open the web address in a new tab
+                    if (poiData.webAddress) {
+                        window.open(poiData.webAddress, '_blank');
+                    }
+                } else {
+                    // If not already focused, set camera focus to this POI
+                    SpaceGame.Camera.setFocus(poiGraphic);
+                    
+                    // Show popup
                     this.showPopupForPOI(poiData);
-                }
+    }
             });
         });
     },
