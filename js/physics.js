@@ -48,9 +48,15 @@ SpaceGame.Physics = {
         this.World.add(this.world, this.walls);
     },
     
+
+
+
     update(deltaTime) {
         this.Engine.update(this.engine, deltaTime);
     },
+
+
+    
     
     keepEntityInBounds(entity) {
         const pos = entity.physicsBody.position;

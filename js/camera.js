@@ -2,17 +2,41 @@
 SpaceGame.Camera = {
     container: null,
     target: { x: 0, y: 0 },
+    focusObject: null, // Will track which object (POI or null) the camera is focusing on
     damping: 0.1, // Single universal damping value (0-1, lower = smoother, higher = tighter)
     
     init(container, app) {
         this.container = container;
         this.app = app;
     },
+
+
+
+
+    setFocus(object) {
+        // Set the camera to focus on a specific object (POI)
+        this.focusObject = object;
+    },
+    
+    resetFocus() {
+        // Reset camera to follow the ship
+        this.focusObject = null;
+    },
     
     follow(target) {
-        this.target.x = target.position.x;
-        this.target.y = target.position.y;
+        // If we have a specific focus object, use that instead of the ship
+        if (this.focusObject) {
+            this.target.x = this.focusObject.position.x;
+            this.target.y = this.focusObject.position.y;
+        } else {
+            // Otherwise follow the ship (default behavior)
+            this.target.x = target.position.x;
+            this.target.y = target.position.y;
+        }
     },
+
+
+
     
     update(deltaTime) {
         // Apply smooth camera movement using linear interpolation
@@ -23,10 +47,12 @@ SpaceGame.Camera = {
         this.container.position.x = this.app.screen.width / 2;
         this.container.position.y = this.app.screen.height / 2;
     },
+
+
+
     
     // Helper function for smooth interpolation
     lerp(start, end, t) {
         return start * (1 - t) + end * t;
     }
 };
-// Test commit

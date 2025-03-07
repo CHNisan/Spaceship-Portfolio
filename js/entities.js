@@ -29,6 +29,9 @@ SpaceGame.Entities = {
         this.createBoundaryVisual();
         this.createPointsOfInterest();
     },
+
+
+
     
     createStars() {
         this.stars = new PIXI.Container();
@@ -248,6 +251,9 @@ SpaceGame.Entities = {
         });
     },
     
+
+
+
     update() {
         // Update spaceship graphics from physics
         this.ship.position.set(
@@ -275,6 +281,9 @@ SpaceGame.Entities = {
         }
     },
     
+
+
+
     // Function to handle POI animations
     animatePointOfInterest(poi, deltaTime) {
         if (poi.isHovered) {
@@ -291,6 +300,9 @@ SpaceGame.Entities = {
         // return poi.scale.x !== (poi.isHovered ? this.poiAnimationParams.maxScale : this.poiAnimationParams.minScale);
     },
     
+
+
+
     setEngineGlow(isVisible) {
         this.ship.engineGlow.visible = isVisible;
     }
