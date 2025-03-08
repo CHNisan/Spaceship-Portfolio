@@ -1,3 +1,4 @@
+// Game entities (player ship, asteroids, stars, points of interest)
 import config from './config/index.js';
 
 // Import the specific configs we need
@@ -15,6 +16,8 @@ const Entities = {
     asteroids: null,
     stars: null,
     pointsOfInterest: null,
+    physics: null,
+    camera: null,
     
     // Use POI data from config
     poiData: poiConfig.ITEMS,
@@ -22,8 +25,11 @@ const Entities = {
     // Points of interest animation parameters from config
     poiAnimationParams: poiConfig.ANIMATION,
     
-    init(container) {
+    init(container, physics, camera) {
         this.container = container;
+        this.physics = physics;
+        this.camera = camera;
+        
         this.createStars();
         this.createAsteroids();
         this.createSpaceship();
@@ -31,6 +37,11 @@ const Entities = {
         this.createBackgroundClickArea();
         this.createPointsOfInterest();
         this.createPopupSystem();
+    },
+    
+    // Set camera reference if not provided during init
+    setCamera(camera) {
+        this.camera = camera;
     },
     
     createStars() {
@@ -131,14 +142,14 @@ const Entities = {
             
             // Add physics body for asteroid
             const physicsPoints = points.map(p => ({ x: p.x, y: p.y }));
-            const asteroidBody = SpaceGame.Physics.Bodies.fromVertices(x, y, [physicsPoints], {
+            const asteroidBody = this.physics.Bodies.fromVertices(x, y, [physicsPoints], {
                 restitution: entitiesConfig.ASTEROIDS.PHYSICS.RESTITUTION,
                 friction: entitiesConfig.ASTEROIDS.PHYSICS.FRICTION,
                 density: entitiesConfig.ASTEROIDS.PHYSICS.DENSITY
             });
             
             if (asteroidBody) {
-                SpaceGame.Physics.World.add(SpaceGame.Physics.world, asteroidBody);
+                this.physics.World.add(this.physics.world, asteroidBody);
                 
                 // Link graphic to physics body (for our own tracking)
                 asteroid.physicsBody = asteroidBody;
@@ -172,7 +183,7 @@ const Entities = {
         engineGlow.visible = false;
         
         // Create physics body for ship using config properties
-        const shipBody = SpaceGame.Physics.Bodies.polygon(
+        const shipBody = this.physics.Bodies.polygon(
             shipConfig.SPAWN.X, 
             shipConfig.SPAWN.Y, 
             3, 15, {
@@ -183,10 +194,15 @@ const Entities = {
             }
         );
         
-        SpaceGame.Physics.World.add(SpaceGame.Physics.world, shipBody);
+        this.physics.World.add(this.physics.world, shipBody);
         
         // Link graphic to physics body (for our own tracking)
         this.ship.physicsBody = shipBody;
+        
+        // Add engine glow setter method to ship
+        this.ship.setEngineGlow = (isVisible) => {
+            this.setEngineGlow(isVisible);
+        };
     },
     
     createBoundaryVisual() {
@@ -216,8 +232,10 @@ const Entities = {
         // Make it interactive
         bgClickArea.eventMode = 'static';
         bgClickArea.on('pointerdown', () => {
-            // Reset camera to follow the ship
-            SpaceGame.Camera.resetFocus();
+            // Reset camera focus with direct reference
+            if (this.camera) {
+                this.camera.resetFocus();
+            }
             
             this.hidePopup();
         });
@@ -258,7 +276,7 @@ const Entities = {
             this.pointsOfInterest.addChild(poiGraphic);
             
             // Create a static physics body for the POI
-            const poiBody = SpaceGame.Physics.Bodies.rectangle(
+            const poiBody = this.physics.Bodies.rectangle(
                 poi.x, 
                 poi.y, 
                 poi.width, 
@@ -270,7 +288,7 @@ const Entities = {
             );
             
             // Add to physics world
-            SpaceGame.Physics.World.add(SpaceGame.Physics.world, poiBody);
+            this.physics.World.add(this.physics.world, poiBody);
             
             // Link graphic to physics body
             poiGraphic.physicsBody = poiBody;
@@ -298,7 +316,7 @@ const Entities = {
             // Add click handler for camera focus
             poiGraphic.on('pointerdown', () => {
                 // Check if this POI is already focused
-                const isAlreadyFocused = SpaceGame.Camera.focusObject === poiGraphic;
+                const isAlreadyFocused = this.camera?.focusObject === poiGraphic;
                 
                 // Get the POI data
                 const poiIndex = poiGraphic.poiId - 1;
@@ -311,7 +329,9 @@ const Entities = {
                     }
                 } else {
                     // If not already focused, set camera focus to this POI
-                    SpaceGame.Camera.setFocus(poiGraphic);
+                    if (this.camera) {
+                        this.camera.setFocus(poiGraphic);
+                    }
                     
                     // Show popup
                     this.showPopupForPOI(poiData);
@@ -459,28 +479,34 @@ const Entities = {
 
     update() {
         // Update spaceship graphics from physics
-        this.ship.position.set(
-            this.ship.physicsBody.position.x, 
-            this.ship.physicsBody.position.y
-        );
-        this.ship.rotation = this.ship.physicsBody.angle;
+        if (this.ship && this.ship.physicsBody) {
+            this.ship.position.set(
+                this.ship.physicsBody.position.x, 
+                this.ship.physicsBody.position.y
+            );
+            this.ship.rotation = this.ship.physicsBody.angle;
+        }
         
         // Update asteroids graphics from physics
-        for (let i = 0; i < this.asteroids.children.length; i++) {
-            const asteroid = this.asteroids.children[i];
-            if (asteroid.physicsBody) {
-                asteroid.position.set(
-                    asteroid.physicsBody.position.x,
-                    asteroid.physicsBody.position.y
-                );
-                asteroid.rotation = asteroid.physicsBody.angle;
+        if (this.asteroids) {
+            for (let i = 0; i < this.asteroids.children.length; i++) {
+                const asteroid = this.asteroids.children[i];
+                if (asteroid.physicsBody) {
+                    asteroid.position.set(
+                        asteroid.physicsBody.position.x,
+                        asteroid.physicsBody.position.y
+                    );
+                    asteroid.rotation = asteroid.physicsBody.angle;
+                }
             }
         }
         
         // Update points of interest hover animations
-        for (let i = 0; i < this.pointsOfInterest.children.length; i++) {
-            const poi = this.pointsOfInterest.children[i];
-            this.animatePointOfInterest(poi);
+        if (this.pointsOfInterest) {
+            for (let i = 0; i < this.pointsOfInterest.children.length; i++) {
+                const poi = this.pointsOfInterest.children[i];
+                this.animatePointOfInterest(poi);
+            }
         }
 
         this.updatePopupAnimations();
@@ -488,7 +514,7 @@ const Entities = {
     
     // Function to handle POI animations
     animatePointOfInterest(poi) {
-        const isActive = poi.isHovered || SpaceGame.Camera.focusObject === poi;
+        const isActive = poi.isHovered || (this.camera && this.camera.focusObject === poi);
 
         if (isActive) {
             // Scale up to maxScale when hovered (with smooth animation)
@@ -542,11 +568,10 @@ const Entities = {
     },
     
     setEngineGlow(isVisible) {
-        this.ship.engineGlow.visible = isVisible;
+        if (this.ship && this.ship.engineGlow) {
+            this.ship.engineGlow.visible = isVisible;
+        }
     }
 };
-
-// For backward compatibility during transition
-window.SpaceGame.Entities = Entities;
 
 export default Entities;

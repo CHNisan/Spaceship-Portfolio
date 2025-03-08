@@ -13,9 +13,6 @@ const Camera = {
         this.app = app;
     },
 
-
-
-
     setFocus(object) {
         // Set the camera to focus on a specific object (POI)
         this.focusObject = object;
@@ -37,9 +34,6 @@ const Camera = {
             this.target.y = target.position.y;
         }
     },
-
-
-
     
     update(deltaTime) {
         // Apply smooth camera movement using linear interpolation
@@ -50,9 +44,6 @@ const Camera = {
         this.container.position.x = this.app.screen.width / 2;
         this.container.position.y = this.app.screen.height / 2;
     },
-
-
-
     
     // Helper function for smooth interpolation
     lerp(start, end, t) {
@@ -60,8 +51,4 @@ const Camera = {
     }
 };
 
-// For backward compatibility during transition
-window.SpaceGame.Camera = Camera;
-
-// Export for ES modules
 export default Camera;

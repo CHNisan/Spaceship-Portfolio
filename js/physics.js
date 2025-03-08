@@ -78,8 +78,4 @@ const Physics = {
     }
 };
 
-// For backward compatibility during transition
-window.SpaceGame.Physics = Physics;
-
-// Export for ES modules
 export default Physics;

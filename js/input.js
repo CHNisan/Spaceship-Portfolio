@@ -11,14 +11,21 @@ const Input = {
     isThrusting: false,
     targetRotation: 0,
     
+    // References to other systems
+    camera: null,
+    physics: null,
+    entities: null,
+    
     // Get thrust parameters from config
     forceMult: shipConfig.THRUST.FORCE_MULTIPLIER,
     angularVelocityMult: shipConfig.THRUST.ANGULAR_VELOCITY_MULT,
     
-    init(app, gameContainer, ship) {
+    init(app, gameContainer, ship, camera, physics) {
         this.app = app;
         this.gameContainer = gameContainer;
         this.ship = ship;
+        this.camera = camera;
+        this.physics = physics;
         
         this.setupEventListeners();
     },
@@ -35,21 +42,28 @@ const Input = {
         
         this.app.stage.on('pointerdown', () => {
             // Only apply thrust if we're following the ship (not a POI)
-            if (!SpaceGame.Camera.focusObject) {
+            if (!this.camera.focusObject) {
                 this.isThrusting = true;
-                SpaceGame.Entities.setEngineGlow(true);
+                // The setEngineGlow method will be passed via the Entities reference
+                if (this.ship && this.ship.setEngineGlow) {
+                    this.ship.setEngineGlow(true);
+                }
             }
         });
         
         this.app.stage.on('pointerup', () => {
             this.isThrusting = false;
-            SpaceGame.Entities.setEngineGlow(false);
+            if (this.ship && this.ship.setEngineGlow) {
+                this.ship.setEngineGlow(false);
+            }
         });
         
         // Handle pointer leaving the canvas
         this.app.view.addEventListener('mouseleave', () => {
             this.isThrusting = false;
-            SpaceGame.Entities.setEngineGlow(false);
+            if (this.ship && this.ship.setEngineGlow) {
+                this.ship.setEngineGlow(false);
+            }
         });
     },
     
@@ -82,20 +96,24 @@ const Input = {
         while (normalizedDiff < -Math.PI) normalizedDiff += Math.PI * 2;
         
         // Apply torque to rotate ship
-        SpaceGame.Physics.Body.setAngularVelocity(shipBody, normalizedDiff * this.angularVelocityMult);
+        this.physics.Body.setAngularVelocity(shipBody, normalizedDiff * this.angularVelocityMult);
         
         // Apply thrust if mouse is down
         if (this.isThrusting) {
-            const force = SpaceGame.Physics.Vector.create(
+            const force = this.physics.Vector.create(
                 Math.cos(shipBody.angle) * this.forceMult,
                 Math.sin(shipBody.angle) * this.forceMult
             );
-            SpaceGame.Physics.Body.applyForce(shipBody, shipBody.position, force);
+            this.physics.Body.applyForce(shipBody, shipBody.position, force);
         }
+    },
+    
+    // Setter method to connect to the entities module after initialization
+    setEntities(entities) {
+        this.entities = entities;
+        // Now we can access the ship via entities
+        this.ship = this.entities.ship;
     }
 };
-
-// For backward compatibility during transition
-window.SpaceGame.Input = Input;
 
 export default Input;

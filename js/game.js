@@ -11,6 +11,7 @@ const { world: worldConfig, ui: uiConfig } = config;
 const Game = {
     app: null,
     gameContainer: null,
+    isPaused: false,
     
     init() {
         // Initialize PIXI Application with background color from config
@@ -24,11 +25,11 @@ const Game = {
         this.gameContainer = new PIXI.Container();
         this.app.stage.addChild(this.gameContainer);
         
-        // Initialize all systems
+        // Initialize all systems - pass required references
         Physics.init();
-        Entities.init(this.gameContainer);
+        Entities.init(this.gameContainer, Physics);
         Camera.init(this.gameContainer, this.app);
-        Input.init(this.app, this.gameContainer, Entities.ship);
+        Input.init(this.app, this.gameContainer, Entities.ship, Camera, Physics);
         
         // Show instructions
         this.createInstructions();
@@ -63,6 +64,9 @@ const Game = {
     
     setupGameLoop() {
         this.app.ticker.add(() => {
+            // Skip updates if game is paused
+            if (this.isPaused) return;
+            
             // Update physics
             Physics.update(this.app.ticker.deltaMS);
             
@@ -81,8 +85,5 @@ const Game = {
         });
     }
 };
-
-// For backward compatibility during transition
-window.SpaceGame.Game = Game;
 
 export default Game;
