@@ -1,13 +1,19 @@
-// Input handling system
-SpaceGame.Input = {
+import config from './config/index.js';
+
+// Import just the ship config we need
+const { ship: shipConfig } = config;
+
+const Input = {
     app: null,
     gameContainer: null,
     ship: null,
     mousePosition: { x: 0, y: 0 },
     isThrusting: false,
     targetRotation: 0,
-    forceMult: 0.0007,
-    angularVelocityMult: 0.2,
+    
+    // Get thrust parameters from config
+    forceMult: shipConfig.THRUST.FORCE_MULTIPLIER,
+    angularVelocityMult: shipConfig.THRUST.ANGULAR_VELOCITY_MULT,
     
     init(app, gameContainer, ship) {
         this.app = app;
@@ -47,9 +53,6 @@ SpaceGame.Input = {
         });
     },
     
-
-
-    
     handleMouseMove(event) {
         // Convert screen coordinates to world coordinates
         const bounds = this.app.view.getBoundingClientRect();
@@ -65,10 +68,7 @@ SpaceGame.Input = {
         const dy = this.mousePosition.y - this.ship.physicsBody.position.y;
         this.targetRotation = Math.atan2(dy, dx);
     },
-
     
-    
-
     applyShipControls() {
         const shipBody = this.ship.physicsBody;
         
@@ -94,3 +94,8 @@ SpaceGame.Input = {
         }
     }
 };
+
+// For backward compatibility during transition
+window.SpaceGame.Input = Input;
+
+export default Input;

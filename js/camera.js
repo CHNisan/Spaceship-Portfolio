@@ -1,9 +1,12 @@
-// Camera control system
-SpaceGame.Camera = {
+import config from './config/index.js';
+
+const { camera: cameraConfig } = config;
+
+const Camera = {
     container: null,
     target: { x: 0, y: 0 },
-    focusObject: null, // Will track which object (POI or null) the camera is focusing on
-    damping: 0.1, // Single universal damping value (0-1, lower = smoother, higher = tighter)
+    focusObject: null,
+    damping: cameraConfig.FOLLOW.DAMPING,
     
     init(container, app) {
         this.container = container;
@@ -56,3 +59,9 @@ SpaceGame.Camera = {
         return start * (1 - t) + end * t;
     }
 };
+
+// For backward compatibility during transition
+window.SpaceGame.Camera = Camera;
+
+// Export for ES modules
+export default Camera;

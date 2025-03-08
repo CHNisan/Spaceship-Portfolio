@@ -1,12 +1,21 @@
 // Main game class
-SpaceGame.Game = {
+import config from './config/index.js';
+import Physics from './physics.js';
+import Entities from './entities.js';
+import Camera from './camera.js';
+import Input from './input.js';
+
+// Import the configs we need
+const { world: worldConfig, ui: uiConfig } = config;
+
+const Game = {
     app: null,
     gameContainer: null,
     
     init() {
-        // Initialize PIXI Application
+        // Initialize PIXI Application with background color from config
         this.app = new PIXI.Application({
-            background: '#000033',
+            background: worldConfig.BACKGROUND.COLOR,
             resizeTo: window,
         });
         document.body.appendChild(this.app.view);
@@ -16,10 +25,10 @@ SpaceGame.Game = {
         this.app.stage.addChild(this.gameContainer);
         
         // Initialize all systems
-        SpaceGame.Physics.init();
-        SpaceGame.Entities.init(this.gameContainer);
-        SpaceGame.Camera.init(this.gameContainer, this.app);
-        SpaceGame.Input.init(this.app, this.gameContainer, SpaceGame.Entities.ship);
+        Physics.init();
+        Entities.init(this.gameContainer);
+        Camera.init(this.gameContainer, this.app);
+        Input.init(this.app, this.gameContainer, Entities.ship);
         
         // Show instructions
         this.createInstructions();
@@ -29,37 +38,51 @@ SpaceGame.Game = {
     },
     
     createInstructions() {
+        // Create instructions text using config settings
         const instructions = new PIXI.Text(
             "Control the spaceship with your mouse\nClick and hold to thrust\nClick on colored areas to focus camera",
             {
-                fontFamily: 'Arial',
-                fontSize: 16,
-                fill: 0xffffff,
+                fontFamily: uiConfig.TEXT.INSTRUCTIONS.FONT_FAMILY,
+                fontSize: uiConfig.TEXT.INSTRUCTIONS.FONT_SIZE,
+                fill: uiConfig.TEXT.INSTRUCTIONS.COLOR,
                 align: 'center'
             }
         );
-        instructions.position.set(20, 20);
-        instructions.resolution = 2;  // For sharp text rendering
+        
+        // Position using config values
+        instructions.position.set(
+            uiConfig.TEXT.INSTRUCTIONS.POSITION.X, 
+            uiConfig.TEXT.INSTRUCTIONS.POSITION.Y
+        );
+        
+        // Set resolution for sharp text
+        instructions.resolution = 2;
+        
         this.app.stage.addChild(instructions);
     },
     
     setupGameLoop() {
         this.app.ticker.add(() => {
             // Update physics
-            SpaceGame.Physics.update(this.app.ticker.deltaMS);
+            Physics.update(this.app.ticker.deltaMS);
             
             // Apply ship controls
-            SpaceGame.Input.applyShipControls();
+            Input.applyShipControls();
             
             // Update all entity positions
-            SpaceGame.Entities.update();
+            Entities.update();
             
             // Update camera position
-            SpaceGame.Camera.follow(SpaceGame.Entities.ship);
-            SpaceGame.Camera.update(this.app.ticker.deltaMS);
+            Camera.follow(Entities.ship);
+            Camera.update(this.app.ticker.deltaMS);
             
             // Keep ship in bounds
-            SpaceGame.Physics.keepEntityInBounds(SpaceGame.Entities.ship);
+            Physics.keepEntityInBounds(Entities.ship);
         });
     }
 };
+
+// For backward compatibility during transition
+window.SpaceGame.Game = Game;
+
+export default Game;

@@ -1,5 +1,10 @@
 // Physics setup and configuration
-SpaceGame.Physics = {
+import config from './config/index.js';
+
+// Get physics and world config
+const { physics: physicsConfig, world: worldConfig } = config;
+
+const Physics = {
     // Matter.js modules
     Engine: Matter.Engine,
     World: Matter.World,
@@ -12,22 +17,16 @@ SpaceGame.Physics = {
     world: null,
     
     // Game world boundaries
-    WORLD_SIZE: 5000,
-    WORLD_BOUNDS: null,
+    WORLD_SIZE: worldConfig.SIZE,
+    WORLD_BOUNDS: worldConfig.BOUNDS,
     walls: [],
     
     init() {
-        // Create engine with no gravity
+        // Create engine with config gravity
         this.engine = this.Engine.create({
-            gravity: { x: 0, y: 0 }
+            gravity: physicsConfig.ENGINE.GRAVITY
         });
         this.world = this.engine.world;
-        
-        // Set world boundaries
-        this.WORLD_BOUNDS = {
-            min: { x: -this.WORLD_SIZE / 2, y: -this.WORLD_SIZE / 2 },
-            max: { x: this.WORLD_SIZE / 2, y: this.WORLD_SIZE / 2 }
-        };
         
         // Create boundary walls (physics only)
         this.createWalls();
@@ -35,47 +34,52 @@ SpaceGame.Physics = {
     
     createWalls() {
         const wallOptions = { 
-            isStatic: true
+            isStatic: physicsConfig.WALLS.IS_STATIC,
+            restitution: physicsConfig.WALLS.RESTITUTION
         };
         
         this.walls = [
-            this.Bodies.rectangle(0, -this.WORLD_SIZE / 2, this.WORLD_SIZE, 50, wallOptions), // Top
-            this.Bodies.rectangle(0, this.WORLD_SIZE / 2, this.WORLD_SIZE, 50, wallOptions),  // Bottom
-            this.Bodies.rectangle(-this.WORLD_SIZE / 2, 0, 50, this.WORLD_SIZE, wallOptions), // Left
-            this.Bodies.rectangle(this.WORLD_SIZE / 2, 0, 50, this.WORLD_SIZE, wallOptions)   // Right
+            this.Bodies.rectangle(0, this.WORLD_BOUNDS.MIN_Y, this.WORLD_SIZE, 
+                                 physicsConfig.WALLS.THICKNESS, wallOptions), // Top
+            this.Bodies.rectangle(0, this.WORLD_BOUNDS.MAX_Y, this.WORLD_SIZE, 
+                                 physicsConfig.WALLS.THICKNESS, wallOptions),  // Bottom
+            this.Bodies.rectangle(this.WORLD_BOUNDS.MIN_X, 0, physicsConfig.WALLS.THICKNESS, 
+                                 this.WORLD_SIZE, wallOptions), // Left
+            this.Bodies.rectangle(this.WORLD_BOUNDS.MAX_X, 0, physicsConfig.WALLS.THICKNESS, 
+                                 this.WORLD_SIZE, wallOptions)   // Right
         ];
         
         this.World.add(this.world, this.walls);
     },
     
-
-
-
     update(deltaTime) {
         this.Engine.update(this.engine, deltaTime);
     },
-
-
-    
     
     keepEntityInBounds(entity) {
         const pos = entity.physicsBody.position;
         
-        if (pos.x < this.WORLD_BOUNDS.min.x) {
-            this.Body.setPosition(entity.physicsBody, { x: this.WORLD_BOUNDS.min.x, y: pos.y });
+        if (pos.x < this.WORLD_BOUNDS.MIN_X) {
+            this.Body.setPosition(entity.physicsBody, { x: this.WORLD_BOUNDS.MIN_X, y: pos.y });
             this.Body.setVelocity(entity.physicsBody, { x: 0, y: entity.physicsBody.velocity.y });
         }
-        if (pos.x > this.WORLD_BOUNDS.max.x) {
-            this.Body.setPosition(entity.physicsBody, { x: this.WORLD_BOUNDS.max.x, y: pos.y });
+        if (pos.x > this.WORLD_BOUNDS.MAX_X) {
+            this.Body.setPosition(entity.physicsBody, { x: this.WORLD_BOUNDS.MAX_X, y: pos.y });
             this.Body.setVelocity(entity.physicsBody, { x: 0, y: entity.physicsBody.velocity.y });
         }
-        if (pos.y < this.WORLD_BOUNDS.min.y) {
-            this.Body.setPosition(entity.physicsBody, { x: pos.x, y: this.WORLD_BOUNDS.min.y });
+        if (pos.y < this.WORLD_BOUNDS.MIN_Y) {
+            this.Body.setPosition(entity.physicsBody, { x: pos.x, y: this.WORLD_BOUNDS.MIN_Y });
             this.Body.setVelocity(entity.physicsBody, { x: entity.physicsBody.velocity.x, y: 0 });
         }
-        if (pos.y > this.WORLD_BOUNDS.max.y) {
-            this.Body.setPosition(entity.physicsBody, { x: pos.x, y: this.WORLD_BOUNDS.max.y });
+        if (pos.y > this.WORLD_BOUNDS.MAX_Y) {
+            this.Body.setPosition(entity.physicsBody, { x: pos.x, y: this.WORLD_BOUNDS.MAX_Y });
             this.Body.setVelocity(entity.physicsBody, { x: entity.physicsBody.velocity.x, y: 0 });
         }
     }
 };
+
+// For backward compatibility during transition
+window.SpaceGame.Physics = Physics;
+
+// Export for ES modules
+export default Physics;
