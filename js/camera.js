@@ -2,26 +2,29 @@ import config from './config/index.js';
 
 const { camera: cameraConfig } = config;
 
-const Camera = {
-    container: null,
-    target: { x: 0, y: 0 },
-    focusObject: null,
-    damping: cameraConfig.FOLLOW.DAMPING,
+export default class Camera {
+    constructor() {
+        this.container = null;
+        this.app = null;
+        this.target = { x: 0, y: 0 };
+        this.focusObject = null;
+        this.damping = cameraConfig.FOLLOW.DAMPING;
+    }
     
     init(container, app) {
         this.container = container;
         this.app = app;
-    },
+    }
 
     setFocus(object) {
         // Set the camera to focus on a specific object (POI)
         this.focusObject = object;
-    },
+    }
     
     resetFocus() {
         // Reset camera to follow the ship
         this.focusObject = null;
-    },
+    }
     
     follow(target) {
         // If we have a specific focus object, use that instead of the ship
@@ -33,7 +36,7 @@ const Camera = {
             this.target.x = target.position.x;
             this.target.y = target.position.y;
         }
-    },
+    }
     
     update(deltaTime) {
         // Apply smooth camera movement using linear interpolation
@@ -43,12 +46,10 @@ const Camera = {
         // Center the container in the screen
         this.container.position.x = this.app.screen.width / 2;
         this.container.position.y = this.app.screen.height / 2;
-    },
+    }
     
     // Helper function for smooth interpolation
     lerp(start, end, t) {
         return start * (1 - t) + end * t;
     }
-};
-
-export default Camera;
+}

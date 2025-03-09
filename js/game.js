@@ -1,17 +1,24 @@
 // Main game class
 import config from './config/index.js';
-import Physics from './physics.js';
+import PhysicsEngine from './physics.js';
 import Entities from './entity-manager.js';
 import Camera from './camera.js';
-import Input from './input.js';
+import InputManager from './input.js';
 
 // Import the configs we need
 const { world: worldConfig, ui: uiConfig } = config;
 
-const Game = {
-    app: null,
-    gameContainer: null,
-    isPaused: false,
+export default class Game {
+    constructor() {
+        this.app = null;
+        this.gameContainer = null;
+        this.isPaused = false;
+        
+        // Create instances of game systems
+        this.physics = new PhysicsEngine();
+        this.camera = new Camera();
+        this.input = new InputManager();
+    }
     
     init() {
         // Initialize PIXI Application with background color from config
@@ -27,17 +34,17 @@ const Game = {
         this.app.stage.addChild(this.gameContainer);
         
         // Initialize all systems - pass required references
-        Physics.init();
-        Entities.init(this.gameContainer, Physics, Camera);
-        Camera.init(this.gameContainer, this.app);
-        Input.init(this.app, this.gameContainer, Entities.ship, Camera, Physics);
+        this.physics.init();
+        Entities.init(this.gameContainer, this.physics, this.camera);
+        this.camera.init(this.gameContainer, this.app);
+        this.input.init(this.app, this.gameContainer, Entities.ship, this.camera, this.physics);
         
         // Show instructions
         this.createInstructions();
         
         // Start the game loop
         this.setupGameLoop();
-    },
+    }
     
     createInstructions() {
         // Create instructions text using config settings
@@ -61,7 +68,7 @@ const Game = {
         instructions.resolution = 2;
         
         this.app.stage.addChild(instructions);
-    },
+    }
     
     setupGameLoop() {
         this.app.ticker.add(() => {
@@ -69,22 +76,20 @@ const Game = {
             if (this.isPaused) return;
             
             // Update physics
-            Physics.update(this.app.ticker.deltaMS);
+            this.physics.update(this.app.ticker.deltaMS);
             
             // Apply ship controls
-            Input.applyShipControls();
+            this.input.applyShipControls();
             
             // Update all entity positions
             Entities.update();
             
             // Update camera position
-            Camera.follow(Entities.ship);
-            Camera.update(this.app.ticker.deltaMS);
+            this.camera.follow(Entities.ship);
+            this.camera.update(this.app.ticker.deltaMS);
             
             // Keep ship in bounds
-            Physics.keepEntityInBounds(Entities.ship);
+            this.physics.keepEntityInBounds(Entities.ship);
         });
     }
-};
-
-export default Game;
+}

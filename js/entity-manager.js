@@ -41,7 +41,6 @@ class EntityManager {
         this.container = container;
         this.physics = physics;
         this.camera = camera;
-        console.log(camera);
 
         // Create before the entity containers so it doesn't interfere with interactions 
         this.createBackgroundClickArea();
@@ -177,7 +176,6 @@ class EntityManager {
             // Reset camera focus
             if (this.camera) {
                 this.camera.resetFocus();
-                console.log("click bg");
             }
             
             // Hide any active popup

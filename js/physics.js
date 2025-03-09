@@ -4,22 +4,24 @@ import config from './config/index.js';
 // Get physics and world config
 const { physics: physicsConfig, world: worldConfig } = config;
 
-const Physics = {
-    // Matter.js modules
-    Engine: Matter.Engine,
-    World: Matter.World,
-    Bodies: Matter.Bodies,
-    Body: Matter.Body,
-    Vector: Matter.Vector,
-    
-    // Physics properties
-    engine: null,
-    world: null,
-    
-    // Game world boundaries
-    WORLD_SIZE: worldConfig.SIZE,
-    WORLD_BOUNDS: worldConfig.BOUNDS,
-    walls: [],
+export default class PhysicsEngine {
+    constructor() {
+        // Matter.js modules
+        this.Engine = Matter.Engine;
+        this.World = Matter.World;
+        this.Bodies = Matter.Bodies;
+        this.Body = Matter.Body;
+        this.Vector = Matter.Vector;
+        
+        // Physics properties
+        this.engine = null;
+        this.world = null;
+        
+        // Game world boundaries
+        this.WORLD_SIZE = worldConfig.SIZE;
+        this.WORLD_BOUNDS = worldConfig.BOUNDS;
+        this.walls = [];
+    }
     
     init() {
         // Create engine with config gravity
@@ -30,7 +32,7 @@ const Physics = {
         
         // Create boundary walls (physics only)
         this.createWalls();
-    },
+    }
     
     createWalls() {
         const wallOptions = { 
@@ -50,13 +52,15 @@ const Physics = {
         ];
         
         this.World.add(this.world, this.walls);
-    },
+    }
     
     update(deltaTime) {
         this.Engine.update(this.engine, deltaTime);
-    },
+    }
     
     keepEntityInBounds(entity) {
+        if (!entity || !entity.physicsBody) return;
+        
         const pos = entity.physicsBody.position;
         
         if (pos.x < this.WORLD_BOUNDS.MIN_X) {
@@ -76,6 +80,4 @@ const Physics = {
             this.Body.setVelocity(entity.physicsBody, { x: entity.physicsBody.velocity.x, y: 0 });
         }
     }
-};
-
-export default Physics;
+}

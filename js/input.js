@@ -3,22 +3,24 @@ import config from './config/index.js';
 // Import just the ship config we need
 const { ship: shipConfig } = config;
 
-const Input = {
-    app: null,
-    gameContainer: null,
-    ship: null,
-    mousePosition: { x: 0, y: 0 },
-    isThrusting: false,
-    targetRotation: 0,
-    
-    // References to other systems
-    camera: null,
-    physics: null,
-    entities: null,
-    
-    // Get thrust parameters from config
-    forceMult: shipConfig.THRUST.FORCE_MULTIPLIER,
-    angularVelocityMult: shipConfig.THRUST.ANGULAR_VELOCITY_MULT,
+export default class InputManager {
+    constructor() {
+        this.app = null;
+        this.gameContainer = null;
+        this.ship = null;
+        this.mousePosition = { x: 0, y: 0 };
+        this.isThrusting = false;
+        this.targetRotation = 0;
+        
+        // References to other systems
+        this.camera = null;
+        this.physics = null;
+        this.entities = null;
+        
+        // Get thrust parameters from config
+        this.forceMult = shipConfig.THRUST.FORCE_MULTIPLIER;
+        this.angularVelocityMult = shipConfig.THRUST.ANGULAR_VELOCITY_MULT;
+    }
     
     init(app, gameContainer, ship, camera, physics) {
         this.app = app;
@@ -28,7 +30,7 @@ const Input = {
         this.physics = physics;
         
         this.setupEventListeners();
-    },
+    }
     
     setupEventListeners() {
         // Mouse move handler (use DOM event for mouse position tracking)
@@ -65,7 +67,7 @@ const Input = {
                 this.ship.setEngineGlow(false);
             }
         });
-    },
+    }
     
     handleMouseMove(event) {
         // Convert screen coordinates to world coordinates
@@ -78,12 +80,16 @@ const Input = {
         this.mousePosition.y = screenY + this.gameContainer.pivot.y - this.app.screen.height / 2;
         
         // Calculate angle between ship and mouse
-        const dx = this.mousePosition.x - this.ship.physicsBody.position.x;
-        const dy = this.mousePosition.y - this.ship.physicsBody.position.y;
-        this.targetRotation = Math.atan2(dy, dx);
-    },
+        if (this.ship && this.ship.physicsBody) {
+            const dx = this.mousePosition.x - this.ship.physicsBody.position.x;
+            const dy = this.mousePosition.y - this.ship.physicsBody.position.y;
+            this.targetRotation = Math.atan2(dy, dx);
+        }
+    }
     
     applyShipControls() {
+        if (!this.ship || !this.ship.physicsBody) return;
+        
         const shipBody = this.ship.physicsBody;
         
         // Rotate ship towards mouse
@@ -106,7 +112,7 @@ const Input = {
             );
             this.physics.Body.applyForce(shipBody, shipBody.position, force);
         }
-    },
+    }
     
     // Setter method to connect to the entities module after initialization
     setEntities(entities) {
@@ -114,6 +120,4 @@ const Input = {
         // Now we can access the ship via entities
         this.ship = this.entities.ship;
     }
-};
-
-export default Input;
+}

@@ -87,7 +87,6 @@ export default class PointOfInterest extends PhysicsEntity {
                 // If not focused, set camera focus
                 if (this.camera) {
                     this.camera.setFocus(this.graphic);
-                    console.log("focus");
                 }
                 
                 // Show popup
