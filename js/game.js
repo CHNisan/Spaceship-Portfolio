@@ -1,7 +1,7 @@
 // Main game class
 import config from './config/index.js';
 import Physics from './physics.js';
-import Entities from './entities.js';
+import Entities from './entity-manager.js';
 import Camera from './camera.js';
 import Input from './input.js';
 
@@ -19,6 +19,7 @@ const Game = {
             background: worldConfig.BACKGROUND.COLOR,
             resizeTo: window,
         });
+        
         document.body.appendChild(this.app.view);
         
         // Create game container for camera movement
@@ -27,7 +28,7 @@ const Game = {
         
         // Initialize all systems - pass required references
         Physics.init();
-        Entities.init(this.gameContainer, Physics);
+        Entities.init(this.gameContainer, Physics, Camera);
         Camera.init(this.gameContainer, this.app);
         Input.init(this.app, this.gameContainer, Entities.ship, Camera, Physics);
         
