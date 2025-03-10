@@ -1,5 +1,5 @@
 // Physics setup and configuration
-import config from './config/index.js';
+import config from '../config/index.js';
 
 // Get physics and world config
 const { physics: physicsConfig, world: worldConfig } = config;

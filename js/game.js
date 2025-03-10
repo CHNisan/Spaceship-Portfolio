@@ -1,9 +1,9 @@
 // Main game class
 import config from './config/index.js';
-import PhysicsEngine from './physics.js';
+import PhysicsEngine from './core/physics.js';  
 import Entities from './entity-manager.js';
-import Camera from './camera.js';
-import InputManager from './input.js';
+import Camera from './core/camera.js';          
+import InputManager from './core/input.js';     
 
 // Import the configs we need
 const { world: worldConfig, ui: uiConfig } = config;

@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // PIXI.js devtools
     window.__PIXI_DEVTOOLS__ = {
-      app: Game.app,
-      renderer: Game.myRenderer,
-      stage: Game.myStage,
+      app: game.app,
+      renderer: game.myRenderer,
+      stage: game.myStage,
     };
 });

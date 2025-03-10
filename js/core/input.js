@@ -1,4 +1,4 @@
-import config from './config/index.js';
+import config from '../config/index.js';
 
 // Import just the ship config we need
 const { ship: shipConfig } = config;
