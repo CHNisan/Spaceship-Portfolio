@@ -75,9 +75,10 @@ export default class InputManager {
         const screenX = event.clientX - bounds.left;
         const screenY = event.clientY - bounds.top;
         
-        // Adjust for camera position
-        this.mousePosition.x = screenX + this.gameContainer.pivot.x - this.app.screen.width / 2;
-        this.mousePosition.y = screenY + this.gameContainer.pivot.y - this.app.screen.height / 2;
+        // Adjust for camera position and zoom level
+        const cameraZoom = this.camera.currentZoom;
+        this.mousePosition.x = (screenX / cameraZoom) + this.gameContainer.pivot.x - (this.app.screen.width / cameraZoom / 2);
+        this.mousePosition.y = (screenY / cameraZoom) + this.gameContainer.pivot.y - (this.app.screen.height / cameraZoom / 2);
         
         // Calculate angle between ship and mouse
         if (this.ship && this.ship.physicsBody) {
