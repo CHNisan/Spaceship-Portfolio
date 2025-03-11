@@ -40,7 +40,7 @@ export default class PointOfInterest extends PhysicsEntity {
         this.graphic.addChild(label);
         
         // Set interactive properties
-        this.graphic.eventMode = 'static';
+        this.graphic.eventMode = 'dynamic';
         this.graphic.cursor = 'pointer';
         
         // Store properties on the graphic for camera focus
@@ -67,32 +67,26 @@ export default class PointOfInterest extends PhysicsEntity {
     setupEventHandlers() {
         this.graphic.on('pointerover', () => {
             this.isHovered = true;
+            
+            // Show popup on hover
+            if (this.popupManager) {
+                this.popupManager.showPopupForPOI(this.data);
+            }
         });
         
         this.graphic.on('pointerout', () => {
             this.isHovered = false;
+            
+            // Hide popup when no longer hovering
+            if (this.popupManager) {
+                this.popupManager.hidePopup();
+            }
         });
         
         this.graphic.on('pointerdown', () => {
-            
-            // Check if this POI is already focused
-            const isAlreadyFocused = this.camera?.focusObject === this.graphic;
-            
-            if (isAlreadyFocused) {
-                // If already focused, open the web address
-                if (this.data.webAddress) {
-                    window.open(this.data.webAddress, '_blank');
-                }
-            } else {
-                // If not focused, set camera focus
-                if (this.camera) {
-                    this.camera.setFocus(this.graphic);
-                }
-                
-                // Show popup
-                if (this.popupManager) {
-                    this.popupManager.showPopupForPOI(this.data);
-                }
+            // Immediately open the web address on click
+            if (this.data.webAddress) {
+                window.open(this.data.webAddress, '_blank');
             }
         });
     }
@@ -105,10 +99,9 @@ export default class PointOfInterest extends PhysicsEntity {
         super.update(deltaTime);
         
         // Handle hover animation
-        const isActive = this.isHovered || (this.camera && this.camera.focusObject === this.graphic);
         const params = poiConfig.ANIMATION;
         
-        if (isActive) {
+        if (this.isHovered) {
             // Scale up when active
             this.graphic.scale.x = Math.min(
                 this.graphic.scale.x + params.SCALE_SPEED, 

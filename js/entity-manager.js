@@ -41,9 +41,6 @@ class EntityManager {
         this.container = container;
         this.physics = physics;
         this.camera = camera;
-
-        // Create before the entity containers so it doesn't interfere with interactions 
-        this.createBackgroundClickArea();
         
         this.createContainers();
         
@@ -156,36 +153,6 @@ class EntityManager {
             worldConfig.SIZE
         );
         this.container.addChild(boundary);
-    }
-    
-    createBackgroundClickArea() {
-        // Add a background click detector
-        const bgClickArea = new PIXI.Graphics();
-        bgClickArea.beginFill(0xFFFFFF, 0.01); // Almost invisible
-        bgClickArea.drawRect(
-            worldConfig.BOUNDS.MIN_X, 
-            worldConfig.BOUNDS.MIN_Y, 
-            worldConfig.SIZE, 
-            worldConfig.SIZE
-        );
-        bgClickArea.endFill();
-        
-        // Make it interactive
-        bgClickArea.eventMode = 'static';
-        bgClickArea.on('pointerdown', () => {
-            // Reset camera focus
-            if (this.camera) {
-                this.camera.resetFocus();
-            }
-            
-            // Hide any active popup
-            if (this.popupManager) {
-                this.popupManager.hidePopup();
-            }
-        });
-        
-        // Add to container
-        this.container.addChild(bgClickArea);
     }
     
     createPointsOfInterest() {

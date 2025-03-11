@@ -33,6 +33,10 @@ export default class Game {
         this.gameContainer = new PIXI.Container();
         this.app.stage.addChild(this.gameContainer);
         
+        // Set up stage for interaction
+        this.app.stage.eventMode = 'static';
+        this.app.stage.hitArea = this.app.screen;
+        
         // Initialize all systems - pass required references
         this.physics.init();
         Entities.init(this.gameContainer, this.physics, this.camera);
