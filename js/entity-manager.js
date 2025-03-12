@@ -4,7 +4,6 @@ import Ship from './entities/ship.js';
 import Asteroid from './entities/asteroid.js';
 import Star from './entities/star.js';
 import PointOfInterest from './entities/poi.js';
-import PopupManager from './entities/popup-manager.js';
 
 // Import configs
 const { 
@@ -30,9 +29,6 @@ class EntityManager {
         this.asteroidsContainer = null;
         this.poiContainer = null;
         
-        // Other managers
-        this.popupManager = null;
-        
         // POI data from config
         this.poiData = poiConfig.ITEMS;
     }
@@ -50,11 +46,7 @@ class EntityManager {
         this.createSpaceship();
         this.createBoundaryVisual();
         
-        // Initialize popup manager
-        this.popupManager = new PopupManager(this.container);
-        this.popupManager.init(this.poiData);
-        
-        // Create POIs after popup manager is ready
+        // Create POIs
         this.createPointsOfInterest();
     }
     
@@ -162,8 +154,7 @@ class EntityManager {
                 this.poiContainer, 
                 this.physics, 
                 poiData, 
-                index + 1, 
-                this.popupManager,
+                index + 1,
                 this.camera
             );
             poi.init();
@@ -186,11 +177,6 @@ class EntityManager {
         this.pointsOfInterest.forEach(poi => {
             poi.update(deltaTime);
         });
-        
-        // Update popup
-        if (this.popupManager) {
-            this.popupManager.update();
-        }
     }
     
     // Helper method for thrust visuals

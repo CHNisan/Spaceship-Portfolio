@@ -4,14 +4,12 @@ import config from '../config/index.js';
 const { poi: poiConfig } = config;
 
 export default class PointOfInterest extends PhysicsEntity {
-    constructor(container, physics, data, id, popupManager, camera) {
+    constructor(container, physics, data, id, camera) {
         super(container, physics);
         this.data = data;
         this.id = id;
-        this.popupManager = popupManager;
         this.camera = camera;
         this.isHovered = false;
-        this.originalScale = { x: 1, y: 1 };
         this.position.x = data.x;
         this.position.y = data.y;
     }
@@ -67,20 +65,10 @@ export default class PointOfInterest extends PhysicsEntity {
     setupEventHandlers() {
         this.graphic.on('pointerover', () => {
             this.isHovered = true;
-            
-            // Show popup on hover
-            if (this.popupManager) {
-                this.popupManager.showPopupForPOI(this.data);
-            }
         });
         
         this.graphic.on('pointerout', () => {
             this.isHovered = false;
-            
-            // Hide popup when no longer hovering
-            if (this.popupManager) {
-                this.popupManager.hidePopup();
-            }
         });
         
         this.graphic.on('pointerdown', () => {

@@ -24,8 +24,6 @@ const poiConfig = {
             height: 100, 
             color: 0x00FFFF,
             title: "Research Station Alpha",
-            description: "A cutting-edge research facility studying the unusual stellar phenomena in this sector. Scientists here have made significant discoveries about dark matter.",
-            imageKey: "station-alpha",
             webAddress: "https://www.nasa.gov/missions/"
         },
         { 
@@ -35,8 +33,6 @@ const poiConfig = {
             height: 80, 
             color: 0xFFAA00,
             title: "Mining Outpost Beta",
-            description: "An asteroid mining facility that extracts rare minerals from the surrounding asteroid field. The outpost supplies resources to nearby colonies.",
-            imageKey: "mining-outpost",
             webAddress: "https://www.space.com/topics/asteroids"
         },
         { 
@@ -46,8 +42,6 @@ const poiConfig = {
             height: 120, 
             color: 0x00FF00,
             title: "Communications Relay",
-            description: "This relay station maintains the subspace communication network in this quadrant. All transmissions between systems pass through here.",
-            imageKey: "comm-relay",
             webAddress: "https://www.esa.int/Enabling_Support/Operations/Estrack_tracking_stations"
         },
         { 
@@ -57,8 +51,6 @@ const poiConfig = {
             height: 160, 
             color: 0xFF00FF,
             title: "Trading Hub Gamma",
-            description: "A bustling marketplace where traders from all over the sector come to exchange goods. Known for its exotic wares and reasonable prices.",
-            imageKey: "trading-hub",
             webAddress: "https://www.spacetraders.io/"
         }
     ]
