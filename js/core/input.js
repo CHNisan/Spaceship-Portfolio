@@ -30,6 +30,7 @@ export default class InputManager {
         this.physics = physics;
         
         this.setupEventListeners();
+        this.setupKeyboardControls();
     }
     
     setupEventListeners() {
@@ -43,28 +44,35 @@ export default class InputManager {
         this.app.stage.eventMode = 'static';
         
         this.app.stage.on('pointerdown', () => {
-            // Only apply thrust if we're following the ship (not a POI)
-            if (!this.camera.focusObject) {
-                this.isThrusting = true;
-                // The setEngineGlow method will be passed via the Entities reference
-                if (this.ship && this.ship.setEngineGlow) {
-                    this.ship.setEngineGlow(true);
-                }
+            // Only apply thrust if we're following the ship (not a POI) and not in freecam mode
+            if (!this.camera.focusObject && !this.camera.freecamMode) {
+                this.setThrust(true);
             }
         });
         
         this.app.stage.on('pointerup', () => {
-            this.isThrusting = false;
-            if (this.ship && this.ship.setEngineGlow) {
-                this.ship.setEngineGlow(false);
-            }
+            this.setThrust(false);
         });
         
         // Handle pointer leaving the canvas
         this.app.view.addEventListener('mouseleave', () => {
-            this.isThrusting = false;
-            if (this.ship && this.ship.setEngineGlow) {
-                this.ship.setEngineGlow(false);
+            this.setThrust(false);
+        });
+    }
+    
+    setupKeyboardControls() {
+        // Add keyboard event listener for spacebar
+        window.addEventListener('keydown', (event) => {
+            // Toggle freecam mode with spacebar
+            if (event.code === 'Space' || event.key === ' ') {
+                if (this.camera) {
+                    this.camera.toggleFreecamMode();
+                    
+                    // Reset any thrust and glow effect
+                    this.setThrust(false);
+                }
+                // Prevent default spacebar behavior (like scrolling)
+                event.preventDefault();
             }
         });
     }
@@ -91,6 +99,9 @@ export default class InputManager {
     applyShipControls() {
         if (!this.ship || !this.ship.physicsBody) return;
         
+        // Don't apply ship controls when in freecam mode
+        if (this.camera.freecamMode) return;
+        
         const shipBody = this.ship.physicsBody;
         
         // Rotate ship towards mouse
@@ -112,6 +123,13 @@ export default class InputManager {
                 Math.sin(shipBody.angle) * this.forceMult
             );
             this.physics.Body.applyForce(shipBody, shipBody.position, force);
+        }
+    }
+
+    setThrust(isActive) {
+        this.isThrusting = isActive;
+        if (this.ship && this.ship.setEngineGlow) {
+            this.ship.setEngineGlow(isActive);
         }
     }
     

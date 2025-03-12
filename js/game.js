@@ -53,7 +53,7 @@ export default class Game {
     createInstructions() {
         // Create instructions text using config settings
         const instructions = new PIXI.Text(
-            "Control the spaceship with your mouse\nClick and hold to thrust\nClick on colored areas to focus camera",
+            "Control the spaceship with your mouse\nClick and hold to thrust\nClick on colored areas to focus camera\nPress SPACE to enter freecam mode and drag the view",
             {
                 fontFamily: uiConfig.TEXT.INSTRUCTIONS.FONT_FAMILY,
                 fontSize: uiConfig.TEXT.INSTRUCTIONS.FONT_SIZE,
