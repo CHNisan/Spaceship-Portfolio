@@ -2,7 +2,6 @@
 import config from './config/index.js';
 import Ship from './entities/ship.js';
 import Asteroid from './entities/asteroid.js';
-import Star from './entities/star.js';
 import PointOfInterest from './entities/poi.js';
 
 // Import configs
@@ -20,12 +19,10 @@ class EntityManager {
         
         // Entity collections
         this.ship = null;
-        this.stars = [];
         this.asteroids = [];
         this.pointsOfInterest = [];
         
         // Containers
-        this.starsContainer = null;
         this.asteroidsContainer = null;
         this.poiContainer = null;
         
@@ -41,7 +38,6 @@ class EntityManager {
         this.createContainers();
         
         // Initialize entity subsystems
-        this.createStars();
         this.createAsteroids();
         this.createSpaceship();
         this.createBoundaryVisual();
@@ -51,35 +47,11 @@ class EntityManager {
     }
     
     createContainers() {
-        this.starsContainer = new PIXI.Container();
         this.asteroidsContainer = new PIXI.Container();
         this.poiContainer = new PIXI.Container();
         
-        this.container.addChild(this.starsContainer);
         this.container.addChild(this.asteroidsContainer);
         this.container.addChild(this.poiContainer);
-    }
-    
-    createStars() {
-        // Use star count and properties from config
-        for (let i = 0; i < worldConfig.BACKGROUND.STARS.COUNT; i++) {
-            const x = Math.random() * worldConfig.SIZE - worldConfig.SIZE / 2;
-            const y = Math.random() * worldConfig.SIZE - worldConfig.SIZE / 2;
-            
-            // Use min/max size from config
-            const size = Math.random() * 
-                (worldConfig.BACKGROUND.STARS.MAX_SIZE - worldConfig.BACKGROUND.STARS.MIN_SIZE) + 
-                worldConfig.BACKGROUND.STARS.MIN_SIZE;
-            
-            // Use min/max opacity from config
-            const brightness = Math.random() * 
-                (worldConfig.BACKGROUND.STARS.MAX_OPACITY - worldConfig.BACKGROUND.STARS.MIN_OPACITY) + 
-                worldConfig.BACKGROUND.STARS.MIN_OPACITY;
-            
-            const star = new Star(this.starsContainer, x, y, size, brightness);
-            star.init();
-            this.stars.push(star);
-        }
     }
     
     createAsteroids() {

@@ -5,13 +5,6 @@ const worldConfig = {
     // Background settings
     BACKGROUND: {
         COLOR: '#000033',  // Deep blue space background
-        STARS: {
-            COUNT: 1000,    // Number of stars to generate
-            MIN_SIZE: 1,    // Minimum star size
-            MAX_SIZE: 3,    // Maximum star size
-            MIN_OPACITY: 0.5,  // Minimum star opacity
-            MAX_OPACITY: 1.0   // Maximum star opacity
-        }
     },
     
     // Boundary visual settings
