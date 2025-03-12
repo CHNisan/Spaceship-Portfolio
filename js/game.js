@@ -43,35 +43,8 @@ export default class Game {
         this.camera.init(this.gameContainer, this.app);
         this.input.init(this.app, this.gameContainer, Entities.ship, this.camera, this.physics);
         
-        // Show instructions
-        this.createInstructions();
-        
         // Start the game loop
         this.setupGameLoop();
-    }
-    
-    createInstructions() {
-        // Create instructions text using config settings
-        const instructions = new PIXI.Text(
-            "Control the spaceship with your mouse\nClick and hold to thrust\nClick on colored areas to focus camera\nPress SPACE to enter freecam mode and drag the view",
-            {
-                fontFamily: uiConfig.TEXT.INSTRUCTIONS.FONT_FAMILY,
-                fontSize: uiConfig.TEXT.INSTRUCTIONS.FONT_SIZE,
-                fill: uiConfig.TEXT.INSTRUCTIONS.COLOR,
-                align: 'center'
-            }
-        );
-        
-        // Position using config values
-        instructions.position.set(
-            uiConfig.TEXT.INSTRUCTIONS.POSITION.X, 
-            uiConfig.TEXT.INSTRUCTIONS.POSITION.Y
-        );
-        
-        // Set resolution for sharp text
-        instructions.resolution = 2;
-        
-        this.app.stage.addChild(instructions);
     }
     
     setupGameLoop() {
