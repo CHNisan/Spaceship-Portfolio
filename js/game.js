@@ -1,9 +1,10 @@
 // Main game class
 import config from './config/index.js';
 import PhysicsEngine from './core/physics.js';  
-import Entities from './entity-manager.js';
+import Entities from './managers/entity-manager.js';
 import Camera from './core/camera.js';          
-import InputManager from './core/input.js';     
+import InputManager from './core/input.js';
+import BackgroundManager from './managers/background-manager.js';
 
 // Import the configs we need
 const { world: worldConfig, ui: uiConfig } = config;
@@ -18,16 +19,21 @@ export default class Game {
         this.physics = new PhysicsEngine();
         this.camera = new Camera();
         this.input = new InputManager();
+        this.backgroundManager = null;
     }
     
     init() {
-        // Initialize PIXI Application with background color from config
+        // Initialize PIXI Application with transparent background
         this.app = new PIXI.Application({
-            background: worldConfig.BACKGROUND.COLOR,
+            backgroundAlpha: 0, // Transparent background
             resizeTo: window,
         });
         
         document.body.appendChild(this.app.view);
+        
+        // Initialize background manager
+        this.backgroundManager = new BackgroundManager(this.app);
+        this.app.stage.addChildAt(this.backgroundManager.init(), 0);
         
         // Create game container for camera movement
         this.gameContainer = new PIXI.Container();

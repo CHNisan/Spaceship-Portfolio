@@ -4,7 +4,15 @@ const worldConfig = {
     
     // Background settings
     BACKGROUND: {
-        COLOR: '#000033',  // Deep blue space background
+        // Light mode colors
+        TOP_COLOR: 0xF4F3EE,    // Light color at the top
+        BOTTOM_COLOR: 0xE4E5DA, // Bluish color at the bottom
+        
+        // Dark mode colors
+        DARK_TOP_COLOR: 0x323330,    // Dark gray at the top
+        DARK_BOTTOM_COLOR: 0x191919, // Almost black at the bottom
+        
+        ANGLE: 15,              // Angle in degrees for the gradient tilt
     },
     
     // Boundary visual settings

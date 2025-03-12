@@ -1,8 +1,8 @@
 // Main entity manager
-import config from './config/index.js';
-import Ship from './entities/ship.js';
-import Asteroid from './entities/asteroid.js';
-import PointOfInterest from './entities/poi.js';
+import config from '../config/index.js';
+import Ship from '../entities/ship.js';
+import Asteroid from '../entities/asteroid.js';
+import PointOfInterest from '../entities/poi.js';
 
 // Import configs
 const { 

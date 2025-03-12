@@ -15,8 +15,8 @@ const shipConfig = {
     
     // Visual properties
     VISUAL: {
-        BODY_COLOR: 0x3498db,  // Blue spaceship color
-        ENGINE_GLOW_COLOR: 0xff3300,  // Orange engine glow
+        BODY_COLOR: 0x4AA8E2,  // Blue spaceship color
+        ENGINE_GLOW_COLOR: 0xF76565,  // Red engine glow
         ENGINE_GLOW_SIZE: 3  // Size of engine glow effect
     },
     
