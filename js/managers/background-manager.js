@@ -16,8 +16,6 @@ export default class BackgroundManager {
             bottomColor: worldConfig.BACKGROUND.BOTTOM_COLOR,
             angleInDegrees: worldConfig.BACKGROUND.ANGLE
         });
-
-        this.setupKeyboardHandlers();
         
         return this.gradientBackground.create();
     }

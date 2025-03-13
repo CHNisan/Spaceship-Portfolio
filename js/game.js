@@ -1,13 +1,10 @@
 // Main game class
-import config from './config/index.js';
 import PhysicsEngine from './core/physics.js';  
 import Entities from './managers/entity-manager.js';
 import Camera from './core/camera.js';          
 import InputManager from './core/input.js';
 import BackgroundManager from './managers/background-manager.js';
-
-// Import the configs we need
-const { world: worldConfig, ui: uiConfig } = config;
+import IntroScreen from './ui/intro-screen.js';
 
 export default class Game {
     constructor() {
@@ -20,6 +17,10 @@ export default class Game {
         this.camera = new Camera();
         this.input = new InputManager();
         this.backgroundManager = null;
+        
+        // Intro screen
+        this.introScreen = null;
+        this.gameInitialized = false;
     }
     
     init() {
@@ -43,14 +44,34 @@ export default class Game {
         this.app.stage.eventMode = 'static';
         this.app.stage.hitArea = this.app.screen;
         
+        // Show intro screen first
+        this.showIntroScreen();
+    }
+    
+    showIntroScreen() {
+        // Create and show the intro screen
+        this.introScreen = new IntroScreen(this.app, () => {
+            this.startGame();
+        });
+        
+        this.app.stage.addChild(this.introScreen.init());
+    }
+    
+    startGame() {
+        // Only initialize the game once
+        if (this.gameInitialized) return;
+        
         // Initialize all systems - pass required references
         this.physics.init();
         Entities.init(this.gameContainer, this.physics, this.camera);
         this.camera.init(this.gameContainer, this.app);
         this.input.init(this.app, this.gameContainer, Entities.ship, this.camera, this.physics);
+        this.backgroundManager.setupKeyboardHandlers();
         
         // Start the game loop
         this.setupGameLoop();
+        
+        this.gameInitialized = true;
     }
     
     setupGameLoop() {
