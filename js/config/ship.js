@@ -23,7 +23,8 @@ const shipConfig = {
     // Starting position
     SPAWN: {
         X: 0,
-        Y: 0
+        Y: 0,
+        ROTATION: -Math.PI / 2
     }
 };
 

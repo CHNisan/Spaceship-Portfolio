@@ -31,6 +31,9 @@ export default class Ship extends PhysicsEntity {
         this.engineGlow.endFill();
         this.graphic.addChild(this.engineGlow);
         this.engineGlow.visible = false;
+
+        // Set initial rotation from config
+        this.graphic.rotation = shipConfig.SPAWN.ROTATION;
     }
     
     createPhysicsBody() {
@@ -44,6 +47,9 @@ export default class Ship extends PhysicsEntity {
                 friction: shipConfig.PHYSICS.FRICTION
             }
         );
+
+        // Set initial rotation from config
+        this.physics.Body.setAngle(this.physicsBody, shipConfig.SPAWN.ROTATION);
     }
     
     setEngineGlow(isVisible) {
