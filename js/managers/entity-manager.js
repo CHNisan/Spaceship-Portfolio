@@ -3,6 +3,7 @@ import config from '../config/index.js';
 import Ship from '../entities/ship.js';
 import Asteroid from '../entities/asteroid.js';
 import PointOfInterest from '../entities/poi.js';
+import WorldObjectManager from './world-object-manager.js'
 
 // Import configs
 const { 
@@ -44,14 +45,18 @@ class EntityManager {
         
         // Create POIs
         this.createPointsOfInterest();
+
+        WorldObjectManager.init(this.worldObjectsContainer);
     }
     
     createContainers() {
         this.asteroidsContainer = new PIXI.Container();
         this.poiContainer = new PIXI.Container();
+        this.worldObjectsContainer = new PIXI.Container();
         
         this.container.addChild(this.asteroidsContainer);
         this.container.addChild(this.poiContainer);
+        this.container.addChild(this.worldObjectsContainer);
     }
     
     createAsteroids() {
