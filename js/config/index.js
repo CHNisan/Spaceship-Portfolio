@@ -7,6 +7,7 @@ import camera from './camera.js';
 import entities from './entities.js';
 import poi from './poi.js';
 import ui from './ui.js';
+import theme from './theme.js'
 
 // Export all configurations
 export default {
@@ -16,7 +17,8 @@ export default {
     camera,
     entities,
     poi,
-    ui
+    ui,
+    theme
 };
 
 // Also export individual configs for direct imports
@@ -27,5 +29,6 @@ export {
     camera,
     entities,
     poi,
-    ui
+    ui,
+    theme
 };

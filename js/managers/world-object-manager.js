@@ -1,4 +1,7 @@
 import Path from '../entities/path.js';
+import config from '../config/index.js';
+
+const { theme: themeConfig } = config;
 
 class WorldObjectManager {
     constructor() {
@@ -34,24 +37,26 @@ class WorldObjectManager {
         this.container.addChild(this.signsContainer)
     }
     
+    
     createPaths() {
-        this.paths.push(this.createPath(0, 0, 10, 750, 0x00FFFF));
-        this.paths.push(this.createPath(300, 0, 10, 750, 0x00FFFF));
-
-        this.paths.push(this.createPath(0, -1070, 10, 750, 0xFFAA00));
-        this.paths.push(this.createPath(300, -1070, 10, 750, 0xFFAA00));
-
-        this.paths.push(this.createPath(300, 0, 750, 10, 0x00FF00));
-        this.paths.push(this.createPath(300, -320, 750, 10, 0x00FF00));
-
-        this.paths.push(this.createPath(-750, 0, 750, 10, 0xFF00FF));
-        this.paths.push(this.createPath(-750, -320, 750, 10, 0xFF00FF));
+        this.createPathPair(500, 990, 10, 1000, 350, themeConfig.COLORS.BLUE, true);
+        this.createPathPair(500, -360, 10, 1000, 350, themeConfig.COLORS.YELLOW, true);
+        this.createPathPair(870, 630, 750, 10, 350, themeConfig.COLORS.GREEN, false);
+        this.createPathPair(-250, 630, 750, 10, 350, themeConfig.COLORS.PINK, false);
     }
 
     createPath(x, y, width, height, color){
         this.path = new Path(this.container, x, y, width, height, color);
         this.path.init();
         return this.path;
+    }
+
+    createPathPair(x, y, width, height, gap, color, isHorizontal = true){
+        const xOffset = isHorizontal ? gap + width : 0;
+        const yOffset = isHorizontal ? 0 : gap + height;
+
+        this.paths.push(this.createPath(x, y, width, height, color));
+        this.paths.push(this.createPath(x + xOffset, y + yOffset, width, height, color));
     }
     
     update(deltaTime) {
