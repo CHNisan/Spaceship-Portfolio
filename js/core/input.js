@@ -75,6 +75,15 @@ export default class InputManager {
                 event.preventDefault();
             }
         });
+
+        window.addEventListener('keydown', (event) => {
+            // Toggle dark mode when 'd' key is pressed
+            if (event.key === 'd' || event.key === 'D') {
+                // Dispatch a custom event 
+                const darkModeEvent = new CustomEvent('game:darkModeToggle');
+                document.dispatchEvent(darkModeEvent);
+            }
+        });
     }
     
     handleMouseMove(event) {

@@ -66,7 +66,6 @@ export default class Game {
         Entities.init(this.gameContainer, this.physics, this.camera);
         this.camera.init(this.gameContainer, this.app);
         this.input.init(this.app, this.gameContainer, Entities.ship, this.camera, this.physics);
-        this.backgroundManager.setupKeyboardHandlers();
         
         // Start the game loop
         this.setupGameLoop();

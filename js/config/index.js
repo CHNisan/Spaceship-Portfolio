@@ -8,6 +8,7 @@ import entities from './entities.js';
 import poi from './poi.js';
 import ui from './ui.js';
 import theme from './theme.js'
+import sign from './sign.js'
 
 // Export all configurations
 export default {
@@ -18,7 +19,8 @@ export default {
     entities,
     poi,
     ui,
-    theme
+    theme,
+    sign
 };
 
 // Also export individual configs for direct imports
@@ -30,5 +32,6 @@ export {
     entities,
     poi,
     ui,
-    theme
+    theme,
+    sign
 };

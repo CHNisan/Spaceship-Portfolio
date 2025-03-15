@@ -1,5 +1,6 @@
 import Path from '../entities/world-objects/path.js';
-import Wall from '../entities/world-objects/wall.js'
+import Wall from '../entities/world-objects/wall.js';
+import Sign from '../entities/world-objects/sign.js';
 import config from '../config/index.js';
 
 const { theme: themeConfig } = config;
@@ -31,6 +32,8 @@ class WorldObjectManager {
 
         this.wall = new Wall(this.wallsContainer, this.physics, -400, -400, 300, 300, themeConfig.COLORS.RED);
         this.wall.init();
+        this.sign = new Sign(this.signsContainer, 0, 0, 50, 50, "TESTING MY NUTS ON YOUR FACE");
+        this.sign.init();
     }
     
     createContainers() {

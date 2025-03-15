@@ -1,7 +1,10 @@
 import GradientBackground from '../shaders/gradient-background.js';
 import config from '../config/index.js';
 
-const { world: worldConfig } = config;
+const { 
+    world: worldConfig,
+    theme: themeConfig
+ } = config;
 
 export default class BackgroundManager {
     constructor(app) {
@@ -11,22 +14,21 @@ export default class BackgroundManager {
     }
     
     init() {
+        this.registerWithInputManager();
+
         this.gradientBackground = new GradientBackground(this.app, {
-            topColor: worldConfig.BACKGROUND.TOP_COLOR,
-            bottomColor: worldConfig.BACKGROUND.BOTTOM_COLOR,
+            topColor: themeConfig.MAIN.LIGHT.PRIMARY,
+            bottomColor: themeConfig.MAIN.LIGHT.SECONDARY,
             angleInDegrees: worldConfig.BACKGROUND.ANGLE
         });
         
         return this.gradientBackground.create();
     }
 
-    setupKeyboardHandlers() {
-        // Add keyboard event listener for key presses
-        window.addEventListener('keydown', (event) => {
-            // Toggle dark mode when 'd' key is pressed
-            if (event.key === 'd' || event.key === 'D') {
-                this.toggleDarkMode();
-            }
+    registerWithInputManager() {
+        // Listen for the dark mode toggle event
+        document.addEventListener('game:darkModeToggle', () => {
+            this.toggleDarkMode();
         });
     }
     
@@ -35,13 +37,13 @@ export default class BackgroundManager {
         
         if (this.isDarkMode) {
             this.gradientBackground.updateColors(
-                worldConfig.BACKGROUND.DARK_TOP_COLOR,
-                worldConfig.BACKGROUND.DARK_BOTTOM_COLOR
+                themeConfig.MAIN.DARK.PRIMARY,
+                themeConfig.MAIN.DARK.SECONDARY
             );
         } else {
             this.gradientBackground.updateColors(
-                worldConfig.BACKGROUND.TOP_COLOR,
-                worldConfig.BACKGROUND.BOTTOM_COLOR
+                themeConfig.MAIN.LIGHT.PRIMARY,
+                themeConfig.MAIN.LIGHT.SECONDARY
             );
         }
     }
