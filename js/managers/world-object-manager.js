@@ -32,7 +32,7 @@ class WorldObjectManager {
 
         this.wall = new Wall(this.wallsContainer, this.physics, -400, -400, 300, 300, themeConfig.COLORS.RED);
         this.wall.init();
-        this.sign = new Sign(this.signsContainer, 0, 0, 50, 50, "TESTING MY NUTS ON YOUR FACE");
+        this.sign = new Sign(this.signsContainer, 500, 1000, 50, 50, "TESTING MY NUTS ON YOUR FACE");
         this.sign.init();
     }
     
