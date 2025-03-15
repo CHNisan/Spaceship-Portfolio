@@ -57,7 +57,6 @@ export default class PointOfInterest extends PhysicsEntity {
             this.data.height, 
             { 
                 isStatic: true,
-                render: { fillStyle: this.data.color }
             }
         );
     }

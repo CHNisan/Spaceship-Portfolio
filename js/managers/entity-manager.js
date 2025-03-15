@@ -46,7 +46,7 @@ class EntityManager {
         // Create POIs
         this.createPointsOfInterest();
 
-        WorldObjectManager.init(this.worldObjectsContainer);
+        WorldObjectManager.init(this.worldObjectsContainer, this.physics);
     }
     
     createContainers() {

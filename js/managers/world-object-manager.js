@@ -1,4 +1,5 @@
-import Path from '../entities/path.js';
+import Path from '../entities/world-objects/path.js';
+import Wall from '../entities/world-objects/wall.js'
 import config from '../config/index.js';
 
 const { theme: themeConfig } = config;
@@ -6,6 +7,7 @@ const { theme: themeConfig } = config;
 class WorldObjectManager {
     constructor() {
         this.container = null;
+        this.physics = null;
         
         // Entity collections
         this.paths = [];
@@ -18,13 +20,17 @@ class WorldObjectManager {
         this.signsContainer = null;
     }
     
-    init(container) {
+    init(container, physics) {
         this.container = container;
+        this.physics = physics;
         
         this.createContainers();
         
         // Initialize entity subsystems
         this.createPaths();
+
+        this.wall = new Wall(this.wallsContainer, this.physics, -400, -400, 300, 300, themeConfig.COLORS.RED);
+        this.wall.init();
     }
     
     createContainers() {
