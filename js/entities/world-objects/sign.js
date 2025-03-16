@@ -30,7 +30,7 @@ export default class Sign extends Entity {
             fill: this.darkColor,
             align: signConfig.FONT.ALIGN,
             wordWrap: true,
-            worldWrapWidth: this.worldWrapWidth
+            wordWrapWidth: this.wrapWidth
         });
 
         this.graphic.anchor.set(0.5);

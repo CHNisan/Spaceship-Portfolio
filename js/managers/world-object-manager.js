@@ -34,6 +34,8 @@ class WorldObjectManager {
         this.createSigns();
         this.createPaths();
 
+        console.log(this.signs, this.paths);
+
         this.wall = new Wall(this.wallsContainer, this.physics, -400, -400, 300, 300, themeConfig.COLORS.RED);
         this.wall.init();
     }
@@ -52,18 +54,29 @@ class WorldObjectManager {
 
 
     createSigns(){
-        // Create each POI from config data
-                signConfig.DATA.PATHWAY.forEach((signData) => {
-                    const sign = new Sign(
-                        this.signsContainer, 
-                        signData.x, 
-                        signData.y, 
-                        signData.size, 
-                        signData.wrapWidth, 
-                        signData.text);
-                    sign.init();
-                    this.signs.push(sign);
-                });
+        // Create each pathway sign
+        signConfig.DATA.PATHWAY.forEach((signData) => {
+            const sign = new Sign(
+                this.signsContainer, 
+                signData.x, 
+                signData.y, 
+                signData.size, 
+                signData.wrapWidth, 
+                signData.text);
+            sign.init();
+            this.signs.push(sign);
+        });
+
+        
+        const details = new Sign(
+            this.signsContainer, 
+            signConfig.DATA.DETAILS.x, 
+            signConfig.DATA.DETAILS.y, 
+            signConfig.DATA.DETAILS.size, 
+            signConfig.DATA.DETAILS.wrapWidth, 
+            signConfig.DATA.DETAILS.text);
+        details.init();
+        this.signs.push(details);
     }
     
 
@@ -76,20 +89,23 @@ class WorldObjectManager {
         this.createPathPair(-250, 580, 750, 10, 400, themeConfig.COLORS.PINK, false);
     }
 
-    createPath(x, y, width, height, color){
-        this.path = new Path(this.container, x, y, width, height, color);
-        this.path.init();
-        return this.path;
-    }
-
     createPathPair(x, y, width, height, gap, color, isHorizontal = true){
         const xOffset = isHorizontal ? gap + width : 0;
         const yOffset = isHorizontal ? 0 : gap + height;
 
-        this.paths.push(this.createPath(x, y, width, height, color));
-        this.paths.push(this.createPath(x + xOffset, y + yOffset, width, height, color));
+        this.createPath(x, y, width, height, color, this.pathsContainer, this.paths);
+        this.createPath(x + xOffset, y + yOffset, width, height, color, this.pathsContainer, this.paths);
+    }
+
+    createPath(x, y, width, height, color, container, array){
+        const path = new Path(container, x, y, width, height, color);
+        path.init();
+        array.push(path)
     }
     
+
+
+
     update(deltaTime) {
         // if (this.ship) {
         //     this.ship.update(deltaTime);
