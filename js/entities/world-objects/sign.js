@@ -7,7 +7,7 @@ const {
 } = config;
 
 export default class Sign extends Entity {
-    constructor(container, x, y, size, wrapWidth, text, darkColor = themeConfig.MAIN.DARK.PRIMARY, lightColor = themeConfig.MAIN.LIGHT.PRIMARY) {
+    constructor(container, x, y, size, wrapWidth, text, darkColor = themeConfig.MAIN.DARK.PRIMARY, lightColor = themeConfig.MAIN.LIGHT.PRIMARY, fontFamily = signConfig.FONT.FAMILY) {
         super(container);
         this.x = x;
         this.y = y;
@@ -16,6 +16,7 @@ export default class Sign extends Entity {
         this.text = text;
         this.lightColor = lightColor;
         this.darkColor = darkColor;
+        this.fontFamily = fontFamily;
 
         this.isDarkMode = false;
 
@@ -24,7 +25,7 @@ export default class Sign extends Entity {
     
     createGraphic() {
         this.graphic = new PIXI.Text(this.text, {
-            fontFamily: signConfig.FONT.FAMILY,
+            fontFamily: this.fontFamily,
             fontSize: this.size,
             fill: this.darkColor,
             align: signConfig.FONT.ALIGN,
