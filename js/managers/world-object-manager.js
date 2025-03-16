@@ -3,7 +3,10 @@ import Wall from '../entities/world-objects/wall.js';
 import Sign from '../entities/world-objects/sign.js';
 import config from '../config/index.js';
 
-const { theme: themeConfig } = config;
+const { 
+    theme: themeConfig,
+    sign: signConfig
+ } = config;
 
 class WorldObjectManager {
     constructor() {
@@ -28,12 +31,11 @@ class WorldObjectManager {
         this.createContainers();
         
         // Initialize entity subsystems
+        this.createSigns();
         this.createPaths();
 
         this.wall = new Wall(this.wallsContainer, this.physics, -400, -400, 300, 300, themeConfig.COLORS.RED);
         this.wall.init();
-        this.sign = new Sign(this.signsContainer, 500, 1000, 50, 50, "TESTING MY NUTS ON YOUR FACE");
-        this.sign.init();
     }
     
     createContainers() {
@@ -46,12 +48,32 @@ class WorldObjectManager {
         this.container.addChild(this.signsContainer)
     }
     
+
+
+
+    createSigns(){
+        // Create each POI from config data
+                signConfig.DATA.PATHWAY.forEach((signData) => {
+                    const sign = new Sign(
+                        this.signsContainer, 
+                        signData.x, 
+                        signData.y, 
+                        signData.size, 
+                        signData.wrapWidth, 
+                        signData.text);
+                    sign.init();
+                    this.signs.push(sign);
+                });
+    }
     
+
+
+
     createPaths() {
-        this.createPathPair(500, 990, 10, 1000, 350, themeConfig.COLORS.BLUE, true);
-        this.createPathPair(500, -360, 10, 1000, 350, themeConfig.COLORS.YELLOW, true);
-        this.createPathPair(870, 630, 750, 10, 350, themeConfig.COLORS.GREEN, false);
-        this.createPathPair(-250, 630, 750, 10, 350, themeConfig.COLORS.PINK, false);
+        this.createPathPair(500, 990, 10, 1000, 400, themeConfig.COLORS.BLUE, true);
+        this.createPathPair(500, -410, 10, 1000, 400, themeConfig.COLORS.YELLOW, true);
+        this.createPathPair(920, 580, 750, 10, 400, themeConfig.COLORS.GREEN, false);
+        this.createPathPair(-250, 580, 750, 10, 400, themeConfig.COLORS.PINK, false);
     }
 
     createPath(x, y, width, height, color){

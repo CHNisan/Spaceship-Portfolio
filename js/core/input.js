@@ -83,6 +83,12 @@ export default class InputManager {
                 const darkModeEvent = new CustomEvent('game:darkModeToggle');
                 document.dispatchEvent(darkModeEvent);
             }
+
+            // FOR CHECKING POSITIONING
+            if (event.key === 't' || event.key === 'T') {
+                console.log(this.ship.physicsBody.position.x, this.ship.physicsBody.position.y);
+            }
+            // DELTE LATER
         });
     }
     
