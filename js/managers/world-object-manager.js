@@ -10,6 +10,7 @@ const {
 
 class WorldObjectManager {
     constructor() {
+        // Main gameworld data
         this.container = null;
         this.physics = null;
         
@@ -33,8 +34,6 @@ class WorldObjectManager {
         // Initialize entity subsystems
         this.createSigns();
         this.createPaths();
-
-        console.log(this.signs, this.paths);
 
         this.wall = new Wall(this.wallsContainer, this.physics, -400, -400, 300, 300, themeConfig.COLORS.RED);
         this.wall.init();
@@ -67,7 +66,7 @@ class WorldObjectManager {
             this.signs.push(sign);
         });
 
-        
+        // Create details as a sign
         const details = new Sign(
             this.signsContainer, 
             signConfig.DATA.DETAILS.x, 
@@ -83,6 +82,7 @@ class WorldObjectManager {
 
 
     createPaths() {
+        // Create each path pair to make a full pathway
         this.createPathPair(500, 990, 10, 1000, 400, themeConfig.COLORS.BLUE, true);
         this.createPathPair(500, -410, 10, 1000, 400, themeConfig.COLORS.YELLOW, true);
         this.createPathPair(920, 580, 750, 10, 400, themeConfig.COLORS.GREEN, false);
@@ -90,6 +90,7 @@ class WorldObjectManager {
     }
 
     createPathPair(x, y, width, height, gap, color, isHorizontal = true){
+        // Create a pair of paths offset by a certain amount
         const xOffset = isHorizontal ? gap + width : 0;
         const yOffset = isHorizontal ? 0 : gap + height;
 

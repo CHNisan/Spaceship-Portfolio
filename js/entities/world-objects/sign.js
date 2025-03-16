@@ -7,17 +7,19 @@ const {
 } = config;
 
 export default class Sign extends Entity {
-    constructor(container, x, y, size, wrapWidth, text, darkColor = themeConfig.MAIN.DARK.PRIMARY, lightColor = themeConfig.MAIN.LIGHT.PRIMARY, fontFamily = signConfig.FONT.FAMILY) {
+    constructor(container, x, y, size, wrapWidth, text, align = signConfig.FONT.ALIGN, fontFamily = signConfig.FONT.FAMILY, darkColor = themeConfig.MAIN.DARK.PRIMARY, lightColor = themeConfig.MAIN.LIGHT.PRIMARY) {
         super(container);
         this.x = x;
         this.y = y;
         this.size = size;
         this.wrapWidth = wrapWidth;
         this.text = text;
+        this.align = align;
+        this.fontFamily = fontFamily;
         this.lightColor = lightColor;
         this.darkColor = darkColor;
-        this.fontFamily = fontFamily;
 
+        // Keeps track of whether dark mode is active to change the color of the text acordingly
         this.isDarkMode = false;
 
         this.registerWithInputManager()
@@ -28,7 +30,7 @@ export default class Sign extends Entity {
             fontFamily: this.fontFamily,
             fontSize: this.size,
             fill: this.darkColor,
-            align: signConfig.FONT.ALIGN,
+            align: this.align,
             wordWrap: true,
             wordWrapWidth: this.wrapWidth
         });
@@ -47,6 +49,7 @@ export default class Sign extends Entity {
     }
     
     toggleDarkMode() {
+        // Flip color to the light and dark mode versions depending on whether dark mode is active
         this.isDarkMode = !this.isDarkMode;
 
         if(this.isDarkMode){

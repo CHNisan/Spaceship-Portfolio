@@ -8,11 +8,20 @@ const poiConfig = {
     
     // Font settings
     FONT: {
-        FAMILY: 'Arial',
-        SIZE: 14,
-        COLOR: 0xFFFFFF,
-        ALIGN: 'center',
-        RESOLUTION: 2  // For sharp text
+        TITLE: {
+            FAMILY: 'Arial',
+            ALIGN: 'center',
+            SIZE: 40,
+            XOFFSET: 0,
+            YOFFSET: -100,
+        },
+        DESCRIPTION: {
+            FAMILY: 'Arial',
+            ALIGN: 'center',
+            SIZE: 14,
+            XOFFSET: 20,
+            YOFFSET: -20
+        }
     },
     
     // POI data definitions
@@ -23,8 +32,10 @@ const poiConfig = {
             width: 100, 
             height: 100, 
             color: 0x00FFFF,
-            title: "Research Station Alpha",
-            webAddress: "https://www.nasa.gov/missions/"
+            title: "This Website",
+            webAddress: "https://github.com/CHNisan/Spaceship-Portfolio.git",
+            image: "",
+            gif: ""
         },
         { 
             x: -1200, 

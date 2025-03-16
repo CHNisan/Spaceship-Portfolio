@@ -26,17 +26,6 @@ export default class PointOfInterest extends PhysicsEntity {
         );
         this.graphic.endFill();
         
-        // Add label
-        const label = new PIXI.Text(`POI ${this.id}`, {
-            fontFamily: poiConfig.FONT.FAMILY,
-            fontSize: poiConfig.FONT.SIZE,
-            fill: poiConfig.FONT.COLOR,
-            align: poiConfig.FONT.ALIGN
-        });
-        label.anchor.set(0.5);
-        label.resolution = poiConfig.FONT.RESOLUTION;
-        this.graphic.addChild(label);
-        
         // Set interactive properties
         this.graphic.eventMode = 'dynamic';
         this.graphic.cursor = 'pointer';

@@ -3,6 +3,7 @@ import config from '../config/index.js';
 import Ship from '../entities/ship.js';
 import Asteroid from '../entities/asteroid.js';
 import PointOfInterest from '../entities/poi.js';
+import Sign from "../entities/world-objects/sign.js"
 import WorldObjectManager from './world-object-manager.js'
 
 // Import configs
@@ -26,6 +27,7 @@ class EntityManager {
         // Containers
         this.asteroidsContainer = null;
         this.poiContainer = null;
+        this.worldObjectsContainer = null
         
         // POI data from config
         this.poiData = poiConfig.ITEMS;
@@ -135,8 +137,19 @@ class EntityManager {
                 this.camera
             );
             poi.init();
-            this.pointsOfInterest.push(poi);
+
+            const title = new Sign(
+                poi.container, 
+                poiConfig.FONT.TITLE.XOFFSET, 
+                poiConfig.FONT.TITLE.YOFFSET, 
+                poiConfig.FONT.TITLE.SIZE, 
+                poiData.width, 
+                poiData.title);
+            title.init();
+            
+            this.pointsOfInterest.push([poi, title]);
         });
+        console.log(this.descriptions);
     }
     
     update(deltaTime) {
@@ -152,7 +165,7 @@ class EntityManager {
         
         // Update POIs
         this.pointsOfInterest.forEach(poi => {
-            poi.update(deltaTime);
+            poi[0].update(deltaTime);
         });
     }
     

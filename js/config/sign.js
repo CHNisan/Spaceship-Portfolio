@@ -7,6 +7,7 @@ const signConfig = {
     },
 
     DATA: {
+        // Pathway sign settings, order: top, right, bottom, left
         PATHWAY: [
             { 
                 x: 700, 
