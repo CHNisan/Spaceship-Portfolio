@@ -139,13 +139,15 @@ class EntityManager {
             poi.init();
 
             const title = new Sign(
-                poi.container, 
+                null, 
                 poiConfig.FONT.TITLE.XOFFSET, 
                 poiConfig.FONT.TITLE.YOFFSET, 
                 poiConfig.FONT.TITLE.SIZE, 
                 poiData.width, 
                 poiData.title);
             title.init();
+
+            poi.graphic.addChild(title.graphic);
             
             this.pointsOfInterest.push([poi, title]);
         });
