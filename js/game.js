@@ -5,6 +5,7 @@ import Camera from './core/camera.js';
 import InputManager from './core/input.js';
 import BackgroundManager from './managers/background-manager.js';
 import IntroScreen from './ui/intro-screen.js';
+import { preloadAssets } from './managers/asset-manager.js';
 
 export default class Game {
     constructor() {
@@ -57,20 +58,27 @@ export default class Game {
         this.app.stage.addChild(this.introScreen.init());
     }
     
-    startGame() {
+    async startGame() {
         // Only initialize the game once
         if (this.gameInitialized) return;
         
-        // Initialize all systems - pass required references
-        this.physics.init();
-        Entities.init(this.gameContainer, this.physics, this.camera);
-        this.camera.init(this.gameContainer, this.app);
-        this.input.init(this.app, this.gameContainer, Entities.ship, this.camera, this.physics);
-        
-        // Start the game loop
-        this.setupGameLoop();
-        
-        this.gameInitialized = true;
+        try {
+            // Preload assets first
+            await preloadAssets();
+            
+            // Initialize all systems - pass required references
+            this.physics.init();
+            Entities.init(this.gameContainer, this.physics, this.camera);
+            this.camera.init(this.gameContainer, this.app);
+            this.input.init(this.app, this.gameContainer, Entities.ship, this.camera, this.physics);
+            
+            // Start the game loop
+            this.setupGameLoop();
+            
+            this.gameInitialized = true;
+        } catch (error) {
+            console.error('Error starting game:', error);
+        }
     }
     
     setupGameLoop() {

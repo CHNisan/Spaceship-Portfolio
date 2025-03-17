@@ -12,19 +12,33 @@ export default class PointOfInterest extends PhysicsEntity {
         this.isHovered = false;
         this.position.x = data.x;
         this.position.y = data.y;
+        this.sprite = null;
+        this.fallbackGraphic = null;
     }
     
     createGraphic() {
-        this.graphic = new PIXI.Graphics();
-        this.graphic.beginFill(this.data.color, 0.7);
-        this.graphic.lineStyle(2, 0xFFFFFF, 0.8);
-        this.graphic.drawRect(
-            -this.data.width/2, 
-            -this.data.height/2, 
-            this.data.width, 
-            this.data.height
-        );
-        this.graphic.endFill();
+        this.graphic = new PIXI.Container();
+        
+        // Try to create a sprite from the specified path
+        try {
+            // Create a texture from the sprite path
+            this.sprite = PIXI.Sprite.from(this.data.image);
+            
+            // Center the sprite
+            this.sprite.anchor.set(0.5);
+            
+            // Size the sprite to match the desired dimensions
+            this.sprite.width = this.data.width;
+            this.sprite.height = this.data.height;
+            
+            // Add to the container
+            this.graphic.addChild(this.sprite);
+        } catch (error) {
+            console.error(`Failed to load sprite for POI ${this.id}:`, error);
+            
+            // Create a fallback graphic if sprite loading fails
+            this.createFallbackGraphic();
+        }
         
         // Set interactive properties
         this.graphic.eventMode = 'dynamic';
@@ -36,6 +50,23 @@ export default class PointOfInterest extends PhysicsEntity {
         
         // Set up event handlers
         this.setupEventHandlers();
+    }
+    
+    createFallbackGraphic() {
+        // Create a fallback rectangle if the sprite fails to load
+        this.fallbackGraphic = new PIXI.Graphics();
+        this.fallbackGraphic.beginFill(this.data.color || poiConfig.DEFAULT_SPRITE.FALLBACK_COLOR, 0.7);
+        this.fallbackGraphic.lineStyle(2, 0xFFFFFF, 0.8);
+        this.fallbackGraphic.drawRect(
+            -this.data.width/2, 
+            -this.data.height/2, 
+            this.data.width, 
+            this.data.height
+        );
+        this.fallbackGraphic.endFill();
+        
+        // Add to the container
+        this.graphic.addChild(this.fallbackGraphic);
     }
     
     createPhysicsBody() {

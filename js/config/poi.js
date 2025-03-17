@@ -29,8 +29,8 @@ const poiConfig = {
     // POI data definitions
     ITEMS: [
         { 
-            x: 1000, 
-            y: 1000, 
+            x: 100, 
+            y: -1100, 
             width: 480, 
             height: 270, 
             color: 0x00FFFF,
@@ -38,37 +38,31 @@ const poiConfig = {
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vehicula ullamcorper orci quis tempor. Fusce sagittis dui sed aliquam dapibus.",
             webAddress: "https://github.com/CHNisan/Spaceship-Portfolio.git",
             image: "",
-            gif: ""
+            video: ""
         },
         { 
-            x: -1200, 
-            y: 800, 
+            x: 700, 
+            y: -1100, 
             width: 480, 
             height: 270, 
             color: 0xFFAA00,
-            title: "Mining Outpost Beta",
+            title: "GMTK Game Jam",
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vehicula ullamcorper orci quis tempor. Fusce sagittis dui sed aliquam dapibus.",
-            webAddress: "https://www.space.com/topics/asteroids"
+            webAddress: "https://spslink.itch.io/",
+            image: "GMTKGameJamScreenShot",
+            video: "TestGif"
         },
         { 
-            x: 500, 
-            y: -1500, 
+            x: 1300, 
+            y: -1100, 
             width: 480, 
             height: 270, 
             color: 0x00FF00,
-            title: "Communications Relay",
+            title: "COVID-19 Simulation",
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vehicula ullamcorper orci quis tempor. Fusce sagittis dui sed aliquam dapibus.",
-            webAddress: "https://www.esa.int/Enabling_Support/Operations/Estrack_tracking_stations"
-        },
-        { 
-            x: -800, 
-            y: -900, 
-            width: 480, 
-            height: 270, 
-            color: 0xFF00FF,
-            title: "Trading Hub Gamma",
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vehicula ullamcorper orci quis tempor. Fusce sagittis dui sed aliquam dapibus.",
-            webAddress: "https://www.spacetraders.io/"
+            webAddress: "https://www.linkedin.com/posts/chrisnisan_a-paper-i-did-on-simulating-covid-19-in-a-activity-7201553501112406017-bLVm?utm_source=share&utm_medium=member_desktop&rcm=ACoAAE7N2JcB6SCyqA9-yM4d_7QIhpQZGKw34uc",
+            image: "COVIDSimScreenShot",
+            video: "TestGif"
         }
     ]
 };
