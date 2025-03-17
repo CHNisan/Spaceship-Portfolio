@@ -12,8 +12,6 @@ export default class PointOfInterest extends PhysicsEntity {
         this.isHovered = false;
         this.position.x = data.x;
         this.position.y = data.y;
-        this.sprite = null;
-        this.fallbackGraphic = null;
     }
     
     createGraphic() {
@@ -21,23 +19,32 @@ export default class PointOfInterest extends PhysicsEntity {
         
         // Try to create a sprite from the specified path
         try {
-            // Create a texture from the sprite path
             this.sprite = PIXI.Sprite.from(this.data.image);
-            
-            // Center the sprite
+
             this.sprite.anchor.set(0.5);
-            
-            // Size the sprite to match the desired dimensions
             this.sprite.width = this.data.width;
             this.sprite.height = this.data.height;
-            
-            // Add to the container
+        
             this.graphic.addChild(this.sprite);
         } catch (error) {
             console.error(`Failed to load sprite for POI ${this.id}:`, error);
             
             // Create a fallback graphic if sprite loading fails
             this.createFallbackGraphic();
+        }
+
+        // Try to create the hover video
+        try {
+            this.video = PIXI.Sprite.from(this.data.video);
+
+            this.video.anchor.set(0.5);
+            this.video.width = this.data.width;
+            this.video.height = this.data.height;
+            this.video.alpha = 0;
+
+            this.graphic.addChild(this.video);
+        } catch (error) {
+            console.error(`Failed to load video for POI ${this.id}:`, error);
         }
         
         // Set interactive properties
@@ -48,7 +55,6 @@ export default class PointOfInterest extends PhysicsEntity {
         this.graphic.isPOI = true;
         this.graphic.poiId = this.id;
         
-        // Set up event handlers
         this.setupEventHandlers();
     }
     
@@ -65,7 +71,6 @@ export default class PointOfInterest extends PhysicsEntity {
         );
         this.fallbackGraphic.endFill();
         
-        // Add to the container
         this.graphic.addChild(this.fallbackGraphic);
     }
     
@@ -84,10 +89,19 @@ export default class PointOfInterest extends PhysicsEntity {
     setupEventHandlers() {
         this.graphic.on('pointerover', () => {
             this.isHovered = true;
+
+            if (this.sprite && this.video){
+                this.sprite.alpha = 0;
+                this.video.alpha = 1;
+            }
         });
         
         this.graphic.on('pointerout', () => {
             this.isHovered = false;
+            if (this.sprite && this.video){
+                this.sprite.alpha = 1;
+                this.video.alpha = 0;
+            }
         });
         
         this.graphic.on('pointerdown', () => {

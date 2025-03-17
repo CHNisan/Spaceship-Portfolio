@@ -37,8 +37,8 @@ const poiConfig = {
             title: "This Website",
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vehicula ullamcorper orci quis tempor. Fusce sagittis dui sed aliquam dapibus.",
             webAddress: "https://github.com/CHNisan/Spaceship-Portfolio.git",
-            image: "",
-            video: ""
+            image: "GMTKGameJamScreenShot",
+            video: "TestVideo"
         },
         { 
             x: 700, 
@@ -50,7 +50,7 @@ const poiConfig = {
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vehicula ullamcorper orci quis tempor. Fusce sagittis dui sed aliquam dapibus.",
             webAddress: "https://spslink.itch.io/",
             image: "GMTKGameJamScreenShot",
-            video: "TestGif"
+            video: "TestVideo"
         },
         { 
             x: 1300, 
@@ -62,7 +62,7 @@ const poiConfig = {
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vehicula ullamcorper orci quis tempor. Fusce sagittis dui sed aliquam dapibus.",
             webAddress: "https://www.linkedin.com/posts/chrisnisan_a-paper-i-did-on-simulating-covid-19-in-a-activity-7201553501112406017-bLVm?utm_source=share&utm_medium=member_desktop&rcm=ACoAAE7N2JcB6SCyqA9-yM4d_7QIhpQZGKw34uc",
             image: "COVIDSimScreenShot",
-            video: "TestGif"
+            video: "TestVideo"
         }
     ]
 };
