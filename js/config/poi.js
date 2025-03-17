@@ -10,17 +10,19 @@ const poiConfig = {
     FONT: {
         TITLE: {
             FAMILY: 'Arial',
-            ALIGN: 'center',
-            SIZE: 40,
+            WEIGHT: 'bold',
+            ALIGN: 'Left',
+            SIZE: 35,
             XOFFSET: 0,
-            YOFFSET: -100,
+            YOFFSET: 50,
         },
         DESCRIPTION: {
             FAMILY: 'Arial',
-            ALIGN: 'center',
-            SIZE: 14,
-            XOFFSET: 20,
-            YOFFSET: -20
+            WEIGHT: 'normal',
+            ALIGN: 'left',
+            SIZE: 25,
+            XOFFSET: 10,
+            YOFFSET: 100
         }
     },
     
@@ -29,10 +31,11 @@ const poiConfig = {
         { 
             x: 1000, 
             y: 1000, 
-            width: 100, 
-            height: 100, 
+            width: 480, 
+            height: 270, 
             color: 0x00FFFF,
             title: "This Website",
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vehicula ullamcorper orci quis tempor. Fusce sagittis dui sed aliquam dapibus.",
             webAddress: "https://github.com/CHNisan/Spaceship-Portfolio.git",
             image: "",
             gif: ""
@@ -40,28 +43,31 @@ const poiConfig = {
         { 
             x: -1200, 
             y: 800, 
-            width: 150, 
-            height: 80, 
+            width: 480, 
+            height: 270, 
             color: 0xFFAA00,
             title: "Mining Outpost Beta",
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vehicula ullamcorper orci quis tempor. Fusce sagittis dui sed aliquam dapibus.",
             webAddress: "https://www.space.com/topics/asteroids"
         },
         { 
             x: 500, 
             y: -1500, 
-            width: 120, 
-            height: 120, 
+            width: 480, 
+            height: 270, 
             color: 0x00FF00,
             title: "Communications Relay",
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vehicula ullamcorper orci quis tempor. Fusce sagittis dui sed aliquam dapibus.",
             webAddress: "https://www.esa.int/Enabling_Support/Operations/Estrack_tracking_stations"
         },
         { 
             x: -800, 
             y: -900, 
-            width: 80, 
-            height: 160, 
+            width: 480, 
+            height: 270, 
             color: 0xFF00FF,
             title: "Trading Hub Gamma",
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vehicula ullamcorper orci quis tempor. Fusce sagittis dui sed aliquam dapibus.",
             webAddress: "https://www.spacetraders.io/"
         }
     ]

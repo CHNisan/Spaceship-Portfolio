@@ -27,6 +27,7 @@ class EntityManager {
         // Containers
         this.asteroidsContainer = null;
         this.poiContainer = null;
+        this.poiSignContainer = null;
         this.worldObjectsContainer = null
         
         // POI data from config
@@ -54,10 +55,12 @@ class EntityManager {
     createContainers() {
         this.asteroidsContainer = new PIXI.Container();
         this.poiContainer = new PIXI.Container();
+        this.poiSignContainer = new PIXI.Container();
         this.worldObjectsContainer = new PIXI.Container();
         
         this.container.addChild(this.asteroidsContainer);
         this.container.addChild(this.poiContainer);
+        this.container.addChild(this.poiSignContainer);
         this.container.addChild(this.worldObjectsContainer);
     }
     
@@ -138,20 +141,38 @@ class EntityManager {
             );
             poi.init();
 
+            // Create Sign (not as child of poi otherwise it would get scaled up as well when hovered over)
             const title = new Sign(
-                null, 
-                poiConfig.FONT.TITLE.XOFFSET, 
-                poiConfig.FONT.TITLE.YOFFSET, 
+                this.poiSignContainer, 
+                poiConfig.FONT.TITLE.XOFFSET + poiData.x, // Plus poi position to move the text to the poi position
+                poiConfig.FONT.TITLE.YOFFSET + poiData.y + poiData.height/2, // Plus half of poi height to move the text just below the poi
                 poiConfig.FONT.TITLE.SIZE, 
                 poiData.width, 
-                poiData.title);
+                poiData.title,
+                poiConfig.FONT.TITLE.WEIGHT,
+                poiConfig.FONT.TITLE.ALIGN
+            );
             title.init();
 
-            poi.graphic.addChild(title.graphic);
+            // Create Description as child of title graphic
+            const description = new Sign(
+                title.graphic, 
+                0, 
+                poiConfig.FONT.DESCRIPTION.YOFFSET, 
+                poiConfig.FONT.DESCRIPTION.SIZE, 
+                poiData.width - poiConfig.FONT.DESCRIPTION.XOFFSET, 
+                poiData.description,
+                poiConfig.FONT.DESCRIPTION.WEIGHT,
+                poiConfig.FONT.DESCRIPTION.ALIGN);
+            description.init();
             
-            this.pointsOfInterest.push([poi, title]);
+            // Object to make a poi's title and description easy to reference
+            this.pointsOfInterest.push({
+                currentPoi: poi, 
+                title: title, 
+                description: description
+            });
         });
-        console.log(this.descriptions);
     }
     
     update(deltaTime) {
@@ -167,7 +188,7 @@ class EntityManager {
         
         // Update POIs
         this.pointsOfInterest.forEach(poi => {
-            poi[0].update(deltaTime);
+            poi.currentPoi.update(deltaTime);
         });
     }
     

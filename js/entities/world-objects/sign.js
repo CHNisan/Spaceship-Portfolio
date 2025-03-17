@@ -7,13 +7,14 @@ const {
 } = config;
 
 export default class Sign extends Entity {
-    constructor(container, x, y, size, wrapWidth, text, align = signConfig.FONT.ALIGN, fontFamily = signConfig.FONT.FAMILY, darkColor = themeConfig.MAIN.DARK.PRIMARY, lightColor = themeConfig.MAIN.LIGHT.PRIMARY) {
+    constructor(container, x, y, size, wrapWidth, text, fontWeight = "normal", align = signConfig.FONT.ALIGN, fontFamily = signConfig.FONT.FAMILY, darkColor = themeConfig.MAIN.DARK.PRIMARY, lightColor = themeConfig.MAIN.LIGHT.PRIMARY) {
         super(container);
         this.x = x;
         this.y = y;
         this.size = size;
         this.wrapWidth = wrapWidth;
         this.text = text;
+        this.fontWeight = fontWeight;
         this.align = align;
         this.fontFamily = fontFamily;
         this.lightColor = lightColor;
@@ -30,6 +31,7 @@ export default class Sign extends Entity {
             fontFamily: this.fontFamily,
             fontSize: this.size,
             fill: this.darkColor,
+            fontWeight: this.fontWeight,
             align: this.align,
             wordWrap: true,
             wordWrapWidth: this.wrapWidth
