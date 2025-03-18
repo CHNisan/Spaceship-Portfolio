@@ -2,7 +2,10 @@ import Wall from '../entities/world-objects/wall.js';
 import Ball from '../entities/playground-objects/ball.js';
 import config from '../config/index.js';
 
-const { theme: themeConfig } = config;
+const { 
+    theme: themeConfig,
+    ball: ballConfig
+} = config;
 
 class PlaygroundManager {
     constructor() {
@@ -25,7 +28,7 @@ class PlaygroundManager {
         
         this.createContainers();
 
-        this.createBowling();
+        this.createBowling(-1400, 580, 1000, 10, 75, 400, themeConfig.COLORS.BLUE, themeConfig.COLORS.RED);
     }
     
     createContainers() {
@@ -38,14 +41,22 @@ class PlaygroundManager {
     
 
 
-    createBowling() {
-        // Create bowling area
-        this.createWall(-1400, 580, 1000, 10, themeConfig.COLORS.BLUE);
-        this.createWall(-1400, 1000, 1000, 10, themeConfig.COLORS.BLUE);
+    createBowling(x, y, width, height, radius,  gap, wallColor, ballColor) {
+        // Paramenters so the bowling area can be moved/resized as one while maintaining its layout
 
-        const ball = new Ball(this.ballsContainer, this.physics, 400, 400, 100, themeConfig.COLORS.RED);
-        ball.init();
-        this.balls.push(ball);
+        // Create bowling area
+        this.createWall(x, y, width, height, wallColor);
+        this.createWall(x, y + gap + 2*height, width, height, wallColor);
+
+        // Create bowling ball
+        this.createBall(x + width/2 - radius, y + gap/2, radius, ballColor, ballConfig.BOWLING);
+
+        // Create pins
+        // for (let i = 0; i < 4; i++) {
+        //     for (let j = 0; j < i; j++){
+
+        //     }
+        //   }
     }
 
     createBallInHole(){
@@ -62,6 +73,12 @@ class PlaygroundManager {
         const wall = new Wall(this.wallsContainer, this.physics, x, y, width, height, color);
         wall.init();
         this.walls.push(wall);
+    }
+
+    createBall(x, y, radius, color, settings){
+        const ball = new Ball(this.ballsContainer, this.physics, x, y, radius, color, settings);
+        ball.init();
+        this.balls.push(ball);
     }
     
 
