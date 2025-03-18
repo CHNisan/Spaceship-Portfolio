@@ -89,10 +89,10 @@ class WorldObjectManager {
         // Paramenters so the paths can be moved/resized as one while maintaining their layout
 
         // Create each path pair to make a full pathway
-        this.createPathPair(x, y + width, width, height, gap, themeConfig.COLORS.BLUE, true);
-        this.createPathPair(x, y - width - height - gap, width, height, gap, themeConfig.COLORS.YELLOW, true);
-        this.createPathPair(x + width + gap , y - gap - width, height, width, gap, themeConfig.COLORS.GREEN, false);
-        this.createPathPair(x + width - height, y - width - gap, height, width, gap, themeConfig.COLORS.PINK, false);
+        this.createPathPair(x, y - width - height - gap, width, height, gap, themeConfig.COLORS.YELLOW, true); // Top path
+        this.createPathPair(x, y + width, width, height, gap, themeConfig.COLORS.BLUE, true); // Bottom path
+        this.createPathPair(x + width - height, y - width - gap, height, width, gap, themeConfig.COLORS.PINK, false); // Left path
+        this.createPathPair(x + width + gap , y - gap - width, height, width, gap, themeConfig.COLORS.GREEN, false); // Right path
     }
 
     createPathPair(x, y, width, height, gap, color, isHorizontal = true){

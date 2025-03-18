@@ -28,7 +28,7 @@ class PlaygroundManager {
         
         this.createContainers();
 
-        this.createBowling(-1400, 580, 1000, 10, 75, 400, themeConfig.COLORS.BLUE, themeConfig.COLORS.RED);
+        this.createBowling(-1400, 580, 1000, 10, 400, 75, 15, 75, themeConfig.COLORS.BLUE, themeConfig.COLORS.RED);
     }
     
     createContainers() {
@@ -41,22 +41,40 @@ class PlaygroundManager {
     
 
 
-    createBowling(x, y, width, height, radius,  gap, wallColor, ballColor) {
+    createBowling(x, y, width, height, areaGap, ballRadius, pinRadius, pinGap, wallColor, ballColor) {
         // Paramenters so the bowling area can be moved/resized as one while maintaining its layout
 
         // Create bowling area
         this.createWall(x, y, width, height, wallColor);
-        this.createWall(x, y + gap + 2*height, width, height, wallColor);
+        this.createWall(x, y + areaGap + 2*height, width, height, wallColor);
 
         // Create bowling ball
-        this.createBall(x + width/2 - radius, y + gap/2, radius, ballColor, ballConfig.BOWLING);
+        this.createBall(x + width/2 - ballRadius, y + areaGap/2, ballRadius, ballColor, ballConfig.BOWLING);
 
         // Create pins
-        // for (let i = 0; i < 4; i++) {
-        //     for (let j = 0; j < i; j++){
+        const rows = 6;
 
-        //     }
-        //   }
+        for (let row = rows; row > 0; row--) {
+            // Calculate horizontal position for this row
+            const rowXOffset = (rows - row) * pinGap;
+            
+            // Create pins in current row
+            for (let pin = 1; pin <= row; pin++) {
+            // Calculate vertical spacing for pins in this row
+            const pinYPosition = y + (pin * areaGap) / (row + 1);
+            
+            // Calculate x position with proper centering
+            const pinXPosition = x - width/2 + rowXOffset + pinRadius;
+            
+            this.createBall(
+                pinXPosition,
+                pinYPosition,
+                pinRadius, 
+                ballColor, 
+                ballConfig.PIN
+            );
+            }
+        }
     }
 
     createBallInHole(){
