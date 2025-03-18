@@ -52,29 +52,13 @@ class PlaygroundManager {
         this.createBall(x + width/2 - ballRadius, y + areaGap/2, ballRadius, ballColor, ballConfig.BOWLING);
 
         // Create pins
-        const rows = 6;
-
-        for (let row = rows; row > 0; row--) {
-            // Calculate horizontal position for this row
-            const rowXOffset = (rows - row) * pinGap;
-            
-            // Create pins in current row
-            for (let pin = 1; pin <= row; pin++) {
-            // Calculate vertical spacing for pins in this row
-            const pinYPosition = y + (pin * areaGap) / (row + 1);
-            
-            // Calculate x position with proper centering
-            const pinXPosition = x - width/2 + rowXOffset + pinRadius;
-            
-            this.createBall(
-                pinXPosition,
-                pinYPosition,
-                pinRadius, 
-                ballColor, 
-                ballConfig.PIN
-            );
+        let xGap = pinGap
+        for (let i = 6; i > 0; i--) {
+            for (let j = 1; j <= i; j++){
+                this.createBall(x - width/2 + xGap + pinRadius, y + (j * areaGap)/(i+1), pinRadius, ballColor, ballConfig.PIN);
             }
-        }
+            xGap += pinGap
+          }
     }
 
     createBallInHole(){
