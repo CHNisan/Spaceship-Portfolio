@@ -5,6 +5,7 @@ import Asteroid from '../entities/asteroid.js';
 import PointOfInterest from '../entities/poi.js';
 import Sign from "../entities/world-objects/sign.js"
 import WorldObjectManager from './world-object-manager.js'
+import PlaygroundManager from './playground-manager.js'
 
 // Import configs
 const { 
@@ -29,6 +30,7 @@ class EntityManager {
         this.poiContainer = null;
         this.poiSignContainer = null;
         this.worldObjectsContainer = null
+        this.playgroundContainer = null;
         
         // POI data from config
         this.poiData = poiConfig.ITEMS;
@@ -50,6 +52,7 @@ class EntityManager {
         this.createPointsOfInterest();
 
         WorldObjectManager.init(this.worldObjectsContainer, this.physics);
+        PlaygroundManager.init(this.playgroundContainer, this.physics);
     }
     
     createContainers() {
@@ -57,11 +60,13 @@ class EntityManager {
         this.poiContainer = new PIXI.Container();
         this.poiSignContainer = new PIXI.Container();
         this.worldObjectsContainer = new PIXI.Container();
+        this.playgroundContainer = new PIXI.Container();
         
         this.container.addChild(this.asteroidsContainer);
         this.container.addChild(this.poiContainer);
         this.container.addChild(this.poiSignContainer);
         this.container.addChild(this.worldObjectsContainer);
+        this.container.addChild(this.playgroundContainer);
     }
     
     createAsteroids() {
@@ -190,6 +195,8 @@ class EntityManager {
         this.pointsOfInterest.forEach(poi => {
             poi.currentPoi.update(deltaTime);
         });
+
+        PlaygroundManager.update();
     }
     
     // Helper method for thrust visuals

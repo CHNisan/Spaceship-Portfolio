@@ -9,6 +9,7 @@ import poi from './poi.js';
 import ui from './ui.js';
 import theme from './theme.js'
 import sign from './sign.js'
+import ball from './ball.js'
 
 // Export all configurations
 export default {
@@ -20,7 +21,8 @@ export default {
     poi,
     ui,
     theme,
-    sign
+    sign,
+    ball
 };
 
 // Also export individual configs for direct imports
@@ -33,5 +35,6 @@ export {
     poi,
     ui,
     theme,
-    sign
+    sign,
+    ball
 };

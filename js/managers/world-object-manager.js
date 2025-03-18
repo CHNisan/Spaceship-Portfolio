@@ -1,5 +1,4 @@
 import Path from '../entities/world-objects/path.js';
-import Wall from '../entities/world-objects/wall.js';
 import Sign from '../entities/world-objects/sign.js';
 import config from '../config/index.js';
 
@@ -34,9 +33,6 @@ class WorldObjectManager {
         // Initialize entity subsystems
         this.createSigns();
         this.createPaths();
-
-        this.wall = new Wall(this.wallsContainer, this.physics, -400, -400, 300, 300, themeConfig.COLORS.RED);
-        this.wall.init();
     }
     
     createContainers() {

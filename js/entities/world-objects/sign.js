@@ -39,8 +39,7 @@ export default class Sign extends Entity {
 
         this.graphic.anchor.set(0.5);
         this.graphic.resolution = signConfig.FONT.RESOLUTION;
-        this.graphic.position.x = this.x;
-        this.graphic.position.y = this.y;
+        this.graphic.position.set(this.x, this.y);
     }
 
     registerWithInputManager() {

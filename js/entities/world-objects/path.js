@@ -14,7 +14,9 @@ export default class Path extends Entity {
         this.graphic = new PIXI.Graphics();
 
         this.graphic.beginFill(this.color);
-        this.graphic.drawRect(this.x, this.y, this.width, this.height);
+        this.graphic.drawRect(0, 0, this.width, this.height);
         this.graphic.endFill();
+
+        this.graphic.position.set(this.x, this.y);
     }
 }
