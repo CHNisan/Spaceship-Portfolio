@@ -85,14 +85,26 @@ class WorldObjectManager {
 
 
 
-    createPaths(x, y, width, height, gap) {
-        // Paramenters so the paths can be moved/resized as one while maintaining their layout
-
-        // Create each path pair to make a full pathway
-        this.createPathPair(x, y - width - height - gap, width, height, gap, themeConfig.COLORS.YELLOW, true); // Top path
-        this.createPathPair(x, y + width, width, height, gap, themeConfig.COLORS.BLUE, true); // Bottom path
-        this.createPathPair(x + width - height, y - width - gap, height, width, gap, themeConfig.COLORS.PINK, false); // Left path
-        this.createPathPair(x + width + gap , y - gap - width, height, width, gap, themeConfig.COLORS.GREEN, false); // Right path
+    createPaths(x, y, pathWidth, pathHeight, gap) {
+        // Create a plus sign layout of path pairs around a center point (top left corner of the bottom arm)
+        
+        const COLORS = themeConfig.COLORS;
+        const isVertical = true;
+        const isHorizontal = false;
+        
+        // Calculate positions for each arm of the plus sign
+        const topY = y - pathWidth - pathHeight - gap;
+        const bottomY = y + pathWidth;
+        const leftX = x + pathWidth - pathHeight;
+        const leftY = y - pathWidth - gap;
+        const rightX = x + pathWidth + gap;
+        const rightY = y - gap - pathWidth;
+        
+        // Create each path pair to form the complete plus sign
+        this.createPathPair(x, topY, pathWidth, pathHeight, gap, COLORS.YELLOW, isVertical); // Top arm
+        this.createPathPair(x, bottomY, pathWidth, pathHeight, gap, COLORS.BLUE, isVertical); // Bottom arm
+        this.createPathPair(leftX, leftY, pathHeight, pathWidth, gap, COLORS.PINK, isHorizontal); // Left arm
+        this.createPathPair(rightX, rightY, pathHeight, pathWidth, gap, COLORS.GREEN, isHorizontal); // Right arm
     }
 
     createPathPair(x, y, width, height, gap, color, isHorizontal = true){

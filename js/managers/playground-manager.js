@@ -22,13 +22,18 @@ class PlaygroundManager {
         this.ballsContainer = null;
     }
     
+    //#region Setup
     init(container, physics) {
         this.container = container;
         this.physics = physics;
         
         this.createContainers();
 
-        this.createBowling(-1400, 580, 1000, 10, 400, 75, 15, 75, themeConfig.COLORS.BLUE, themeConfig.COLORS.RED);
+        this.createBowling(
+            -1400, 580, 1000, 10, 400, themeConfig.COLORS.BLUE, // Walls
+            75, themeConfig.COLORS.RED, // Ball
+            15, 6, 75, themeConfig.COLORS.RED // Pins
+        );
     }
     
     createContainers() {
@@ -38,29 +43,54 @@ class PlaygroundManager {
         this.container.addChild(this.wallsContainer);
         this.container.addChild(this.ballsContainer);
     }
+    //#endregion
     
 
 
-    createBowling(x, y, width, height, areaGap, ballRadius, pinRadius, pinGap, wallColor, ballColor) {
-        // Paramenters so the bowling area can be moved/resized as one while maintaining its layout
+    // #region Bowling
+    createBowling(x, y, wallWidth, wallHeight, laneWidth, wallColor, ballRadius, ballColor, pinRadius, pinRows, pinSpacing, pinColor) {
+        // Create a bowling lane with walls, ball, and pins that maintains its layout when moved or resized
+        
+        // Create the lane boundaries (top and bottom walls)
+        const topWallY = y;
+        const bottomWallY = y + laneWidth + 2 * wallHeight;
+        this.createWall(x, topWallY, wallWidth, wallHeight, wallColor);    // Top wall
+        this.createWall(x, bottomWallY, wallWidth, wallHeight, wallColor); // Bottom wall
+        
 
-        // Create bowling area
-        this.createWall(x, y, width, height, wallColor);
-        this.createWall(x, y + areaGap + 2*height, width, height, wallColor);
+        // Create the bowling ball (positioned in the middle of the lane, at the right end of the walls)
+        const ballX = x + wallWidth/2 - ballRadius;
+        const ballY = y + laneWidth/2;
+        this.createBall(ballX, ballY, ballRadius, ballColor, ballConfig.BOWLING);
+        
 
-        // Create bowling ball
-        this.createBall(x + width/2 - ballRadius, y + areaGap/2, ballRadius, ballColor, ballConfig.BOWLING);
-
-        // Create pins
-        let xGap = pinGap
-        for (let i = 6; i > 0; i--) {
-            for (let j = 1; j <= i; j++){
-                this.createBall(x - width/2 + xGap + pinRadius, y + (j * areaGap)/(i+1), pinRadius, ballColor, ballConfig.PIN);
-            }
-            xGap += pinGap
-          }
+        // Create pins (positioned in the middle of the lane, at the left end of the walls)
+        this.createPins(x, y, wallWidth, laneWidth, pinRadius, pinRows, pinSpacing, pinColor);
     }
 
+    createPins(x, y, wallWidth, laneWidth, radius, rows, spacing, color){
+        for (let row = rows; row > 0; row--) {
+            // Calculate horizontal position for this row
+            const rowXOffset = (rows - row) * spacing;
+            
+            // Create pins in current row
+            for (let pin = 1; pin <= row; pin++) {
+                // Calculate vertical spacing for pins in this row
+                const pinYPosition = y + (pin * laneWidth) / (row + 1);
+                
+                // Calculate x position with proper centering
+                const pinXPosition = x - wallWidth/2 + rowXOffset + radius;
+                
+                this.createBall(
+                    pinXPosition, pinYPosition, radius, color, ballConfig.PIN
+                );
+            }
+        }
+    }
+    //#endregion
+
+
+    
     createBallInHole(){
 
     }
@@ -69,8 +99,9 @@ class PlaygroundManager {
 
     }
 
+    
 
-
+    //#region Help functions
     createWall(x, y, width, height, color){
         const wall = new Wall(this.wallsContainer, this.physics, x, y, width, height, color);
         wall.init();
@@ -82,6 +113,7 @@ class PlaygroundManager {
         ball.init();
         this.balls.push(ball);
     }
+    //#endregion
     
 
 

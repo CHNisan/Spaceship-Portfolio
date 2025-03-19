@@ -21,7 +21,6 @@ export default class Ball extends PhysicsEntity {
     }
     
     createPhysicsBody() {
-        console.log(this.settings);
         this.physicsBody = this.physics.Bodies.circle(this.x, this.y, this.radius, {
             restitution: this.settings.PHYSICS.RESTITUTION,
             friction: this.settings.PHYSICS.FRICTION,
