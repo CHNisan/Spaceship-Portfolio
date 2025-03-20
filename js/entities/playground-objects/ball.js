@@ -1,13 +1,13 @@
 import PhysicsEntity from '../physics-entity.js';
 
 export default class Ball extends PhysicsEntity {
-    constructor(container, physics, x, y, radius, color, settings) {
+    constructor(container, physics, x, y, radius, color, physicsSettings) {
         super(container, physics);
         this.x = x;
         this.y = y;
         this.radius = radius;
         this.color = color;
-        this.settings = settings // Config values for specific kinds of balls
+        this.physicsSettings = physicsSettings // Config values for specific kinds of balls
     }
     
     createGraphic() {
@@ -22,9 +22,9 @@ export default class Ball extends PhysicsEntity {
     
     createPhysicsBody() {
         this.physicsBody = this.physics.Bodies.circle(this.x, this.y, this.radius, {
-            restitution: this.settings.PHYSICS.RESTITUTION,
-            friction: this.settings.PHYSICS.FRICTION,
-            density: this.settings.PHYSICS.DENSITY
+            restitution: this.physicsSettings.RESTITUTION,
+            friction: this.physicsSettings.FRICTION,
+            density: this.physicsSettings.DENSITY
         });
     }
 }

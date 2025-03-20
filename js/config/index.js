@@ -10,6 +10,7 @@ import ui from './ui.js';
 import theme from './theme.js'
 import sign from './sign.js'
 import ball from './ball.js'
+import playground from './playground.js';
 
 // Export all configurations
 export default {
@@ -22,7 +23,8 @@ export default {
     ui,
     theme,
     sign,
-    ball
+    ball,
+    playground
 };
 
 // Also export individual configs for direct imports
@@ -36,5 +38,6 @@ export {
     ui,
     theme,
     sign,
-    ball
+    ball,
+    playground
 };

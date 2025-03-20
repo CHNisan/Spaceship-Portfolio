@@ -46,8 +46,8 @@ class WorldObjectManager {
 
 
 
-    createGuide(x, y, width, height, gap){
-        this.createPaths(x, y, width, height, gap);
+    createGuide(x, y, pathWidth, pathHeight, laneWidth){
+        this.createPaths(x, y, pathWidth, pathHeight, laneWidth);
         this.createSigns(x, y);
     }
     
@@ -85,7 +85,7 @@ class WorldObjectManager {
 
 
 
-    createPaths(x, y, pathWidth, pathHeight, gap) {
+    createPaths(x, y, pathWidth, pathHeight, laneWidth) {
         // Create a plus sign layout of path pairs around a center point (top left corner of the bottom arm)
         
         const COLORS = themeConfig.COLORS;
@@ -93,31 +93,31 @@ class WorldObjectManager {
         const isHorizontal = false;
         
         // Calculate positions for each arm of the plus sign
-        const topY = y - pathWidth - pathHeight - gap;
+        const topY = y - pathWidth - pathHeight - laneWidth;
         const bottomY = y + pathWidth;
         const leftX = x + pathWidth - pathHeight;
-        const leftY = y - pathWidth - gap;
-        const rightX = x + pathWidth + gap;
-        const rightY = y - gap - pathWidth;
+        const leftY = y - pathWidth - laneWidth;
+        const rightX = x + pathWidth + laneWidth;
+        const rightY = y - laneWidth - pathWidth;
         
         // Create each path pair to form the complete plus sign
-        this.createPathPair(x, topY, pathWidth, pathHeight, gap, COLORS.YELLOW, isVertical); // Top arm
-        this.createPathPair(x, bottomY, pathWidth, pathHeight, gap, COLORS.BLUE, isVertical); // Bottom arm
-        this.createPathPair(leftX, leftY, pathHeight, pathWidth, gap, COLORS.PINK, isHorizontal); // Left arm
-        this.createPathPair(rightX, rightY, pathHeight, pathWidth, gap, COLORS.GREEN, isHorizontal); // Right arm
+        this.createPathPair(x, topY, pathWidth, pathHeight, laneWidth, COLORS.YELLOW, isVertical); // Top arm
+        this.createPathPair(x, bottomY, pathWidth, pathHeight, laneWidth, COLORS.BLUE, isVertical); // Bottom arm
+        this.createPathPair(leftX, leftY, pathHeight, pathWidth, laneWidth, COLORS.PINK, isHorizontal); // Left arm
+        this.createPathPair(rightX, rightY, pathHeight, pathWidth, laneWidth, COLORS.GREEN, isHorizontal); // Right arm
     }
 
-    createPathPair(x, y, width, height, gap, color, isHorizontal = true){
+    createPathPair(x, y, pathWidth, pathHeight, laneWidth, color, isHorizontal = true){
         // Create a pair of paths offset by a certain amount
-        const xOffset = isHorizontal ? gap + width : 0;
-        const yOffset = isHorizontal ? 0 : gap + height;
+        const xOffset = isHorizontal ? laneWidth + pathWidth : 0;
+        const yOffset = isHorizontal ? 0 : laneWidth + pathHeight;
 
-        this.createPath(x, y, width, height, color, this.pathsContainer, this.paths);
-        this.createPath(x + xOffset, y + yOffset, width, height, color, this.pathsContainer, this.paths);
+        this.createPath(x, y, pathWidth, pathHeight, color, this.pathsContainer, this.paths);
+        this.createPath(x + xOffset, y + yOffset, pathWidth, pathHeight, color, this.pathsContainer, this.paths);
     }
 
-    createPath(x, y, width, height, color, container, array){
-        const path = new Path(container, x, y, width, height, color);
+    createPath(x, y, pathWidth, pathHeight, color, container, array){
+        const path = new Path(container, x, y, pathWidth, pathHeight, color);
         path.init();
         array.push(path)
     }

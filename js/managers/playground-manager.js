@@ -4,7 +4,8 @@ import config from '../config/index.js';
 
 const { 
     theme: themeConfig,
-    ball: ballConfig
+    ball: ballConfig,
+    playground: playgroundConfig
 } = config;
 
 class PlaygroundManager {
@@ -29,11 +30,8 @@ class PlaygroundManager {
         
         this.createContainers();
 
-        this.createBowling(
-            -1400, 580, 1000, 10, 400, themeConfig.COLORS.BLUE, // Walls
-            75, themeConfig.COLORS.RED, // Ball
-            15, 6, 75, themeConfig.COLORS.RED // Pins
-        );
+        this.createBowling();
+        this.createBallInHole();
     }
     
     createContainers() {
@@ -46,60 +44,82 @@ class PlaygroundManager {
     //#endregion
     
 
+    //#region Section creation
+    createBowling() {
+        const position = playgroundConfig.BOWLING.POSITION;
+        const dimensions = playgroundConfig.BOWLING.DIMENSIONS;
+        const pins = playgroundConfig.BOWLING.PINS;
+        const color = playgroundConfig.BOWLING.WALL_COLOR;
 
-    // #region Bowling
-    createBowling(x, y, wallWidth, wallHeight, laneWidth, wallColor, ballRadius, ballColor, pinRadius, pinRows, pinSpacing, pinColor) {
-        // Create a bowling lane with walls, ball, and pins that maintains its layout when moved or resized
-        
         // Create the lane boundaries (top and bottom walls)
-        const topWallY = y;
-        const bottomWallY = y + laneWidth + 2 * wallHeight;
-        this.createWall(x, topWallY, wallWidth, wallHeight, wallColor);    // Top wall
-        this.createWall(x, bottomWallY, wallWidth, wallHeight, wallColor); // Bottom wall
-        
+        const topWallY = position.Y;
+        const bottomWallY = position.Y + dimensions.LANE_WIDTH;
+        this.createWall(position.X, topWallY, dimensions.WALL_WIDTH, dimensions.WALL_HEIGHT, color);    // Top wall
+        this.createWall(position.X, bottomWallY, dimensions.WALL_WIDTH, dimensions.WALL_HEIGHT, color); // Bottom wall
+
 
         // Create the bowling ball (positioned in the middle of the lane, at the right end of the walls)
-        const ballX = x + wallWidth/2 - ballRadius;
-        const ballY = y + laneWidth/2;
-        this.createBall(ballX, ballY, ballRadius, ballColor, ballConfig.BOWLING);
-        
+        const ballX = position.X + dimensions.WALL_WIDTH/2 - ballConfig.BOWLING.RADIUS;
+        const ballY = position.Y + dimensions.LANE_WIDTH/2;
+        this.createBall(ballX, ballY, ballConfig.BOWLING);
+
 
         // Create pins (positioned in the middle of the lane, at the left end of the walls)
-        this.createPins(x, y, wallWidth, laneWidth, pinRadius, pinRows, pinSpacing, pinColor);
+        this.createPins(position.X, position.Y, dimensions.WALL_WIDTH, dimensions.LANE_WIDTH, pins.ROWS, pins.SPACING, pins.BALL_TYPE)
     }
 
-    createPins(x, y, wallWidth, laneWidth, radius, rows, spacing, color){
-        for (let row = rows; row > 0; row--) {
-            // Calculate horizontal position for this row
-            const rowXOffset = (rows - row) * spacing;
-            
-            // Create pins in current row
-            for (let pin = 1; pin <= row; pin++) {
-                // Calculate vertical spacing for pins in this row
-                const pinYPosition = y + (pin * laneWidth) / (row + 1);
-                
-                // Calculate x position with proper centering
-                const pinXPosition = x - wallWidth/2 + rowXOffset + radius;
-                
-                this.createBall(
-                    pinXPosition, pinYPosition, radius, color, ballConfig.PIN
-                );
-            }
-        }
-    }
-    //#endregion
 
 
     
     createBallInHole(){
+        const position = playgroundConfig.BALL_IN_HOLE.POSITION;
+        const dimensions = playgroundConfig.BALL_IN_HOLE.DIMENSIONS;
+        const obstacle = playgroundConfig.BALL_IN_HOLE.OBSTACLE;
+        const color = playgroundConfig.BALL_IN_HOLE.WALL_COLOR;
 
+
+        // Create the lane boundaries (top, bottom and left walls)
+        this.createWall(position.X, position.Y, dimensions.WALL_WIDTH, dimensions.WALL_HEIGHT, color);    // Top wall
+
+        const bottomWallY = position.Y + dimensions.LANE_WIDTH;
+        this.createWall(position.X, bottomWallY, dimensions.WALL_WIDTH, dimensions.WALL_HEIGHT, color); // Bottom wall
+
+        const leftWallX = position.X - dimensions.WALL_WIDTH/2;
+        const leftWallY = position.Y + dimensions.LANE_WIDTH/2;
+        const leftWallHeight = dimensions.WALL_HEIGHT + dimensions.LANE_WIDTH;
+        this.createWall(leftWallX, leftWallY, dimensions.WALL_HEIGHT, leftWallHeight, color);    // Left wall
+
+
+        // Create the goal (open square to get the ball into, positioned in the left center of the lane)
+        const horizontalGoalX = position.X - dimensions.WALL_WIDTH/3;
+        const horizontalGoalWidth = dimensions.WALL_WIDTH/10;
+
+        const topGoalY = position.Y + (2 * dimensions.LANE_WIDTH)/3;
+        this.createWall(horizontalGoalX, topGoalY, horizontalGoalWidth, dimensions.WALL_HEIGHT, color); // Top wall
+
+        const bottomGoalY = position.Y + dimensions.LANE_WIDTH/3;
+        this.createWall(horizontalGoalX, bottomGoalY, horizontalGoalWidth, dimensions.WALL_HEIGHT, color); // Bottom wall
+
+        const leftGoalX = position.X - dimensions.WALL_WIDTH/3 - horizontalGoalWidth/2;
+        const leftGoalY = position.Y + dimensions.LANE_WIDTH/2;
+        const leftGoalHeight = dimensions.WALL_HEIGHT + dimensions.LANE_WIDTH/3;
+        this.createWall(leftGoalX, leftGoalY, dimensions.WALL_HEIGHT, leftGoalHeight, color);    // Left wall
+
+
+        // Create the lane obsticales (balls scattered across the inside)
+        const adjustedWallWidth = dimensions.WALL_WIDTH/3 // Diving by three to make the pins spawn 1/3 into the area rather than right at the start
+        this.createPins(position.X, position.Y, adjustedWallWidth, dimensions.LANE_WIDTH, obstacle.ROWS, obstacle.SPACING, obstacle.BALL_TYPE)
+        
+
+        // Create the ball (positioned in the middle of the lane, at the right end of the walls)
+        const ballX = position.X + dimensions.WALL_WIDTH/2 - obstacle.BALL_TYPE.RADIUS;
+        const ballY = position.Y + dimensions.LANE_WIDTH/2;
+        this.createBall(ballX, ballY, ballConfig.DEFAULT);
     }
+    //#endregion
 
-    createRacetrack(){
 
-    }
 
-    
 
     //#region Help functions
     createWall(x, y, width, height, color){
@@ -108,10 +128,28 @@ class PlaygroundManager {
         this.walls.push(wall);
     }
 
-    createBall(x, y, radius, color, settings){
-        const ball = new Ball(this.ballsContainer, this.physics, x, y, radius, color, settings);
+    createBall(x, y, settings){
+        const ball = new Ball(this.ballsContainer, this.physics, x, y, settings.RADIUS, settings.COLOR, settings.PHYSICS);
         ball.init();
         this.balls.push(ball);
+    }
+
+    createPins(x, y, wallWidth, laneWidth, pinRows, pinSpacing, pinType){
+        for (let row = pinRows; row > 0; row--) {
+            // Calculate horizontal position for this row
+            const rowXOffset = (pinRows - row) * pinSpacing;
+            
+            // Create pins in current row
+            for (let pin = 1; pin <= row; pin++) {
+                // Calculate vertical spacing for pins in this row
+                const pinYPosition = y + (pin * laneWidth) / (row + 1);
+                
+                // Calculate x position with proper centering
+                const pinXPosition = x - wallWidth/2 + rowXOffset + pinType.RADIUS;
+                
+                this.createBall(pinXPosition, pinYPosition, pinType);
+            }
+        }
     }
     //#endregion
     
