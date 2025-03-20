@@ -2,23 +2,23 @@ const entitiesConfig = {
     // Asteroid settings
     ASTEROIDS: {
         COUNT: 30,  // Number of asteroids to spawn
-        MIN_SIZE: 20,  // Minimum asteroid size
-        MAX_SIZE: 70,  // Maximum asteroid size
-        MIN_SEGMENTS: 5,  // Minimum number of segments (polygon sides)
-        MAX_SEGMENTS: 10,  // Maximum number of segments
-        COLOR: 0x888888,  // Base asteroid color
-        SAFE_RADIUS: 300,  // Minimum distance from center/ship spawn
+        MIN_SIZE: 20, 
+        MAX_SIZE: 70,
+        MIN_SEGMENTS: 5, //polygon sides
+        MAX_SEGMENTS: 10, 
+        COLOR: 0x888888, 
         PHYSICS: {
-            RESTITUTION: 0.6,  // Bounciness
+            RESTITUTION: 0.6,
             FRICTION: 0.01,
             DENSITY: 0.001
+        },
+        POSITION: {
+            // Min and max posible x and y spawn positions
+            MIN_X: -2500,
+            MAX_X: 2500,
+            MIN_Y: -2500,
+            MAX_Y: 2500,
         }
-    },
-    
-    // POI buffer distances to keep asteroids away
-    POI_BUFFER: {
-        X_MULTIPLIER: 0.5,  // 50% buffer on x-axis
-        Y_MULTIPLIER: 0.5   // 50% buffer on y-axis
     }
 };
 

@@ -74,32 +74,9 @@ class EntityManager {
         for (let i = 0; i < entitiesConfig.ASTEROIDS.COUNT; i++) {
             // Find a valid position for the asteroid
             let x, y;
-            let isValidPosition;
-            
-            do {
-                x = Math.random() * worldConfig.SIZE - worldConfig.SIZE / 2;
-                y = Math.random() * worldConfig.SIZE - worldConfig.SIZE / 2;
-                
-                // Check if too close to ship spawn
-                isValidPosition = Math.sqrt(x*x + y*y) >= entitiesConfig.ASTEROIDS.SAFE_RADIUS;
-                
-                // Check if inside any POI
-                if (isValidPosition) {
-                    for (const poi of this.poiData) {
-                        // Add buffer
-                        const bufferX = poi.width * entitiesConfig.POI_BUFFER.X_MULTIPLIER;
-                        const bufferY = poi.height * entitiesConfig.POI_BUFFER.Y_MULTIPLIER;
-                        
-                        if (x > poi.x - (poi.width/2 + bufferX) && 
-                            x < poi.x + (poi.width/2 + bufferX) && 
-                            y > poi.y - (poi.height/2 + bufferY) && 
-                            y < poi.y + (poi.height/2 + bufferY)) {
-                            isValidPosition = false;
-                            break;
-                        }
-                    }
-                }
-            } while (!isValidPosition);
+
+            x = this.getRandomNumber(entitiesConfig.ASTEROIDS.POSITION.MIN_X, entitiesConfig.ASTEROIDS.POSITION.MAX_X);
+            y = this.getRandomNumber(entitiesConfig.ASTEROIDS.POSITION.MIN_Y, entitiesConfig.ASTEROIDS.POSITION.MAX_Y);
             
             // Generate asteroid properties
             const size = Math.random() * 
@@ -116,6 +93,16 @@ class EntityManager {
             this.asteroids.push(asteroid);
         }
     }
+
+    getRandomNumber(min, max) {
+        // Make sure min is actually less than max
+        if (min > max) {
+          [min, max] = [max, min]; // Swap values if needed
+        }
+        
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+      
     
     createSpaceship() {
         this.ship = new Ship(this.container, this.physics);
