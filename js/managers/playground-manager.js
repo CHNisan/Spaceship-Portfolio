@@ -46,6 +46,8 @@ class PlaygroundManager {
 
     //#region Section creation
     createBowling() {
+        // Create a retangle area with an open left and right side to contain a bowling ball and pins
+
         const position = playgroundConfig.BOWLING.POSITION;
         const dimensions = playgroundConfig.BOWLING.DIMENSIONS;
         const pins = playgroundConfig.BOWLING.PINS;
@@ -72,6 +74,8 @@ class PlaygroundManager {
 
     
     createBallInHole(){
+        // Create a retangle area with an open left side to contain a goal, obstacles and ball
+
         const position = playgroundConfig.BALL_IN_HOLE.POSITION;
         const dimensions = playgroundConfig.BALL_IN_HOLE.DIMENSIONS;
         const obstacle = playgroundConfig.BALL_IN_HOLE.OBSTACLE;

@@ -4,6 +4,7 @@ import ballConfig from './ball.js'
 const playgroundConfig = {
     BOWLING: {
         POSITION: {
+            // Top center position of the lanes
             X: -1400,
             Y: 580
         },
@@ -15,13 +16,14 @@ const playgroundConfig = {
         WALL_COLOR: themeConfig.COLORS.BLUE,
         PINS: {
             ROWS: 6,
-            SPACING: 75,
+            SPACING: 75, // Horizontal spacing between rows
             BALL_TYPE: ballConfig.PIN
         }
     },
     
     BALL_IN_HOLE: {
         POSITION: {
+            // Top center position of the horizontal walls
             X: -1400,
             Y: 1400
         },
@@ -32,8 +34,8 @@ const playgroundConfig = {
         },
         WALL_COLOR: themeConfig.COLORS.PINK,
         OBSTACLE: {
-            ROWS: 3,
-            SPACING: 400,
+            ROWS: 3, 
+            SPACING: 400, // Horizontal spacing between rows
             BALL_TYPE: ballConfig.OBSTACLE
         }
     }

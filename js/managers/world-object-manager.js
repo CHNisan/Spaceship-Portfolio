@@ -4,7 +4,8 @@ import config from '../config/index.js';
 
 const { 
     theme: themeConfig,
-    sign: signConfig
+    sign: signConfig,
+    world: worldConfig
  } = config;
 
 class WorldObjectManager {
@@ -30,8 +31,7 @@ class WorldObjectManager {
         
         this.createContainers();
         
-        // Initialize entity subsystems
-        this.createGuide(500, 990, 10, 1000, 400)
+        this.createGuide();
     }
     
     createContainers() {
@@ -46,9 +46,12 @@ class WorldObjectManager {
 
 
 
-    createGuide(x, y, pathWidth, pathHeight, laneWidth){
-        this.createPaths(x, y, pathWidth, pathHeight, laneWidth);
-        this.createSigns(x, y);
+    createGuide(){
+        const position = worldConfig.GUIDE.POSITION;
+        const dimensions = worldConfig.GUIDE.DIMENSIONS;
+
+        this.createPaths(position.X, position.Y, dimensions.PATH_WIDTH, dimensions.PATH_HEIGHT, dimensions.LANE_WIDTH);
+        this.createSigns(position.X, position.Y);
     }
     
 
@@ -88,7 +91,7 @@ class WorldObjectManager {
     createPaths(x, y, pathWidth, pathHeight, laneWidth) {
         // Create a plus sign layout of path pairs around a center point (top left corner of the bottom arm)
         
-        const COLORS = themeConfig.COLORS;
+        const wallColors = worldConfig.GUIDE.WALL_COLORS;
         const isVertical = true;
         const isHorizontal = false;
         
@@ -101,10 +104,10 @@ class WorldObjectManager {
         const rightY = y - laneWidth - pathWidth;
         
         // Create each path pair to form the complete plus sign
-        this.createPathPair(x, topY, pathWidth, pathHeight, laneWidth, COLORS.YELLOW, isVertical); // Top arm
-        this.createPathPair(x, bottomY, pathWidth, pathHeight, laneWidth, COLORS.BLUE, isVertical); // Bottom arm
-        this.createPathPair(leftX, leftY, pathHeight, pathWidth, laneWidth, COLORS.PINK, isHorizontal); // Left arm
-        this.createPathPair(rightX, rightY, pathHeight, pathWidth, laneWidth, COLORS.GREEN, isHorizontal); // Right arm
+        this.createPathPair(x, topY, pathWidth, pathHeight, laneWidth, wallColors.TOP, isVertical); // Top arm
+        this.createPathPair(x, bottomY, pathWidth, pathHeight, laneWidth, wallColors.BOTTOM, isVertical); // Bottom arm
+        this.createPathPair(leftX, leftY, pathHeight, pathWidth, laneWidth, wallColors.LEFT, isHorizontal); // Left arm
+        this.createPathPair(rightX, rightY, pathHeight, pathWidth, laneWidth, wallColors.RIGHT, isHorizontal); // Right arm
     }
 
     createPathPair(x, y, pathWidth, pathHeight, laneWidth, color, isHorizontal = true){

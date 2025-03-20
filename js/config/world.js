@@ -7,12 +7,12 @@ const worldConfig = {
     // Background settings
     BACKGROUND: {
         // Light mode colors
-        TOP_COLOR: themeConfig.MAIN.LIGHT.PRIMARY,    // Light color at the top
-        BOTTOM_COLOR: themeConfig.MAIN.LIGHT.SECONDARY, // Bluish color at the bottom
+        TOP_COLOR: themeConfig.MAIN.LIGHT.PRIMARY,
+        BOTTOM_COLOR: themeConfig.MAIN.LIGHT.SECONDARY,
         
         // Dark mode colors
-        DARK_TOP_COLOR: themeConfig.MAIN.DARK.PRIMARY,    // Dark gray at the top
-        DARK_BOTTOM_COLOR: themeConfig.MAIN.DARK.SECONDARY, // Almost black at the bottom
+        DARK_TOP_COLOR: themeConfig.MAIN.DARK.PRIMARY,
+        DARK_BOTTOM_COLOR: themeConfig.MAIN.DARK.SECONDARY,
         
         ANGLE: 15,              // Angle in degrees for the gradient tilt
     },
@@ -26,12 +26,13 @@ const worldConfig = {
     // Guide path settings
     GUIDE: {
         POSITION: {
-            X: -1400,
-            Y: 580
+            // Top left position of the bottom paths
+            X: 500,
+            Y: 990
         },
         DIMENSIONS: {
-            PATH_WIDTH: 1000,
-            PATH_HEIGHT: 10,
+            PATH_WIDTH: 10,
+            PATH_HEIGHT: 1000,
             LANE_WIDTH: 400,
         },
         WALL_COLORS: {
