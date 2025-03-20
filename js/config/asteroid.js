@@ -1,4 +1,4 @@
-const entitiesConfig = {
+const asteroidConfig = {
     // Asteroid settings
     ASTEROIDS: {
         COUNT: 30,  // Number of asteroids to spawn
@@ -22,4 +22,4 @@ const entitiesConfig = {
     }
 };
 
-export default entitiesConfig;
+export default asteroidConfig;

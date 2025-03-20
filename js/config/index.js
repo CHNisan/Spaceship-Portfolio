@@ -4,7 +4,7 @@ import world from './world.js';
 import physics from './physics.js';
 import ship from './ship.js';
 import camera from './camera.js';
-import entities from './entities.js';
+import asteroid from './asteroid.js';
 import poi from './poi.js';
 import ui from './ui.js';
 import theme from './theme.js'
@@ -18,7 +18,7 @@ export default {
     physics,
     ship,
     camera,
-    entities,
+    asteroid,
     poi,
     ui,
     theme,
@@ -33,7 +33,7 @@ export {
     physics,
     ship,
     camera,
-    entities,
+    asteroid,
     poi,
     ui,
     theme,

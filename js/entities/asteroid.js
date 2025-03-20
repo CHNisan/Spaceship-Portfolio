@@ -1,7 +1,7 @@
 import PhysicsEntity from './physics-entity.js';
 import config from '../config/index.js';
 
-const { entities: entitiesConfig } = config;
+const { asteroid: asteroidConfig } = config;
 
 export default class Asteroid extends PhysicsEntity {
     constructor(container, physics, x, y, size, segments) {
@@ -19,7 +19,7 @@ export default class Asteroid extends PhysicsEntity {
         
         // Create asteroid graphic
         this.graphic = new PIXI.Graphics();
-        this.graphic.beginFill(entitiesConfig.ASTEROIDS.COLOR);
+        this.graphic.beginFill(asteroidConfig.ASTEROIDS.COLOR);
         
         this.graphic.moveTo(this.points[0].x, this.points[0].y);
         for (let i = 1; i < this.segments; i++) {
@@ -45,9 +45,9 @@ export default class Asteroid extends PhysicsEntity {
     createPhysicsBody() {
         const physicsPoints = this.points.map(p => ({ x: p.x, y: p.y }));
         this.physicsBody = this.physics.Bodies.fromVertices(this.x, this.y, [physicsPoints], {
-            restitution: entitiesConfig.ASTEROIDS.PHYSICS.RESTITUTION,
-            friction: entitiesConfig.ASTEROIDS.PHYSICS.FRICTION,
-            density: entitiesConfig.ASTEROIDS.PHYSICS.DENSITY
+            restitution: asteroidConfig.ASTEROIDS.PHYSICS.RESTITUTION,
+            friction: asteroidConfig.ASTEROIDS.PHYSICS.FRICTION,
+            density: asteroidConfig.ASTEROIDS.PHYSICS.DENSITY
         });
     }
 }

@@ -6,7 +6,7 @@ import config from '../config/index.js';
 const { 
     sign: signConfig,
     world: worldConfig,
-    entities: entitiesConfig
+    asteroid: asteroidConfig
  } = config;
 
 class WorldObjectManager {
@@ -135,21 +135,21 @@ class WorldObjectManager {
 
     createAsteroids() {
         // Use asteroid count from config
-        for (let i = 0; i < entitiesConfig.ASTEROIDS.COUNT; i++) {
+        for (let i = 0; i < asteroidConfig.ASTEROIDS.COUNT; i++) {
             // Find a valid position for the asteroid
             let x, y;
 
-            x = this.getRandomNumber(entitiesConfig.ASTEROIDS.POSITION.MIN_X, entitiesConfig.ASTEROIDS.POSITION.MAX_X);
-            y = this.getRandomNumber(entitiesConfig.ASTEROIDS.POSITION.MIN_Y, entitiesConfig.ASTEROIDS.POSITION.MAX_Y);
+            x = this.getRandomNumber(asteroidConfig.ASTEROIDS.POSITION.MIN_X, asteroidConfig.ASTEROIDS.POSITION.MAX_X);
+            y = this.getRandomNumber(asteroidConfig.ASTEROIDS.POSITION.MIN_Y, asteroidConfig.ASTEROIDS.POSITION.MAX_Y);
             
             // Generate asteroid properties
             const size = Math.random() * 
-                (entitiesConfig.ASTEROIDS.MAX_SIZE - entitiesConfig.ASTEROIDS.MIN_SIZE) + 
-                entitiesConfig.ASTEROIDS.MIN_SIZE;
+                (asteroidConfig.ASTEROIDS.MAX_SIZE - asteroidConfig.ASTEROIDS.MIN_SIZE) + 
+                asteroidConfig.ASTEROIDS.MIN_SIZE;
             
             const segments = Math.floor(Math.random() * 
-                (entitiesConfig.ASTEROIDS.MAX_SEGMENTS - entitiesConfig.ASTEROIDS.MIN_SEGMENTS) + 
-                entitiesConfig.ASTEROIDS.MIN_SEGMENTS);
+                (asteroidConfig.ASTEROIDS.MAX_SEGMENTS - asteroidConfig.ASTEROIDS.MIN_SEGMENTS) + 
+                asteroidConfig.ASTEROIDS.MIN_SEGMENTS);
             
             // Create asteroid
             const asteroid = new Asteroid(this.asteroidsContainer, this.physics, x, y, size, segments);

@@ -10,7 +10,7 @@ import PlaygroundManager from './playground-manager.js'
 // Import configs
 const { 
     world: worldConfig, 
-    entities: entitiesConfig, 
+    entities: asteroidConfig, 
     poi: poiConfig 
 } = config;
 
