@@ -10,7 +10,9 @@ const shipConfig = {
     // Thrust parameters
     THRUST: {
         FORCE_MULTIPLIER: 0.0007,  // Force applied when thrusting
-        ANGULAR_VELOCITY_MULT: 0.2  // Angular velocity multiplier for rotation
+        ANGULAR_VELOCITY_MULT: 0.2,  // Angular velocity multiplier for rotation
+        SLOW_MULTIPLIER: 0.3, // Fraction of normal speed when Control is pressed
+        FAST_MULTIPLIER: 2 // Fraction of normal speed when Shift is pressed
     },
     
     // Visual properties

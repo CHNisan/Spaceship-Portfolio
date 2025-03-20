@@ -1,6 +1,5 @@
 import config from '../config/index.js';
 
-// Import just the ship config we need
 const { ship: shipConfig } = config;
 
 export default class InputManager {
@@ -20,6 +19,12 @@ export default class InputManager {
         // Get thrust parameters from config
         this.forceMult = shipConfig.THRUST.FORCE_MULTIPLIER;
         this.angularVelocityMult = shipConfig.THRUST.ANGULAR_VELOCITY_MULT;
+        this.slowModeMultiplier = shipConfig.THRUST.SLOW_MULTIPLIER;
+        this.fastModeMultiplier = shipConfig.THRUST.FAST_MULTIPLIER;
+        
+        // Add speed modification flags and multipliers
+        this.isSlowMode = false;
+        this.isFastMode = false;
     }
     
     init(app, gameContainer, ship, camera, physics) {
@@ -73,6 +78,26 @@ export default class InputManager {
                 }
                 // Prevent default spacebar behavior (like scrolling)
                 event.preventDefault();
+            }
+            
+            // Enable slow mode with Control key
+            if (event.code === 'ControlLeft' || event.code === 'ControlRight') {
+                this.isSlowMode = true;
+            }
+            
+            // Enable fast mode with Shift key
+            if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+                this.isFastMode = true;
+            }
+        });
+
+        // Add listener for releasing Control and Shift keys
+        window.addEventListener('keyup', (event) => {
+            if (event.code === 'ControlLeft' || event.code === 'ControlRight') {
+                this.isSlowMode = false;
+            }
+            if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+                this.isFastMode = false;
             }
         });
 
@@ -133,9 +158,24 @@ export default class InputManager {
         
         // Apply thrust if mouse is down
         if (this.isThrusting) {
+            // Calculate effective force multiplier based on key combinations
+            let effectiveForceMult = this.forceMult;
+            
+            // If both slow and fast modes are active, they cancel out to normal speed
+            if (this.isSlowMode && this.isFastMode) {
+                effectiveForceMult = this.forceMult;
+            }
+            // Otherwise apply just the active modifier
+            else if (this.isSlowMode) {
+                effectiveForceMult = this.forceMult * this.slowModeMultiplier;
+            }
+            else if (this.isFastMode) {
+                effectiveForceMult = this.forceMult * this.fastModeMultiplier;
+            }
+            
             const force = this.physics.Vector.create(
-                Math.cos(shipBody.angle) * this.forceMult,
-                Math.sin(shipBody.angle) * this.forceMult
+                Math.cos(shipBody.angle) * effectiveForceMult,
+                Math.sin(shipBody.angle) * effectiveForceMult
             );
             this.physics.Body.applyForce(shipBody, shipBody.position, force);
         }
