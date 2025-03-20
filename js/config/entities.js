@@ -14,10 +14,10 @@ const entitiesConfig = {
         },
         POSITION: {
             // Min and max posible x and y spawn positions
-            MIN_X: -2500,
-            MAX_X: 2500,
-            MIN_Y: -2500,
-            MAX_Y: 2500,
+            MIN_X: -2400,
+            MAX_X: -500,
+            MIN_Y: -2400,
+            MAX_Y: 300,
         }
     }
 };

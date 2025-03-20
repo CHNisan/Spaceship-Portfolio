@@ -22,11 +22,9 @@ class EntityManager {
         
         // Entity collections
         this.ship = null;
-        this.asteroids = [];
         this.pointsOfInterest = [];
         
         // Containers
-        this.asteroidsContainer = null;
         this.poiContainer = null;
         this.poiSignContainer = null;
         this.worldObjectsContainer = null
@@ -44,7 +42,6 @@ class EntityManager {
         this.createContainers();
         
         // Initialize entity subsystems
-        this.createAsteroids();
         this.createSpaceship();
         this.createBoundaryVisual();
         
@@ -56,52 +53,16 @@ class EntityManager {
     }
     
     createContainers() {
-        this.asteroidsContainer = new PIXI.Container();
         this.poiContainer = new PIXI.Container();
         this.poiSignContainer = new PIXI.Container();
         this.worldObjectsContainer = new PIXI.Container();
         this.playgroundContainer = new PIXI.Container();
         
-        this.container.addChild(this.asteroidsContainer);
         this.container.addChild(this.poiContainer);
         this.container.addChild(this.poiSignContainer);
         this.container.addChild(this.worldObjectsContainer);
         this.container.addChild(this.playgroundContainer);
     }
-    
-    createAsteroids() {
-        // Use asteroid count from config
-        for (let i = 0; i < entitiesConfig.ASTEROIDS.COUNT; i++) {
-            // Find a valid position for the asteroid
-            let x, y;
-
-            x = this.getRandomNumber(entitiesConfig.ASTEROIDS.POSITION.MIN_X, entitiesConfig.ASTEROIDS.POSITION.MAX_X);
-            y = this.getRandomNumber(entitiesConfig.ASTEROIDS.POSITION.MIN_Y, entitiesConfig.ASTEROIDS.POSITION.MAX_Y);
-            
-            // Generate asteroid properties
-            const size = Math.random() * 
-                (entitiesConfig.ASTEROIDS.MAX_SIZE - entitiesConfig.ASTEROIDS.MIN_SIZE) + 
-                entitiesConfig.ASTEROIDS.MIN_SIZE;
-            
-            const segments = Math.floor(Math.random() * 
-                (entitiesConfig.ASTEROIDS.MAX_SEGMENTS - entitiesConfig.ASTEROIDS.MIN_SEGMENTS) + 
-                entitiesConfig.ASTEROIDS.MIN_SEGMENTS);
-            
-            // Create asteroid
-            const asteroid = new Asteroid(this.asteroidsContainer, this.physics, x, y, size, segments);
-            asteroid.init();
-            this.asteroids.push(asteroid);
-        }
-    }
-
-    getRandomNumber(min, max) {
-        // Make sure min is actually less than max
-        if (min > max) {
-          [min, max] = [max, min]; // Swap values if needed
-        }
-        
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-      }
       
     
     createSpaceship() {
@@ -173,17 +134,13 @@ class EntityManager {
             this.ship.update(deltaTime);
         }
         
-        // Update asteroids
-        this.asteroids.forEach(asteroid => {
-            asteroid.update(deltaTime);
-        });
-        
         // Update POIs
         this.pointsOfInterest.forEach(poi => {
             poi.currentPoi.update(deltaTime);
         });
 
         PlaygroundManager.update();
+        WorldObjectManager.update();
     }
     
     // Helper method for thrust visuals
