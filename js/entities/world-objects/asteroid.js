@@ -1,5 +1,5 @@
-import PhysicsEntity from './physics-entity.js';
-import config from '../config/index.js';
+import PhysicsEntity from '../main/physics-entity.js';
+import config from '../../config/index.js';
 
 const { asteroid: asteroidConfig } = config;
 

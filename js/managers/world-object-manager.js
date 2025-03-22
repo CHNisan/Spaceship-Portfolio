@@ -1,7 +1,7 @@
 import Path from '../entities/world-objects/path.js';
 import Sign from '../entities/world-objects/sign.js';
-import Asteroid from '../entities/asteroid.js';
-import PointOfInterest from '../entities/poi.js';
+import Asteroid from '../entities/world-objects/asteroid.js';
+import PointOfInterest from '../entities/world-objects/poi.js';
 import config from '../config/index.js';
 
 const { 

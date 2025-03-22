@@ -1,4 +1,4 @@
-import Entity from '../entity.js';
+import Entity from '../main/entity.js';
 
 export default class Path extends Entity {
     constructor(container, x, y, width, height, color) {

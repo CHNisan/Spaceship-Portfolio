@@ -1,4 +1,4 @@
-import themeConfig from './theme.js'
+import themeConfig from '../../core/theme.js'
 import ballConfig from './ball.js'
 
 const playgroundConfig = {

@@ -1,4 +1,4 @@
-import PhysicsEntity from '../physics-entity.js';
+import PhysicsEntity from '../main/physics-entity.js';
 
 export default class Wall extends PhysicsEntity {
     constructor(container, physics, x, y, width, height, color) {

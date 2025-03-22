@@ -1,4 +1,4 @@
-import PhysicsEntity from './physics-entity.js';
+import PhysicsEntity from './main/physics-entity.js';
 import config from '../config/index.js';
 
 const { ship: shipConfig } = config;

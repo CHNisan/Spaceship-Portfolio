@@ -1,4 +1,4 @@
-import Entity from '../entity.js';
+import Entity from '../main/entity.js';
 import config from '../../config/index.js';
 
 const { 
