@@ -16,7 +16,8 @@ const shipConfig = {
     VISUAL: {
         BODY_COLOR: 0x4AA8E2,
         ENGINE_GLOW_COLOR: 0xF76565, 
-        ENGINE_GLOW_SIZE: 3 
+        ENGINE_GLOW_SIZE: 3,
+        SIZE_MULTIPLIER: 1.0 
     },
     
     SPAWN: {

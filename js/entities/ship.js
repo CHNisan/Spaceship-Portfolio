@@ -8,6 +8,7 @@ export default class Ship extends PhysicsEntity {
         super(container, physics); // Constructs graphics, physics body, position and rotation
         this.engineGlow = null;
         this.isThrusting = false;
+        this.sizeMultiplier = shipConfig.VISUAL.SIZE_MULTIPLIER || 1.0; 
     }
     
     createGraphic() {
@@ -16,18 +17,26 @@ export default class Ship extends PhysicsEntity {
         // Ship body
         const shipGraphics = new PIXI.Graphics();
         shipGraphics.beginFill(shipConfig.VISUAL.BODY_COLOR);
-        shipGraphics.moveTo(20, 0);
-        shipGraphics.lineTo(-10, -10);
-        shipGraphics.lineTo(-5, 0);
-        shipGraphics.lineTo(-10, 10);
-        shipGraphics.lineTo(20, 0);
+        
+        // Scale all coordinates by the size multiplier
+        const size = this.sizeMultiplier;
+        shipGraphics.moveTo(20 * size, 0);
+        shipGraphics.lineTo(-10 * size, -10 * size);
+        shipGraphics.lineTo(-5 * size, 0);
+        shipGraphics.lineTo(-10 * size, 10 * size);
+        shipGraphics.lineTo(20 * size, 0);
+        
         shipGraphics.endFill();
         this.graphic.addChild(shipGraphics);
         
-        // Ship engine glow
+        // Ship engine glow 
         this.engineGlow = new PIXI.Graphics();
         this.engineGlow.beginFill(shipConfig.VISUAL.ENGINE_GLOW_COLOR);
-        this.engineGlow.drawCircle(-7, 0, shipConfig.VISUAL.ENGINE_GLOW_SIZE);
+        
+        // Scale engine glow position and size
+        const glowSize = shipConfig.VISUAL.ENGINE_GLOW_SIZE * this.sizeMultiplier;
+        this.engineGlow.drawCircle(-7 * this.sizeMultiplier, 0, glowSize);
+        
         this.engineGlow.endFill();
         this.graphic.addChild(this.engineGlow);
         this.engineGlow.visible = false;
@@ -36,10 +45,12 @@ export default class Ship extends PhysicsEntity {
     }
     
     createPhysicsBody() {
+        const physicsRadius = 15 * this.sizeMultiplier;
+        
         this.physicsBody = this.physics.Bodies.polygon(
             shipConfig.SPAWN.X, 
             shipConfig.SPAWN.Y, 
-            3, 15, {
+            3, physicsRadius, {
                 density: shipConfig.PHYSICS.DENSITY,
                 frictionAir: shipConfig.PHYSICS.FRICTION_AIR,
                 restitution: shipConfig.PHYSICS.RESTITUTION,
