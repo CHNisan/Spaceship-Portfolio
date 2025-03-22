@@ -8,7 +8,7 @@ const {
 
 export default class Sign extends Entity {
     constructor(container, x, y, size, wrapWidth, text, fontWeight = "normal", align = signConfig.FONT.ALIGN, fontFamily = signConfig.FONT.FAMILY, darkColor = themeConfig.MAIN.DARK.PRIMARY, lightColor = themeConfig.MAIN.LIGHT.PRIMARY) {
-        super(container);
+        super(container); // Constructs graphics, position and rotation
         this.x = x;
         this.y = y;
         this.size = size;
@@ -17,10 +17,9 @@ export default class Sign extends Entity {
         this.fontWeight = fontWeight;
         this.align = align;
         this.fontFamily = fontFamily;
-        this.lightColor = lightColor;
-        this.darkColor = darkColor;
+        this.lightColor = lightColor; // Light mode color
+        this.darkColor = darkColor; // Dark mode color
 
-        // Keeps track of whether dark mode is active to change the color of the text acordingly
         this.isDarkMode = false;
 
         this.registerWithInputManager()
@@ -43,14 +42,12 @@ export default class Sign extends Entity {
     }
 
     registerWithInputManager() {
-        // Listen for the dark mode toggle event
         document.addEventListener('game:darkModeToggle', () => {
             this.toggleDarkMode();
         });
     }
     
     toggleDarkMode() {
-        // Flip color to the light and dark mode versions depending on whether dark mode is active
         this.isDarkMode = !this.isDarkMode;
 
         if(this.isDarkMode){

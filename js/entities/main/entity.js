@@ -8,10 +8,8 @@ export default class Entity {
     }
     
     init() {
-        // Create the PIXI graphic for this entity
         this.createGraphic();
         
-        // Add to the container
         if (this.graphic && this.container) {
             this.container.addChild(this.graphic);
         }
@@ -31,7 +29,6 @@ export default class Entity {
     }
     
     destroy() {
-        // Remove from container and clean up
         if (this.graphic && this.container) {
             this.container.removeChild(this.graphic);
         }

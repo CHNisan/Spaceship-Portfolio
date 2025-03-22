@@ -2,7 +2,7 @@ import PhysicsEntity from '../main/physics-entity.js';
 
 export default class Ball extends PhysicsEntity {
     constructor(container, physics, x, y, radius, color, physicsSettings) {
-        super(container, physics);
+        super(container, physics); // Constructs graphics, physics body, position and rotation
         this.x = x;
         this.y = y;
         this.radius = radius;

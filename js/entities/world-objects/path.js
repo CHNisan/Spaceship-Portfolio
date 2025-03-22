@@ -2,7 +2,7 @@ import Entity from '../main/entity.js';
 
 export default class Path extends Entity {
     constructor(container, x, y, width, height, color) {
-        super(container);
+        super(container); // Constructs graphics, position and rotation
         this.x = x;
         this.y = y;
         this.width = width;

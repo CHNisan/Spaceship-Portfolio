@@ -1,14 +1,15 @@
+// Base class for all physics game entities
 import Entity from './entity.js';
 
 export default class PhysicsEntity extends Entity {
     constructor(container, physics) {
-        super(container);
+        super(container); // Constructs graphics, position and rotation
         this.physics = physics;
         this.physicsBody = null;
     }
     
     init() {
-        super.init();
+        super.init(); // Creates graphic and adds it to container
         this.createPhysicsBody();
         
         if (this.physicsBody) {
@@ -21,7 +22,6 @@ export default class PhysicsEntity extends Entity {
     }
     
     update(deltaTime) {
-        // Update position and rotation from physics body
         if (this.physicsBody) {
             this.position.x = this.physicsBody.position.x;
             this.position.y = this.physicsBody.position.y;
@@ -33,12 +33,10 @@ export default class PhysicsEntity extends Entity {
     }
     
     destroy() {
-        // Remove physics body
         if (this.physicsBody) {
             this.physics.World.remove(this.physics.world, this.physicsBody);
         }
-        
-        // Call parent destroy
+
         super.destroy();
     }
 }

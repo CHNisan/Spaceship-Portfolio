@@ -4,14 +4,14 @@ import config from '../../config/index.js';
 const { poi: poiConfig } = config;
 
 export default class PointOfInterest extends PhysicsEntity {
-    constructor(container, physics, camera, data, id, x = 0, y = 0) {
-        super(container, physics);
+    constructor(container, physics, camera, data, id, xOffset = 0, yOffset = 0) {
+        super(container, physics); // Constructs graphics, physics body, position and rotation
         this.camera = camera;
         this.data = data;
         this.id = id;
         this.isHovered = false;
-        this.position.x = data.x + x;
-        this.position.y = data.y + y;
+        this.position.x = data.x + xOffset; // Position from poi config file plus any addition offset passed to the function
+        this.position.y = data.y + yOffset;
     }
     
     createGraphic() {
@@ -64,7 +64,7 @@ export default class PointOfInterest extends PhysicsEntity {
         this.fallbackGraphic.beginFill(this.data.color || poiConfig.DEFAULT_SPRITE.FALLBACK_COLOR, 0.7);
         this.fallbackGraphic.lineStyle(2, 0xFFFFFF, 0.8);
         this.fallbackGraphic.drawRect(
-            -this.data.width/2, 
+            -this.data.width/2, // Minus half width and height for the graphic position as the rectangle is drawn from the top left (rather than the center like the physics body)
             -this.data.height/2, 
             this.data.width, 
             this.data.height
@@ -105,7 +105,6 @@ export default class PointOfInterest extends PhysicsEntity {
         });
         
         this.graphic.on('pointerdown', () => {
-            // Immediately open the web address on click
             if (this.data.webAddress) {
                 window.open(this.data.webAddress, '_blank');
             }
@@ -117,9 +116,8 @@ export default class PointOfInterest extends PhysicsEntity {
     }
     
     update(deltaTime) {
-        super.update(deltaTime);
+        super.update(deltaTime); // Update graphic and physics body
         
-        // Handle hover animation
         const params = poiConfig.ANIMATION;
         
         if (this.isHovered) {

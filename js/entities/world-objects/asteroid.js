@@ -5,7 +5,7 @@ const { asteroid: asteroidConfig } = config;
 
 export default class Asteroid extends PhysicsEntity {
     constructor(container, physics, x, y, size, segments) {
-        super(container, physics);
+        super(container, physics); // Constructs graphics, physics body, position and rotation
         this.x = x;
         this.y = y;
         this.size = size;
@@ -14,10 +14,8 @@ export default class Asteroid extends PhysicsEntity {
     }
     
     createGraphic() {
-        // Generate points for the jagged asteroid shape
         this.generatePoints();
         
-        // Create asteroid graphic
         this.graphic = new PIXI.Graphics();
         this.graphic.beginFill(asteroidConfig.ASTEROIDS.COLOR);
         
@@ -32,6 +30,7 @@ export default class Asteroid extends PhysicsEntity {
     }
     
     generatePoints() {
+        // Generate points for the jagged asteroid shape
         this.points = [];
         for (let i = 0; i < this.segments; i++) {
             const angle = (i / this.segments) * Math.PI * 2;

@@ -5,7 +5,7 @@ const { ship: shipConfig } = config;
 
 export default class Ship extends PhysicsEntity {
     constructor(container, physics) {
-        super(container, physics);
+        super(container, physics); // Constructs graphics, physics body, position and rotation
         this.engineGlow = null;
         this.isThrusting = false;
     }
@@ -13,7 +13,7 @@ export default class Ship extends PhysicsEntity {
     createGraphic() {
         this.graphic = new PIXI.Container();
         
-        // Ship body with colors from config
+        // Ship body
         const shipGraphics = new PIXI.Graphics();
         shipGraphics.beginFill(shipConfig.VISUAL.BODY_COLOR);
         shipGraphics.moveTo(20, 0);
@@ -24,7 +24,7 @@ export default class Ship extends PhysicsEntity {
         shipGraphics.endFill();
         this.graphic.addChild(shipGraphics);
         
-        // Ship engine glow using config colors and size
+        // Ship engine glow
         this.engineGlow = new PIXI.Graphics();
         this.engineGlow.beginFill(shipConfig.VISUAL.ENGINE_GLOW_COLOR);
         this.engineGlow.drawCircle(-7, 0, shipConfig.VISUAL.ENGINE_GLOW_SIZE);
@@ -32,7 +32,6 @@ export default class Ship extends PhysicsEntity {
         this.graphic.addChild(this.engineGlow);
         this.engineGlow.visible = false;
 
-        // Set initial rotation from config
         this.graphic.rotation = shipConfig.SPAWN.ROTATION;
     }
     
@@ -48,7 +47,6 @@ export default class Ship extends PhysicsEntity {
             }
         );
 
-        // Set initial rotation from config
         this.physics.Body.setAngle(this.physicsBody, shipConfig.SPAWN.ROTATION);
     }
     
