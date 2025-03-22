@@ -47,7 +47,7 @@ class EntityManager {
         // Create POIs
         this.createPointsOfInterest();
 
-        WorldObjectManager.init(this.worldObjectsContainer, this.physics);
+        WorldObjectManager.init(this.worldObjectsContainer, this.physics, this.camera);
         PlaygroundManager.init(this.playgroundContainer, this.physics);
     }
     
@@ -87,9 +87,9 @@ class EntityManager {
             const poi = new PointOfInterest(
                 this.poiContainer, 
                 this.physics, 
+                this.camera,
                 poiData, 
                 index + 1,
-                this.camera
             );
             poi.init();
 

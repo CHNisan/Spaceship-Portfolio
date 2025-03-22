@@ -4,14 +4,14 @@ import config from '../config/index.js';
 const { poi: poiConfig } = config;
 
 export default class PointOfInterest extends PhysicsEntity {
-    constructor(container, physics, data, id, camera) {
+    constructor(container, physics, camera, data, id, x = 0, y = 0) {
         super(container, physics);
+        this.camera = camera;
         this.data = data;
         this.id = id;
-        this.camera = camera;
         this.isHovered = false;
-        this.position.x = data.x;
-        this.position.y = data.y;
+        this.position.x = data.x + x;
+        this.position.y = data.y + y;
     }
     
     createGraphic() {
@@ -76,8 +76,8 @@ export default class PointOfInterest extends PhysicsEntity {
     
     createPhysicsBody() {
         this.physicsBody = this.physics.Bodies.rectangle(
-            this.data.x, 
-            this.data.y, 
+            this.position.x, 
+            this.position.y, 
             this.data.width, 
             this.data.height, 
             { 

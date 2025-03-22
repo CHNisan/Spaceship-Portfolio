@@ -1,12 +1,14 @@
 import Path from '../entities/world-objects/path.js';
 import Sign from '../entities/world-objects/sign.js';
 import Asteroid from '../entities/asteroid.js';
+import PointOfInterest from '../entities/poi.js';
 import config from '../config/index.js';
 
 const { 
     sign: signConfig,
     world: worldConfig,
-    asteroid: asteroidConfig
+    asteroid: asteroidConfig,
+    socialMediaButton: socialMediaButtonConfig
  } = config;
 
 class WorldObjectManager {
@@ -14,23 +16,25 @@ class WorldObjectManager {
         // Main gameworld data
         this.container = null;
         this.physics = null;
+        this.camera = null;
         
         // Entity collections
         this.paths = [];
-        this.walls = [];
         this.signs = [];
+        this.socialsButtons = [];
         this.asteroids = [];
         
         // Containers
         this.pathsContainer = null;
-        this.wallsContainer = null;
         this.signsContainer = null;
+        this.socialsButtonsContainer = null;
         this.asteroidsContainer = null;
     }
     
-    init(container, physics) {
+    init(container, physics, camera) {
         this.container = container;
         this.physics = physics;
+        this.camera = camera;
         
         this.createContainers();
         
@@ -40,13 +44,13 @@ class WorldObjectManager {
     
     createContainers() {
         this.pathsContainer = new PIXI.Container();
-        this.wallsContainer = new PIXI.Container();
         this.signsContainer = new PIXI.Container();
+        this.soicalsButtonsContainer = new PIXI.Container();
         this.asteroidsContainer = new PIXI.Container();
         
         this.container.addChild(this.pathsContainer);
-        this.container.addChild(this.wallsContainer);
         this.container.addChild(this.signsContainer)
+        this.container.addChild(this.soicalsButtonsContainer)
         this.container.addChild(this.asteroidsContainer);
     }
 
@@ -58,40 +62,10 @@ class WorldObjectManager {
 
         this.createPaths(position.X, position.Y, dimensions.PATH_WIDTH, dimensions.PATH_HEIGHT, dimensions.LANE_WIDTH);
         this.createSigns(position.X, position.Y);
+        this.createSocialMediaButtons(position.X + signConfig.DATA.DETAILS.x, position.X + signConfig.DATA.DETAILS.y);
+        // Clean this up a bit to make it more readable (needed the details.x and details.y bit to shift the buttons so they're relative to the details poition)
     }
     
-
-
-
-    createSigns(x, y){
-        // Parameters so the signs can be moved with the paths while maintaining their relative positions
-
-        // Create each pathway sign
-        signConfig.DATA.PATHWAY.forEach((signData) => {
-            const sign = new Sign(
-                this.signsContainer, 
-                signData.x + x, 
-                signData.y + y, 
-                signData.size, 
-                signData.wrapWidth, 
-                signData.text);
-            sign.init();
-            this.signs.push(sign);
-        });
-
-        // Create details as a sign
-        const details = new Sign(
-            this.signsContainer, 
-            signConfig.DATA.DETAILS.x + x, 
-            signConfig.DATA.DETAILS.y + y, 
-            signConfig.DATA.DETAILS.size, 
-            signConfig.DATA.DETAILS.wrapWidth, 
-            signConfig.DATA.DETAILS.text);
-        details.init();
-        this.signs.push(details);
-    }
-    
-
 
 
     createPaths(x, y, pathWidth, pathHeight, laneWidth) {
@@ -133,6 +107,56 @@ class WorldObjectManager {
 
 
 
+    createSigns(x, y){
+        // Parameters so the signs can be moved with the paths while maintaining their relative positions
+
+        // Create each pathway sign
+        signConfig.DATA.PATHWAY.forEach((signData) => {
+            const sign = new Sign(
+                this.signsContainer, 
+                signData.x + x, 
+                signData.y + y, 
+                signData.size, 
+                signData.wrapWidth, 
+                signData.text);
+            sign.init();
+            this.signs.push(sign);
+        });
+
+        // Create details as a sign
+        const details = new Sign(
+            this.signsContainer, 
+            signConfig.DATA.DETAILS.x + x, 
+            signConfig.DATA.DETAILS.y + y, 
+            signConfig.DATA.DETAILS.size, 
+            signConfig.DATA.DETAILS.wrapWidth, 
+            signConfig.DATA.DETAILS.text);
+        details.init();
+        this.signs.push(details);
+    }
+
+
+
+    createSocialMediaButtons(x, y){
+        socialMediaButtonConfig.ITEMS.forEach((buttonData, index) => {
+            const button = new PointOfInterest(
+                this.soicalsButtonsContainer, 
+                this.physics,
+                this.camera, 
+                buttonData, 
+                index + 1,
+                x,
+                y
+            );
+            button.init();
+
+            this.socialsButtons.push(button);
+        });
+    }
+
+
+
+
     createAsteroids() {
         // Use asteroid count from config
         for (let i = 0; i < asteroidConfig.ASTEROIDS.COUNT; i++) {
@@ -171,7 +195,10 @@ class WorldObjectManager {
 
 
     update(deltaTime) {
-        // Update asteroids
+        this.socialsButtons.forEach(button => {
+            button.update(deltaTime);
+        });
+        
         this.asteroids.forEach(asteroid => {
             asteroid.update(deltaTime);
         });
