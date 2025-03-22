@@ -17,7 +17,7 @@ const playgroundConfig = {
         PINS: {
             ROWS: 6,
             SPACING: 75, // Horizontal spacing between rows
-            BALL_TYPE: ballConfig.PIN
+            BALL_TYPE: ballConfig.PIN // The ball type to be used as the pins
         }
     },
     
@@ -36,7 +36,7 @@ const playgroundConfig = {
         OBSTACLE: {
             ROWS: 3, 
             SPACING: 400, // Horizontal spacing between rows
-            BALL_TYPE: ballConfig.OBSTACLE
+            BALL_TYPE: ballConfig.OBSTACLE // The ball type to be used as the pins
         }
     }
 };

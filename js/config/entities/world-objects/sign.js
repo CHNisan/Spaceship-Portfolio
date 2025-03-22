@@ -1,5 +1,4 @@
 const signConfig = {
-    // Font settings
     FONT: {
         FAMILY: 'Arial',
         ALIGN: 'center',
@@ -7,7 +6,7 @@ const signConfig = {
     },
 
     DATA: {
-        // Pathway sign settings, order: top, right, bottom, left
+        // Order of paths: top, right, bottom, left
         PATHWAY: [
             { 
                 x: 200, 
@@ -41,8 +40,6 @@ const signConfig = {
                 text: "PLAYGROUND",
             },
         ],
-
-        PLAYGROUND: {},
 
         DETAILS: {
             x: 1700, 

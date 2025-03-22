@@ -1,5 +1,4 @@
 const uiConfig = {
-    // Intro screen settings
     INTRO: {
         TITLE: {
             TEXT: 'Christopher Nisan',
@@ -7,28 +6,30 @@ const uiConfig = {
             FONT_SIZE: 70,
             COLOR: 0x888888,
             POSITION: {
-                X_PERCENT: 0.5,    // Center horizontally (50% of screen width)
-                Y_PERCENT: 0.35    // Position at 33% from top
+                X_PERCENT: 0.5, 
+                Y_PERCENT: 0.35 
             }
         },
+
         SUBTITLE: {
             TEXT: 'Portfolio',
             FONT_FAMILY: 'Arial',
             FONT_SIZE: 50,
             COLOR: 0x888888,
             POSITION: {
-                X_PERCENT: 0.5,    // Center horizontally
-                Y_OFFSET: 90       // 60px below the title
+                X_PERCENT: 0.5, 
+                Y_OFFSET: 90  
             }
         },
+        
         BUTTON: {
             TEXT: 'START',
             FONT_FAMILY: 'Arial',
             FONT_SIZE: 90,
             COLOR: 0x888888,
             POSITION: {
-                X_PERCENT: 0.5,    // Center horizontally
-                Y_PERCENT: 0.65    // Position at 75% from top
+                X_PERCENT: 0.5,  
+                Y_PERCENT: 0.65  
             },
             BORDER: {
                 COLOR: 0x888888,
@@ -42,8 +43,10 @@ const uiConfig = {
                 FADE_SPEED: 0.1
             }
         },
+
+        // Animation of whole intro screen
         ANIMATION: {
-            FADE_OUT_SPEED: 0.05   // Speed of the intro screen fade-out
+            FADE_OUT_SPEED: 0.05 
         }
     }
 };

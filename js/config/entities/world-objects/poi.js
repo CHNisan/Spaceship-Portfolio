@@ -1,19 +1,18 @@
 const poiConfig = {
-    // Animation parameters
     ANIMATION: {
-        SCALE_SPEED: 0.04,  // How fast the scaling animation happens
-        MAX_SCALE: 1.2,     // Maximum scale when hovered
-        MIN_SCALE: 1.0      // Minimum scale (normal size)
+        // Values for the scaling up and down on hover animation
+        SCALE_SPEED: 0.04, 
+        MAX_SCALE: 1.2,
+        MIN_SCALE: 1.0 
     },
     
-    // Font settings
     FONT: {
         TITLE: {
             FAMILY: 'Arial',
             WEIGHT: 'bold',
             ALIGN: 'Left',
             SIZE: 35,
-            XOFFSET: 0,
+            XOFFSET: 0, // Offset from poi position
             YOFFSET: 50,
         },
         DESCRIPTION: {
@@ -21,12 +20,12 @@ const poiConfig = {
             WEIGHT: 'normal',
             ALIGN: 'left',
             SIZE: 25,
-            XOFFSET: 10,
+            XOFFSET: 10, // Offset from poi position
             YOFFSET: 100
         }
     },
     
-    // POI data definitions
+    // POI information
     ITEMS: [
         { 
             x: 100, 

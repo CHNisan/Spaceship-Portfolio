@@ -1,17 +1,17 @@
 const themeConfig = {
-    // Main Website Colors
     MAIN: {
+        // Light mode colors
         LIGHT: {
             PRIMARY: 0xF4F3EE,
             SECONDARY: 0xE4E5DA
         },
+        // Dark mode colors
         DARK: {
             PRIMARY: 0x323330,
             SECONDARY: 0x191919
         }
     },
     
-    // General Website Colors
     COLORS: {
         RED: 0xF76565,
         YELLOW: 0xFFAA00,

@@ -1,10 +1,9 @@
 const asteroidConfig = {
-    // Asteroid settings
     ASTEROIDS: {
-        COUNT: 30,  // Number of asteroids to spawn
+        COUNT: 30,  // Number of random asteroids to spawn
         MIN_SIZE: 20, 
         MAX_SIZE: 70,
-        MIN_SEGMENTS: 5, //polygon sides
+        MIN_SEGMENTS: 5, // Polygon sides
         MAX_SEGMENTS: 10, 
         COLOR: 0x888888, 
         PHYSICS: {

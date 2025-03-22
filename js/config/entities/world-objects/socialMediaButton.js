@@ -1,12 +1,12 @@
 const socialMediaButtonConfig = {
-    // Animation parameters
     ANIMATION: {
-        SCALE_SPEED: 0.04,  // How fast the scaling animation happens
-        MAX_SCALE: 1.2,     // Maximum scale when hovered
-        MIN_SCALE: 1.0      // Minimum scale (normal size)
+        // Values for the scaling up and down on hover animation
+        SCALE_SPEED: 0.04, 
+        MAX_SCALE: 1.2,
+        MIN_SCALE: 1.0 
     },
     
-    // POI data definitions
+    // Button information
     ITEMS: [
         { 
             x: -200, 
