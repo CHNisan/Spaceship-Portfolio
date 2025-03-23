@@ -1,7 +1,7 @@
 // Base class for all game entities
 export default class Entity {
     constructor(container) {
-        this.container = container;
+        this.container = container; // The container that holds the entity's graphics
         this.graphic = null;
         this.position = { x: 0, y: 0 };
         this.rotation = 0;
