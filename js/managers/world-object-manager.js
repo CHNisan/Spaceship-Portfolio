@@ -5,10 +5,11 @@ import PointOfInterest from '../entities/world-objects/poi.js';
 import config from '../config/index.js';
 
 const { 
-    sign: signConfig,
     world: worldConfig,
-    asteroid: asteroidConfig,
-    socialMediaButton: socialMediaButtonConfig
+    sign: signConfig,
+    poi: poiConfig,
+    socialMediaButton: socialMediaButtonConfig,
+    asteroid: asteroidConfig
  } = config;
 
 class WorldObjectManager {
@@ -21,16 +22,23 @@ class WorldObjectManager {
         // Entity collections
         this.paths = [];
         this.signs = [];
+        this.pointsOfInterest = [];
         this.socialsButtons = [];
         this.asteroids = [];
         
         // Containers
         this.pathsContainer = null;
         this.signsContainer = null;
+        this.poiContainer = null;
+        this.poiSignContainer = null;
         this.socialsButtonsContainer = null;
         this.asteroidsContainer = null;
+
+        // Data config
+        this.poiData = poiConfig.ITEMS;
     }
     
+    //#region Setup
     init(container, physics, camera) {
         this.container = container;
         this.physics = physics;
@@ -38,36 +46,46 @@ class WorldObjectManager {
         
         this.createContainers();
         
+        // Initialize entity subsystems
         this.createGuide();
+        this.createPointsOfInterest();
         this.createAsteroids();
     }
     
     createContainers() {
         this.pathsContainer = new PIXI.Container();
         this.signsContainer = new PIXI.Container();
+        this.poiContainer = new PIXI.Container();
+        this.poiSignContainer = new PIXI.Container();
         this.soicalsButtonsContainer = new PIXI.Container();
         this.asteroidsContainer = new PIXI.Container();
         
         this.container.addChild(this.pathsContainer);
         this.container.addChild(this.signsContainer)
+        this.container.addChild(this.poiContainer);
+        this.container.addChild(this.poiSignContainer);
         this.container.addChild(this.soicalsButtonsContainer)
         this.container.addChild(this.asteroidsContainer);
     }
 
-
-
     createGuide(){
         const position = worldConfig.GUIDE.POSITION;
         const dimensions = worldConfig.GUIDE.DIMENSIONS;
+        const details = signConfig.DATA.DETAILS;
 
+        // Position values let the guide area be moved in the world while each element maintains their relative position
         this.createPaths(position.X, position.Y, dimensions.PATH_WIDTH, dimensions.PATH_HEIGHT, dimensions.LANE_WIDTH);
         this.createSigns(position.X, position.Y);
-        this.createSocialMediaButtons(position.X + signConfig.DATA.DETAILS.x, position.X + signConfig.DATA.DETAILS.y);
-        // Clean this up a bit to make it more readable (needed the details.x and details.y bit to shift the buttons so they're relative to the details poition)
+
+        const soicalsOffsetX = position.X + details.x; // Calculate the buttons' position relative to the details' (details' position are their origin)
+        const soicalsOffsetY = position.X + details.y;
+        this.createSocialMediaButtons(soicalsOffsetX, soicalsOffsetY);
     }
-    
+    //#endregion
 
 
+
+    //#region Paths
     createPaths(x, y, pathWidth, pathHeight, laneWidth) {
         // Create a plus sign layout of path pairs around a center point (top left corner of the bottom arm)
         
@@ -83,7 +101,6 @@ class WorldObjectManager {
         const rightX = x + pathWidth + laneWidth;
         const rightY = y - laneWidth - pathWidth;
         
-        // Create each path pair to form the complete plus sign
         this.createPathPair(x, topY, pathWidth, pathHeight, laneWidth, wallColors.TOP, isVertical); // Top arm
         this.createPathPair(x, bottomY, pathWidth, pathHeight, laneWidth, wallColors.BOTTOM, isVertical); // Bottom arm
         this.createPathPair(leftX, leftY, pathHeight, pathWidth, laneWidth, wallColors.LEFT, isHorizontal); // Left arm
@@ -92,7 +109,7 @@ class WorldObjectManager {
 
     createPathPair(x, y, pathWidth, pathHeight, laneWidth, color, isHorizontal = true){
         // Create a pair of paths offset by a certain amount
-        const xOffset = isHorizontal ? laneWidth + pathWidth : 0;
+        const xOffset = isHorizontal ? laneWidth + pathWidth : 0; // If horizontal, the second path is offset on the x axis
         const yOffset = isHorizontal ? 0 : laneWidth + pathHeight;
 
         this.createPath(x, y, pathWidth, pathHeight, color, this.pathsContainer, this.paths);
@@ -104,17 +121,17 @@ class WorldObjectManager {
         path.init();
         array.push(path)
     }
+    //#endregion
 
 
 
+    //#region Signs
     createSigns(x, y){
-        // Parameters so the signs can be moved with the paths while maintaining their relative positions
-
         // Create each pathway sign
         signConfig.DATA.PATHWAY.forEach((signData) => {
             const sign = new Sign(
                 this.signsContainer, 
-                signData.x + x, 
+                signData.x + x, // Offset by the world position of the guide area
                 signData.y + y, 
                 signData.size, 
                 signData.wrapWidth, 
@@ -126,7 +143,7 @@ class WorldObjectManager {
         // Create details as a sign
         const details = new Sign(
             this.signsContainer, 
-            signConfig.DATA.DETAILS.x + x, 
+            signConfig.DATA.DETAILS.x + x, // Offset by the world position of the guide area
             signConfig.DATA.DETAILS.y + y, 
             signConfig.DATA.DETAILS.size, 
             signConfig.DATA.DETAILS.wrapWidth, 
@@ -134,8 +151,56 @@ class WorldObjectManager {
         details.init();
         this.signs.push(details);
     }
+    //#endregion
 
 
+
+    //#region Intractables
+    createPointsOfInterest() {
+        // Create each POI from config data
+        this.poiData.forEach((poiData, index) => {
+            const poi = new PointOfInterest(
+                this.poiContainer, 
+                this.physics, 
+                this.camera,
+                poiData, 
+                index + 1,
+            );
+            poi.init();
+
+            // Create Sign (not a child of poi otherwise it would get scaled up as well when hovered over)
+            const title = new Sign(
+                this.poiSignContainer, 
+                poiConfig.FONT.TITLE.XOFFSET + poiData.x, // Plus poi position to set the sign's position relative to it's poi
+                poiConfig.FONT.TITLE.YOFFSET + poiData.y + poiData.height/2, // Plus half of poi height to move the text just below the poi
+                poiConfig.FONT.TITLE.SIZE, 
+                poiData.width, 
+                poiData.title,
+                poiConfig.FONT.TITLE.WEIGHT,
+                poiConfig.FONT.TITLE.ALIGN
+            );
+            title.init();
+
+            // Create Description as child of title graphic
+            const description = new Sign(
+                title.graphic, 
+                0, // In line on x-axis with title
+                poiConfig.FONT.DESCRIPTION.YOFFSET, 
+                poiConfig.FONT.DESCRIPTION.SIZE, 
+                poiData.width - poiConfig.FONT.DESCRIPTION.XOFFSET, 
+                poiData.description,
+                poiConfig.FONT.DESCRIPTION.WEIGHT,
+                poiConfig.FONT.DESCRIPTION.ALIGN);
+            description.init();
+            
+            // Object to make a poi's title and description easy to reference
+            this.pointsOfInterest.push({
+                currentPoi: poi, 
+                title: title, 
+                description: description
+            });
+        });
+    }
 
     createSocialMediaButtons(x, y){
         socialMediaButtonConfig.ITEMS.forEach((buttonData, index) => {
@@ -153,18 +218,17 @@ class WorldObjectManager {
             this.socialsButtons.push(button);
         });
     }
+    //#endregion
 
 
 
-
+    //#region Asteroids
     createAsteroids() {
-        // Use asteroid count from config
         for (let i = 0; i < asteroidConfig.ASTEROIDS.COUNT; i++) {
-            // Find a valid position for the asteroid
-            let x, y;
 
-            x = this.getRandomNumber(asteroidConfig.ASTEROIDS.POSITION.MIN_X, asteroidConfig.ASTEROIDS.POSITION.MAX_X);
-            y = this.getRandomNumber(asteroidConfig.ASTEROIDS.POSITION.MIN_Y, asteroidConfig.ASTEROIDS.POSITION.MAX_Y);
+            // Find position
+            const x = this.getRandomNumber(asteroidConfig.ASTEROIDS.POSITION.MIN_X, asteroidConfig.ASTEROIDS.POSITION.MAX_X);
+            const y = this.getRandomNumber(asteroidConfig.ASTEROIDS.POSITION.MIN_Y, asteroidConfig.ASTEROIDS.POSITION.MAX_Y);
             
             // Generate asteroid properties
             const size = Math.random() * 
@@ -181,7 +245,11 @@ class WorldObjectManager {
             this.asteroids.push(asteroid);
         }
     }
+    //#endregion
 
+
+
+    //#region Helper functions
     getRandomNumber(min, max) {
         // Make sure min is actually less than max
         if (min > max) {
@@ -190,11 +258,15 @@ class WorldObjectManager {
         
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-
+    //#endregion
 
 
 
     update(deltaTime) {
+        this.pointsOfInterest.forEach(poi => {
+            poi.currentPoi.update(deltaTime);
+        });
+
         this.socialsButtons.forEach(button => {
             button.update(deltaTime);
         });

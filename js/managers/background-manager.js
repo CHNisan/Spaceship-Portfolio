@@ -26,7 +26,6 @@ export default class BackgroundManager {
     }
 
     registerWithInputManager() {
-        // Listen for the dark mode toggle event
         document.addEventListener('game:darkModeToggle', () => {
             this.toggleDarkMode();
         });

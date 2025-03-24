@@ -3,7 +3,6 @@ import Ball from '../entities/playground-objects/ball.js';
 import config from '../config/index.js';
 
 const { 
-    theme: themeConfig,
     ball: ballConfig,
     playground: playgroundConfig
 } = config;
@@ -43,6 +42,7 @@ class PlaygroundManager {
     }
     //#endregion
     
+
 
     //#region Section creation
     createBowling() {
@@ -94,7 +94,9 @@ class PlaygroundManager {
         this.createWall(leftWallX, leftWallY, dimensions.WALL_HEIGHT, leftWallHeight, color);    // Left wall
 
 
-        // Create the goal (open square to get the ball into, positioned in the left center of the lane)
+        // Create the goal (open square to get the ball into)
+        // Positioned in the left center of the lane
+        // Taking up 1/10 of the width and taking up 1/3 of the height)
         const horizontalGoalX = position.X - dimensions.WALL_WIDTH/3;
         const horizontalGoalWidth = dimensions.WALL_WIDTH/10;
 
@@ -124,7 +126,6 @@ class PlaygroundManager {
 
 
 
-
     //#region Help functions
     createWall(x, y, width, height, color){
         const wall = new Wall(this.wallsContainer, this.physics, x, y, width, height, color);
@@ -138,9 +139,10 @@ class PlaygroundManager {
         this.balls.push(ball);
     }
 
+    // Create a tringle shape of balls, adding one extra ball per row
     createPins(x, y, wallWidth, laneWidth, pinRows, pinSpacing, pinType){
         for (let row = pinRows; row > 0; row--) {
-            // Calculate horizontal position for this row
+            // Calculate horizontal offset from the starting position for this row
             const rowXOffset = (pinRows - row) * pinSpacing;
             
             // Create pins in current row
