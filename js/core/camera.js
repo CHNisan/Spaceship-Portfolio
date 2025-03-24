@@ -6,7 +6,7 @@ export default class Camera {
     constructor() {
         this.container = null;
         this.app = null;
-        this.target = { x: 0, y: 0 };
+        this.target = { x: 0, y: 0 }; // Target position of camera's focus
         this.focusObject = null;
         this.damping = cameraConfig.FOLLOW.DAMPING;
         
@@ -23,6 +23,7 @@ export default class Camera {
         this.shipPosition = { x: 0, y: 0 };
     }
     
+    //#region Setup
     init(container, app) {
         this.container = container;
         this.app = app;
@@ -30,50 +31,15 @@ export default class Camera {
         this.setupDragControls();
     }
 
-    setFocus(object) {
-        // Set the camera to focus on a specific object (POI)
-        this.focusObject = object;
-    }
-    
-    resetFocus() {
-        // Reset camera to follow the ship
-        this.focusObject = null;
-    }
-    
-    follow(target) {
-        // Store the ship's position for returning from freecam
-        this.shipPosition.x = target.position.x;
-        this.shipPosition.y = target.position.y;
-        
-        // If in freecam mode, don't update the target
-        if (this.freecamMode) {
-            return;
-        }
-        
-        // If we have a specific focus object, use that instead of the ship
-        if (this.focusObject) {
-            this.target.x = this.focusObject.position.x;
-            this.target.y = this.focusObject.position.y;
-        } else {
-            // Otherwise follow the ship (default behavior)
-            this.target.x = target.position.x;
-            this.target.y = target.position.y;
-        }
-    }
-    
     setupZoomControls() {
-        // Add mouse wheel event listener to the canvas
         this.app.view.addEventListener('wheel', (event) => {
             event.preventDefault();
             
-            // Determine zoom direction
             const zoomDirection = event.deltaY < 0 ? 1 : -1;
             
-            // Calculate new zoom level
             const zoomStep = cameraConfig.ZOOM.STEP;
             this.targetZoom += zoomDirection * zoomStep;
             
-            // Clamp zoom level to min/max
             this.setZoom(this.targetZoom);
         });
     }
@@ -90,7 +56,6 @@ export default class Camera {
             this.lastPosition.x = this.container.pivot.x;
             this.lastPosition.y = this.container.pivot.y;
             
-            // Change cursor to grabbing
             this.app.view.style.cursor = 'grabbing';
         });
         
@@ -119,23 +84,85 @@ export default class Camera {
             }
         });
     }
+    //#endregion
+
+
+
+    //#region Camera focuse
+    setFocus(object) {
+        this.focusObject = object;
+    }
     
+    resetFocus() {
+        // Reset camera to follow the ship
+        this.focusObject = null;
+    }
+    
+    follow(target) {
+        // Store the ship's position for returning from freecam
+        this.shipPosition.x = target.position.x;
+        this.shipPosition.y = target.position.y;
+        
+        // If in freecam mode, don't update the target
+        if (this.freecamMode) {
+            return;
+        }
+        
+        // If we have a specific focus object, use that instead of the ship
+        if (this.focusObject) {
+            this.target.x = this.focusObject.position.x;
+            this.target.y = this.focusObject.position.y;
+        } else {
+            // Otherwise follow the ship (default behavior)
+            this.target.x = target.position.x;
+            this.target.y = target.position.y;
+        }
+    }
+    //#endregion
+
+
+
+    //#region Freecam
     toggleFreecamMode() {
         this.freecamMode = !this.freecamMode;
         
         if (this.freecamMode) {
-            // Enter freecam mode
             this.app.view.style.cursor = 'grab';
         } else {
-            // Exit freecam mode, return to ship
             this.app.view.style.cursor = 'auto';
             this.target.x = this.shipPosition.x;
             this.target.y = this.shipPosition.y;
         }
     }
-    
+    //#endregion
+
+
+
+    //#region Zoom
+    setZoom(value) {
+        // Clamp zoom value to be between the max and min
+        this.targetZoom = Math.max(cameraConfig.ZOOM.MIN, 
+                          Math.min(cameraConfig.ZOOM.MAX, value));
+    }
+
+    resetZoom() {
+        this.targetZoom = cameraConfig.ZOOM.DEFAULT;
+    }
+    //#endregion
+
+
+
+    //#region Helper functions
+    lerp(start, end, t) {
+        return start * (1 - t) + end * t;
+    }
+    //#endregion
+
+
+
     update(deltaTime) {
-        // Apply smooth camera movement using linear interpolation
+        // Apply smooth camera movement
+        // The camera is moved by setting the screen container pivot to a position in world pace and shift a everything (contained within a single container) to centre that pivot on the screen
         this.container.pivot.x = this.lerp(this.container.pivot.x, this.target.x, this.damping);
         this.container.pivot.y = this.lerp(this.container.pivot.y, this.target.y, this.damping);
         
@@ -146,21 +173,5 @@ export default class Camera {
         // Center the container in the screen
         this.container.position.x = this.app.screen.width / 2;
         this.container.position.y = this.app.screen.height / 2;
-    }
-    
-    // Helper function for smooth interpolation
-    lerp(start, end, t) {
-        return start * (1 - t) + end * t;
-    }
-    
-    // Reset zoom to default
-    resetZoom() {
-        this.targetZoom = cameraConfig.ZOOM.DEFAULT;
-    }
-    
-    // Set zoom to a specific value
-    setZoom(value) {
-        this.targetZoom = Math.max(cameraConfig.ZOOM.MIN, 
-                          Math.min(cameraConfig.ZOOM.MAX, value));
     }
 }

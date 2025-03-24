@@ -22,11 +22,12 @@ export default class InputManager {
         this.slowModeMultiplier = shipConfig.THRUST.SLOW_MULTIPLIER;
         this.fastModeMultiplier = shipConfig.THRUST.FAST_MULTIPLIER;
         
-        // Add speed modification flags and multipliers
+        // Add speed modification flags
         this.isSlowMode = false;
         this.isFastMode = false;
     }
     
+    //#region Setup
     init(app, gameContainer, ship, camera, physics) {
         this.app = app;
         this.gameContainer = gameContainer;
@@ -39,14 +40,11 @@ export default class InputManager {
     }
     
     setupEventListeners() {
-        // Mouse move handler (use DOM event for mouse position tracking)
         this.app.view.addEventListener('mousemove', (event) => {
             this.handleMouseMove(event);
         });
         
-        // Use PIXI events for thruster control
-        // Listen for mousedown/up on the stage for thrust control
-        this.app.stage.eventMode = 'static';
+        this.app.stage.eventMode = 'static'; // Is hit tested and emits events
         
         this.app.stage.on('pointerdown', () => {
             // Only apply thrust if we're following the ship (not a POI) and not in freecam mode
@@ -59,39 +57,32 @@ export default class InputManager {
             this.setThrust(false);
         });
         
-        // Handle pointer leaving the canvas
         this.app.view.addEventListener('mouseleave', () => {
             this.setThrust(false);
         });
     }
     
     setupKeyboardControls() {
-        // Add keyboard event listener for spacebar
         window.addEventListener('keydown', (event) => {
-            // Toggle freecam mode with spacebar
             if (event.code === 'Space' || event.key === ' ') {
                 if (this.camera) {
                     this.camera.toggleFreecamMode();
                     
-                    // Reset any thrust and glow effect
                     this.setThrust(false);
                 }
-                // Prevent default spacebar behavior (like scrolling)
+
                 event.preventDefault();
             }
             
-            // Enable slow mode with Control key
             if (event.code === 'ControlLeft' || event.code === 'ControlRight') {
                 this.isSlowMode = true;
             }
             
-            // Enable fast mode with Shift key
             if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
                 this.isFastMode = true;
             }
         });
 
-        // Add listener for releasing Control and Shift keys
         window.addEventListener('keyup', (event) => {
             if (event.code === 'ControlLeft' || event.code === 'ControlRight') {
                 this.isSlowMode = false;
@@ -102,27 +93,30 @@ export default class InputManager {
         });
 
         window.addEventListener('keydown', (event) => {
-            // Toggle dark mode when 'd' key is pressed
             if (event.key === 'd' || event.key === 'D') {
-                // Dispatch a custom event 
                 const darkModeEvent = new CustomEvent('game:darkModeToggle');
                 document.dispatchEvent(darkModeEvent);
             }
-
-            // FOR CHECKING POSITIONING
-            if (event.key === 't' || event.key === 'T') {
-                console.log(this.ship.physicsBody.position.x, this.ship.physicsBody.position.y);
-            }
-            // DELTE LATER
         });
     }
+
+    // Setter method to connect to the entities module after initialization
+    setEntities(entities) {
+        this.entities = entities;
+        this.ship = this.entities.ship;
+    }
+    //#endregion
     
+
+
+    //#region Controls
     handleMouseMove(event) {
-        // Convert screen coordinates to world coordinates
+        // Account for position of the game in window when calculating screen cordinates
         const bounds = this.app.view.getBoundingClientRect();
         const screenX = event.clientX - bounds.left;
         const screenY = event.clientY - bounds.top;
         
+        // Convert screen coordinates to world coordinates (position of the screen container pivot in world space)
         // Adjust for camera position and zoom level
         const cameraZoom = this.camera.currentZoom;
         this.mousePosition.x = (screenX / cameraZoom) + this.gameContainer.pivot.x - (this.app.screen.width / cameraZoom / 2);
@@ -144,28 +138,22 @@ export default class InputManager {
         
         const shipBody = this.ship.physicsBody;
         
-        // Rotate ship towards mouse
         const currentRotation = shipBody.angle;
         const rotationDiff = this.targetRotation - currentRotation;
         
-        // Normalize angle difference
         let normalizedDiff = rotationDiff;
-        while (normalizedDiff > Math.PI) normalizedDiff -= Math.PI * 2;
+        while (normalizedDiff > Math.PI) normalizedDiff -= Math.PI * 2; // Makes sure the angle is between 0 and 2pi so there is not extra loop
         while (normalizedDiff < -Math.PI) normalizedDiff += Math.PI * 2;
         
         // Apply torque to rotate ship
         this.physics.Body.setAngularVelocity(shipBody, normalizedDiff * this.angularVelocityMult);
         
-        // Apply thrust if mouse is down
         if (this.isThrusting) {
-            // Calculate effective force multiplier based on key combinations
             let effectiveForceMult = this.forceMult;
             
-            // If both slow and fast modes are active, they cancel out to normal speed
             if (this.isSlowMode && this.isFastMode) {
                 effectiveForceMult = this.forceMult;
             }
-            // Otherwise apply just the active modifier
             else if (this.isSlowMode) {
                 effectiveForceMult = this.forceMult * this.slowModeMultiplier;
             }
@@ -180,18 +168,14 @@ export default class InputManager {
             this.physics.Body.applyForce(shipBody, shipBody.position, force);
         }
     }
+    //#endregion
+
+
 
     setThrust(isActive) {
         this.isThrusting = isActive;
         if (this.ship && this.ship.setEngineGlow) {
             this.ship.setEngineGlow(isActive);
         }
-    }
-    
-    // Setter method to connect to the entities module after initialization
-    setEntities(entities) {
-        this.entities = entities;
-        // Now we can access the ship via entities
-        this.ship = this.entities.ship;
     }
 }

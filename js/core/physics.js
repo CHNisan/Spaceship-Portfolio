@@ -1,7 +1,5 @@
-// Physics setup and configuration
 import config from '../config/index.js';
 
-// Get physics and world config
 const { physics: physicsConfig, world: worldConfig } = config;
 
 export default class PhysicsEngine {
@@ -23,8 +21,8 @@ export default class PhysicsEngine {
         this.walls = [];
     }
     
+    //#region Setup
     init() {
-        // Create engine with config gravity
         this.engine = this.Engine.create({
             gravity: physicsConfig.ENGINE.GRAVITY
         });
@@ -53,12 +51,12 @@ export default class PhysicsEngine {
         
         this.World.add(this.world, this.walls);
     }
+    //#endregion
     
-    update(deltaTime) {
-        this.Engine.update(this.engine, deltaTime);
-    }
-    
+
+
     keepEntityInBounds(entity) {
+        // Additional check to make sure the ship stays in bounds even if it clips through the world walls
         if (!entity || !entity.physicsBody) return;
         
         const pos = entity.physicsBody.position;
@@ -79,5 +77,11 @@ export default class PhysicsEngine {
             this.Body.setPosition(entity.physicsBody, { x: pos.x, y: this.WORLD_BOUNDS.MAX_Y });
             this.Body.setVelocity(entity.physicsBody, { x: entity.physicsBody.velocity.x, y: 0 });
         }
+    }
+
+
+
+    update(deltaTime) {
+        this.Engine.update(this.engine, deltaTime);
     }
 }
