@@ -1,4 +1,3 @@
-// Main game class
 import PhysicsEngine from './core/physics.js';  
 import Entities from './managers/entity-manager.js';
 import Camera from './core/camera.js';          
@@ -25,7 +24,6 @@ export default class Game {
     }
     
     init() {
-        // Initialize PIXI Application with transparent background
         this.app = new PIXI.Application({
             backgroundAlpha: 0, // Transparent background
             resizeTo: window,
@@ -45,12 +43,10 @@ export default class Game {
         this.app.stage.eventMode = 'static';
         this.app.stage.hitArea = this.app.screen;
         
-        // Show intro screen first
         this.showIntroScreen();
     }
     
     showIntroScreen() {
-        // Create and show the intro screen
         this.introScreen = new IntroScreen(this.app, () => {
             this.startGame();
         });
@@ -59,20 +55,16 @@ export default class Game {
     }
     
     async startGame() {
-        // Only initialize the game once
         if (this.gameInitialized) return;
         
         try {
-            // Preload assets first
             await preloadAssets();
             
-            // Initialize all systems - pass required references
             this.physics.init();
             Entities.init(this.gameContainer, this.physics, this.camera);
             this.camera.init(this.gameContainer, this.app);
             this.input.init(this.app, this.gameContainer, Entities.ship, this.camera, this.physics);
             
-            // Start the game loop
             this.setupGameLoop();
             
             this.gameInitialized = true;
@@ -83,23 +75,17 @@ export default class Game {
     
     setupGameLoop() {
         this.app.ticker.add(() => {
-            // Skip updates if game is paused
             if (this.isPaused) return;
             
-            // Update physics
             this.physics.update(this.app.ticker.deltaMS);
             
-            // Apply ship controls
             this.input.applyShipControls();
             
-            // Update all entity positions
             Entities.update();
             
-            // Update camera position
             this.camera.follow(Entities.ship);
             this.camera.update(this.app.ticker.deltaMS);
             
-            // Keep ship in bounds
             this.physics.keepEntityInBounds(Entities.ship);
         });
     }
