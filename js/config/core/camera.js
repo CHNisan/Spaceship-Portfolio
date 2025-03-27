@@ -4,7 +4,7 @@ const cameraConfig = {
     },
     
     ZOOM: {
-        DEFAULT: 1.0,   
+        DEFAULT: 0.7,   
         MIN: 0.3,       // Zoomed out
         MAX: 2.0,       // Zoomed in
         STEP: 0.1,      // Zoom amount per scroll

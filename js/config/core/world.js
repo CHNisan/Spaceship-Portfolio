@@ -3,8 +3,8 @@ import themeConfig from './theme.js'
 
 const worldConfig = {
     // Size of the game world (separate width and height)
-    WIDTH: 5000,
-    HEIGHT: 5000,
+    WIDTH: 12000,
+    HEIGHT: 8000,
     
     // Background gradient colors and angle
     BACKGROUND: {
@@ -27,13 +27,13 @@ const worldConfig = {
     GUIDE: {
         POSITION: {
             // Top left position of the bottom paths
-            X: 500,
-            Y: 990
+            X: 0,
+            Y: 500
         },
         DIMENSIONS: {
             PATH_WIDTH: 10,
             PATH_HEIGHT: 1000,
-            LANE_WIDTH: 400,
+            LANE_WIDTH: 600,
         },
         WALL_COLORS: {
             TOP: themeConfig.COLORS.YELLOW,
