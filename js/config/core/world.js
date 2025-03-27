@@ -1,8 +1,10 @@
+// js/config/core/world.js
 import themeConfig from './theme.js'
 
 const worldConfig = {
-    // Size of the game world (width and height)
-    SIZE: 5000,
+    // Size of the game world (separate width and height)
+    WIDTH: 5000,
+    HEIGHT: 5000,
     
     // Background gradient colors and angle
     BACKGROUND: {
@@ -42,12 +44,12 @@ const worldConfig = {
     }
 };
 
-// Calculate min/max x/y values of the world based off world size value
+// Calculate min/max x/y values of the world based on separate width and height
 worldConfig.BOUNDS = {
-    MIN_X: -worldConfig.SIZE / 2,
-    MAX_X: worldConfig.SIZE / 2,
-    MIN_Y: -worldConfig.SIZE / 2,
-    MAX_Y: worldConfig.SIZE / 2
+    MIN_X: -worldConfig.WIDTH / 2,
+    MAX_X: worldConfig.WIDTH / 2,
+    MIN_Y: -worldConfig.HEIGHT / 2,
+    MAX_Y: worldConfig.HEIGHT / 2
 };
 
 export default worldConfig;

@@ -71,8 +71,8 @@ class EntityManager {
         boundary.drawRect(
             worldConfig.BOUNDS.MIN_X, 
             worldConfig.BOUNDS.MIN_Y, 
-            worldConfig.SIZE, 
-            worldConfig.SIZE
+            worldConfig.WIDTH,  // Now using WIDTH instead of SIZE
+            worldConfig.HEIGHT  // Now using HEIGHT instead of SIZE
         );
         this.container.addChild(boundary);
     }

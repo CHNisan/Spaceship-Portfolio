@@ -1,3 +1,4 @@
+// js/core/physics.js
 import config from '../config/index.js';
 
 const { physics: physicsConfig, world: worldConfig } = config;
@@ -15,8 +16,9 @@ export default class PhysicsEngine {
         this.engine = null;
         this.world = null;
         
-        // Game world boundaries
-        this.WORLD_SIZE = worldConfig.SIZE;
+        // Game world boundaries - now using separate width and height
+        this.WORLD_WIDTH = worldConfig.WIDTH;
+        this.WORLD_HEIGHT = worldConfig.HEIGHT;
         this.WORLD_BOUNDS = worldConfig.BOUNDS;
         this.walls = [];
     }
@@ -39,22 +41,24 @@ export default class PhysicsEngine {
         };
         
         this.walls = [
-            this.Bodies.rectangle(0, this.WORLD_BOUNDS.MIN_Y, this.WORLD_SIZE, 
-                                 physicsConfig.WALLS.THICKNESS, wallOptions), // Top
-            this.Bodies.rectangle(0, this.WORLD_BOUNDS.MAX_Y, this.WORLD_SIZE, 
-                                 physicsConfig.WALLS.THICKNESS, wallOptions),  // Bottom
+            // Top wall 
+            this.Bodies.rectangle(0, this.WORLD_BOUNDS.MIN_Y, this.WORLD_WIDTH, 
+                                 physicsConfig.WALLS.THICKNESS, wallOptions),
+            // Bottom wall 
+            this.Bodies.rectangle(0, this.WORLD_BOUNDS.MAX_Y, this.WORLD_WIDTH, 
+                                 physicsConfig.WALLS.THICKNESS, wallOptions),
+            // Left wall 
             this.Bodies.rectangle(this.WORLD_BOUNDS.MIN_X, 0, physicsConfig.WALLS.THICKNESS, 
-                                 this.WORLD_SIZE, wallOptions), // Left
+                                 this.WORLD_HEIGHT, wallOptions),
+            // Right wall 
             this.Bodies.rectangle(this.WORLD_BOUNDS.MAX_X, 0, physicsConfig.WALLS.THICKNESS, 
-                                 this.WORLD_SIZE, wallOptions)   // Right
+                                 this.WORLD_HEIGHT, wallOptions)
         ];
         
         this.World.add(this.world, this.walls);
     }
     //#endregion
     
-
-
     keepEntityInBounds(entity) {
         // Additional check to make sure the ship stays in bounds even if it clips through the world walls
         if (!entity || !entity.physicsBody) return;
@@ -78,8 +82,6 @@ export default class PhysicsEngine {
             this.Body.setVelocity(entity.physicsBody, { x: entity.physicsBody.velocity.x, y: 0 });
         }
     }
-
-
 
     update(deltaTime) {
         this.Engine.update(this.engine, deltaTime);
