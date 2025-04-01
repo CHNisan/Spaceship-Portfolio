@@ -32,6 +32,7 @@ class EntityManager {
         // Initialize entity subsystems
         this.createSpaceship();
         this.createBoundaryVisual();
+        this.createZoomAreaVisual();
 
         WorldObjectManager.init(this.worldObjectsContainer, this.physics, this.camera);
         PlaygroundManager.init(this.playgroundContainer, this.physics);
@@ -76,6 +77,31 @@ class EntityManager {
         );
         this.container.addChild(boundary);
     }
+
+    createZoomAreaVisual() {
+        const zoomArea = worldConfig.ZOOM_AREA;
+        
+        // Create a subtle indicator for the zoom area
+        const zoomAreaVisual = new PIXI.Graphics();
+        zoomAreaVisual.lineStyle(2, 0x00FF00, 0.4);  // Thin green line, partially transparent
+        zoomAreaVisual.drawRect(
+            zoomArea.MIN_X, 
+            zoomArea.MIN_Y, 
+            zoomArea.MAX_X - zoomArea.MIN_X, 
+            zoomArea.MAX_Y - zoomArea.MIN_Y
+        );
+        
+        // Add a visual indication of the transition area
+        zoomAreaVisual.lineStyle(1, 0x00FF00, 0.2);  // Thinner, more transparent line
+        zoomAreaVisual.drawRect(
+            zoomArea.MIN_X - zoomArea.TRANSITION_DISTANCE, 
+            zoomArea.MIN_Y - zoomArea.TRANSITION_DISTANCE, 
+            (zoomArea.MAX_X - zoomArea.MIN_X) + (zoomArea.TRANSITION_DISTANCE * 2), 
+            (zoomArea.MAX_Y - zoomArea.MIN_Y) + (zoomArea.TRANSITION_DISTANCE * 2)
+        );
+        
+        this.container.addChild(zoomAreaVisual);
+    }
     //#endregion
     
     
@@ -89,6 +115,7 @@ class EntityManager {
         WorldObjectManager.update();
     }
 }
+
 
 // Export as a singleton
 const Entities = new EntityManager();

@@ -1,6 +1,7 @@
+// js/core/camera.js
 import config from '../config/index.js';
 
-const { camera: cameraConfig } = config;
+const { camera: cameraConfig, world: worldConfig } = config;
 
 export default class Camera {
     constructor() {
@@ -15,12 +16,19 @@ export default class Camera {
         this.targetZoom = cameraConfig.ZOOM.DEFAULT;
         this.zoomDamping = cameraConfig.ZOOM.DAMPING;
         
+        // Auto-zoom properties (based on player position)
+        this.autoZoomEnabled = true;       // Flag to enable/disable position-based auto zoom
+        this.positionBasedZoom = cameraConfig.ZOOM.DEFAULT;  // Calculated zoom based on player position
+        
         // Freecam properties
         this.freecamMode = false;
         this.isDragging = false;
         this.dragStart = { x: 0, y: 0 };
         this.lastPosition = { x: 0, y: 0 };
         this.shipPosition = { x: 0, y: 0 };
+        
+        // Track if manual zoom was used (to temporarily disable auto-zoom)
+        this.manualZoomUsed = false;
     }
     
     //#region Setup
@@ -34,6 +42,9 @@ export default class Camera {
     setupZoomControls() {
         this.app.view.addEventListener('wheel', (event) => {
             event.preventDefault();
+            
+            // Mark that manual zoom was used
+            this.manualZoomUsed = true;
             
             const zoomDirection = event.deltaY < 0 ? 1 : -1;
             
@@ -86,9 +97,7 @@ export default class Camera {
     }
     //#endregion
 
-
-
-    //#region Camera focuse
+    //#region Camera focus
     setFocus(object) {
         this.focusObject = object;
     }
@@ -99,9 +108,21 @@ export default class Camera {
     }
     
     follow(target) {
-        // Store the ship's position for returning from freecam
+        // Store the ship's position for returning from freecam and for auto-zoom
         this.shipPosition.x = target.position.x;
         this.shipPosition.y = target.position.y;
+        
+        // Update position-based zoom if auto-zoom is enabled
+        if (this.autoZoomEnabled && !this.manualZoomUsed) {
+            this.updatePositionBasedZoom();
+            
+            // Set the target zoom to position-based zoom
+            this.targetZoom = this.positionBasedZoom;
+            
+            // Clamp zoom to min/max
+            this.targetZoom = Math.max(cameraConfig.ZOOM.MIN, 
+                             Math.min(cameraConfig.ZOOM.MAX, this.targetZoom));
+        }
         
         // If in freecam mode, don't update the target
         if (this.freecamMode) {
@@ -120,7 +141,63 @@ export default class Camera {
     }
     //#endregion
 
-
+    //#region Auto-zoom based on position
+    updatePositionBasedZoom() {
+        const zoomArea = worldConfig.ZOOM_AREA;
+        const shipX = this.shipPosition.x;
+        const shipY = this.shipPosition.y;
+        
+        // Check if ship is completely inside the zoom area
+        if (shipX >= zoomArea.MIN_X && shipX <= zoomArea.MAX_X && 
+            shipY >= zoomArea.MIN_Y && shipY <= zoomArea.MAX_Y) {
+            this.positionBasedZoom = zoomArea.INNER_ZOOM;
+            return;
+        }
+        
+        // Calculate distance to the nearest edge of the zoom area
+        let distX = 0;
+        let distY = 0;
+        
+        if (shipX < zoomArea.MIN_X) {
+            distX = zoomArea.MIN_X - shipX;
+        } else if (shipX > zoomArea.MAX_X) {
+            distX = shipX - zoomArea.MAX_X;
+        }
+        
+        if (shipY < zoomArea.MIN_Y) {
+            distY = zoomArea.MIN_Y - shipY;
+        } else if (shipY > zoomArea.MAX_Y) {
+            distY = shipY - zoomArea.MAX_Y;
+        }
+        
+        // Use the larger of the two distances for a smooth transition
+        const distance = Math.max(distX, distY);
+        
+        // Calculate transition factor (0 = inner zoom, 1 = outer zoom)
+        const transitionFactor = Math.min(distance / zoomArea.TRANSITION_DISTANCE, 1);
+        
+        // Interpolate between inner and outer zoom based on distance
+        this.positionBasedZoom = zoomArea.INNER_ZOOM - 
+            (zoomArea.INNER_ZOOM - zoomArea.OUTER_ZOOM) * transitionFactor;
+    }
+    
+    // Toggle auto-zoom functionality
+    toggleAutoZoom() {
+        this.autoZoomEnabled = !this.autoZoomEnabled;
+        this.manualZoomUsed = false;
+        
+        // If turning back on, immediately update zoom
+        if (this.autoZoomEnabled) {
+            this.updatePositionBasedZoom();
+            this.targetZoom = this.positionBasedZoom;
+        }
+    }
+    
+    // Reset manual zoom flag to allow auto-zoom to resume
+    resetManualZoom() {
+        this.manualZoomUsed = false;
+    }
+    //#endregion
 
     //#region Freecam
     toggleFreecamMode() {
@@ -136,8 +213,6 @@ export default class Camera {
     }
     //#endregion
 
-
-
     //#region Zoom
     setZoom(value) {
         // Clamp zoom value to be between the max and min
@@ -146,11 +221,17 @@ export default class Camera {
     }
 
     resetZoom() {
-        this.targetZoom = cameraConfig.ZOOM.DEFAULT;
+        // Reset to default or position-based zoom if auto-zoom is enabled
+        if (this.autoZoomEnabled) {
+            this.updatePositionBasedZoom();
+            this.targetZoom = this.positionBasedZoom;
+        } else {
+            this.targetZoom = cameraConfig.ZOOM.DEFAULT;
+        }
+        
+        this.manualZoomUsed = false;
     }
     //#endregion
-
-
 
     //#region Helper functions
     lerp(start, end, t) {
@@ -158,11 +239,10 @@ export default class Camera {
     }
     //#endregion
 
-
-
     update(deltaTime) {
         // Apply smooth camera movement
-        // The camera is moved by setting the screen container pivot to a position in world pace and shift a everything (contained within a single container) to centre that pivot on the screen
+        // The camera is moved by setting the screen container pivot to a position in world space
+        // and shift everything (contained within a single container) to center that pivot on the screen
         this.container.pivot.x = this.lerp(this.container.pivot.x, this.target.x, this.damping);
         this.container.pivot.y = this.lerp(this.container.pivot.y, this.target.y, this.damping);
         

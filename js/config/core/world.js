@@ -3,8 +3,19 @@ import themeConfig from './theme.js'
 
 const worldConfig = {
     // Size of the game world (separate width and height)
-    WIDTH: 12000,
-    HEIGHT: 8000,
+    WIDTH: 5000,
+    HEIGHT: 4000,
+    
+    // Special zoom area where camera zooms in
+    ZOOM_AREA: {
+        MIN_X: -1000,
+        MAX_X: 1000,
+        MIN_Y: -1000,
+        MAX_Y: 1000,
+        INNER_ZOOM: 1.1,      // Zoom level when inside the area
+        OUTER_ZOOM: 0.7,      // Zoom level when outside the area
+        TRANSITION_DISTANCE: 750  // Distance over which zoom transitions
+    },
     
     // Background gradient colors and angle
     BACKGROUND: {
@@ -27,13 +38,13 @@ const worldConfig = {
     GUIDE: {
         POSITION: {
             // Top left position of the bottom paths
-            X: 0,
-            Y: 500
+            X: 500,
+            Y: 990
         },
         DIMENSIONS: {
             PATH_WIDTH: 10,
             PATH_HEIGHT: 1000,
-            LANE_WIDTH: 600,
+            LANE_WIDTH: 400,
         },
         WALL_COLORS: {
             TOP: themeConfig.COLORS.YELLOW,
