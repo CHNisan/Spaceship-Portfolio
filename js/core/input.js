@@ -1,4 +1,5 @@
 import config from '../config/index.js';
+import Camera from './camera.js';
 
 const { ship: shipConfig } = config;
 
@@ -64,6 +65,8 @@ export default class InputManager {
     
     setupKeyboardControls() {
         window.addEventListener('keydown', (event) => {
+            if (!this.camera.manualCameraControlsActive) return // Check to see if the manul camera controls are enabled before entering freecam
+
             if (event.code === 'Space' || event.key === ' ') {
                 if (this.camera) {
                     this.camera.toggleFreecamMode();

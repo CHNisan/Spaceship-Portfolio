@@ -21,8 +21,8 @@ const shipConfig = {
     },
     
     SPAWN: {
-        X: 0,
-        Y: 0,
+        X: -2000,
+        Y: 2000,
         ROTATION: -Math.PI / 2
     }
 };

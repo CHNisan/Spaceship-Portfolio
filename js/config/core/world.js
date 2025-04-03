@@ -4,7 +4,7 @@ import themeConfig from './theme.js'
 const worldConfig = {
     // Size of the game world (separate width and height)
     WIDTH: 5000,
-    HEIGHT: 4000,
+    HEIGHT: 5000,
     
     // Special zoom area where camera zooms in
     ZOOM_AREA: {

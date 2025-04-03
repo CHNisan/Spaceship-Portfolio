@@ -16,9 +16,9 @@ export default class Camera {
         this.targetZoom = cameraConfig.ZOOM.DEFAULT;
         this.zoomDamping = cameraConfig.ZOOM.DAMPING;
         
-        // Auto-zoom properties (based on player position)
-        this.autoZoomEnabled = true;       // Flag to enable/disable position-based auto zoom
-        this.positionBasedZoom = cameraConfig.ZOOM.DEFAULT;  // Calculated zoom based on player position
+        // Auto-zoom properties 
+        this.positionBasedZoom = cameraConfig.ZOOM.DEFAULT;  
+        this.manualCameraControlsActive = false; // The player must entre the centre of the zoom area before they can manually control the camera
         
         // Freecam properties
         this.freecamMode = false;
@@ -26,9 +26,6 @@ export default class Camera {
         this.dragStart = { x: 0, y: 0 };
         this.lastPosition = { x: 0, y: 0 };
         this.shipPosition = { x: 0, y: 0 };
-        
-        // Track if manual zoom was used (to temporarily disable auto-zoom)
-        this.manualZoomUsed = false;
     }
     
     //#region Setup
@@ -42,9 +39,7 @@ export default class Camera {
     setupZoomControls() {
         this.app.view.addEventListener('wheel', (event) => {
             event.preventDefault();
-            
-            // Mark that manual zoom was used
-            this.manualZoomUsed = true;
+            if (!this.manualCameraControlsActive) return; // Disabled manual zoom until the player enters the centre of the zoom area
             
             const zoomDirection = event.deltaY < 0 ? 1 : -1;
             
@@ -58,7 +53,7 @@ export default class Camera {
     setupDragControls() {
         // Add mouse drag controls for freecam mode
         this.app.view.addEventListener('mousedown', (event) => {
-            if (!this.freecamMode) return;
+            if (!this.freecamMode || !this.manualCameraControlsActive) return; // Disabled dragging until the player enters the centre of the zoom area
             
             this.isDragging = true;
             const bounds = this.app.view.getBoundingClientRect();
@@ -71,7 +66,7 @@ export default class Camera {
         });
         
         this.app.view.addEventListener('mousemove', (event) => {
-            if (!this.freecamMode || !this.isDragging) return;
+            if (!this.freecamMode || !this.isDragging || !this.manualCameraControlsActive) return; // Disabled dragging until the player enters the centre of the zoom area
             
             const bounds = this.app.view.getBoundingClientRect();
             const currentX = event.clientX - bounds.left;
@@ -112,16 +107,10 @@ export default class Camera {
         this.shipPosition.x = target.position.x;
         this.shipPosition.y = target.position.y;
         
-        // Update position-based zoom if auto-zoom is enabled
-        if (this.autoZoomEnabled && !this.manualZoomUsed) {
+        // Update position-based zoom if manual camera controls aren't enabled 
+        if (!this.manualCameraControlsActive) {
             this.updatePositionBasedZoom();
-            
-            // Set the target zoom to position-based zoom
-            this.targetZoom = this.positionBasedZoom;
-            
-            // Clamp zoom to min/max
-            this.targetZoom = Math.max(cameraConfig.ZOOM.MIN, 
-                             Math.min(cameraConfig.ZOOM.MAX, this.targetZoom));
+            this.setZoom(this.positionBasedZoom);
         }
         
         // If in freecam mode, don't update the target
@@ -151,6 +140,9 @@ export default class Camera {
         if (shipX >= zoomArea.MIN_X && shipX <= zoomArea.MAX_X && 
             shipY >= zoomArea.MIN_Y && shipY <= zoomArea.MAX_Y) {
             this.positionBasedZoom = zoomArea.INNER_ZOOM;
+
+            this.manualCameraControlsActive = true; // Give back manual control of the camera after entering the centre
+
             return;
         }
         
@@ -180,23 +172,6 @@ export default class Camera {
         this.positionBasedZoom = zoomArea.INNER_ZOOM - 
             (zoomArea.INNER_ZOOM - zoomArea.OUTER_ZOOM) * transitionFactor;
     }
-    
-    // Toggle auto-zoom functionality
-    toggleAutoZoom() {
-        this.autoZoomEnabled = !this.autoZoomEnabled;
-        this.manualZoomUsed = false;
-        
-        // If turning back on, immediately update zoom
-        if (this.autoZoomEnabled) {
-            this.updatePositionBasedZoom();
-            this.targetZoom = this.positionBasedZoom;
-        }
-    }
-    
-    // Reset manual zoom flag to allow auto-zoom to resume
-    resetManualZoom() {
-        this.manualZoomUsed = false;
-    }
     //#endregion
 
     //#region Freecam
@@ -218,18 +193,6 @@ export default class Camera {
         // Clamp zoom value to be between the max and min
         this.targetZoom = Math.max(cameraConfig.ZOOM.MIN, 
                           Math.min(cameraConfig.ZOOM.MAX, value));
-    }
-
-    resetZoom() {
-        // Reset to default or position-based zoom if auto-zoom is enabled
-        if (this.autoZoomEnabled) {
-            this.updatePositionBasedZoom();
-            this.targetZoom = this.positionBasedZoom;
-        } else {
-            this.targetZoom = cameraConfig.ZOOM.DEFAULT;
-        }
-        
-        this.manualZoomUsed = false;
     }
     //#endregion
 
