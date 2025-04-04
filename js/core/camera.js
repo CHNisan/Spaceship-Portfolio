@@ -92,6 +92,8 @@ export default class Camera {
     }
     //#endregion
 
+
+
     //#region Camera focus
     setFocus(object) {
         this.focusObject = object;
@@ -130,7 +132,14 @@ export default class Camera {
     }
     //#endregion
 
-    //#region Auto-zoom based on position
+
+    //#region Zoom
+    setZoom(value) {
+        // Clamp zoom value to be between the max and min
+        this.targetZoom = Math.max(cameraConfig.ZOOM.MIN, 
+                          Math.min(cameraConfig.ZOOM.MAX, value));
+    }
+
     updatePositionBasedZoom() {
         const zoomArea = worldConfig.ZOOM_AREA;
         const shipX = this.shipPosition.x;
@@ -174,6 +183,8 @@ export default class Camera {
     }
     //#endregion
 
+
+
     //#region Freecam
     toggleFreecamMode() {
         this.freecamMode = !this.freecamMode;
@@ -188,13 +199,7 @@ export default class Camera {
     }
     //#endregion
 
-    //#region Zoom
-    setZoom(value) {
-        // Clamp zoom value to be between the max and min
-        this.targetZoom = Math.max(cameraConfig.ZOOM.MIN, 
-                          Math.min(cameraConfig.ZOOM.MAX, value));
-    }
-    //#endregion
+
 
     //#region Helper functions
     lerp(start, end, t) {
@@ -202,6 +207,8 @@ export default class Camera {
     }
     //#endregion
 
+
+    
     update(deltaTime) {
         // Apply smooth camera movement
         // The camera is moved by setting the screen container pivot to a position in world space
